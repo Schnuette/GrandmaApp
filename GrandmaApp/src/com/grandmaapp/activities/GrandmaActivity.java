@@ -1,4 +1,4 @@
-package activities;
+package com.grandmaapp.activities;
 
 import com.example.grandmaapp.R;
 import com.example.grandmaapp.R.drawable;
