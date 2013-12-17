@@ -1,4 +1,10 @@
-package com.example.grandmaapp;
+package activities;
+
+import com.example.grandmaapp.R;
+import com.example.grandmaapp.R.drawable;
+import com.example.grandmaapp.R.id;
+import com.example.grandmaapp.R.layout;
+import com.example.grandmaapp.R.menu;
 
 import android.os.Build;
 import android.os.Bundle;
