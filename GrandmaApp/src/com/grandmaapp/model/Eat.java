@@ -1,6 +1,6 @@
 package com.grandmaapp.model;
 
-public class Food extends Request {
+public class Eat extends Request {
 
 	public boolean handleRequest() {
 		// TODO kram der so gemacht werden muss
@@ -9,5 +9,4 @@ public class Food extends Request {
 		//}
 		return false;
 	}
-	
 }

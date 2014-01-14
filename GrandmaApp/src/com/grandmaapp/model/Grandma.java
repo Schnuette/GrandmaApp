@@ -5,7 +5,7 @@ import java.util.HashMap;
 public class Grandma {
 
 	public enum Requests{
-		FOOD,
+		EAT,
 		DRINK,
 		MEDICINE,
 		SLEEP,
@@ -16,11 +16,12 @@ public class Grandma {
 		WASHCLOTHES
 	}
 	
+	
 	HashMap<Requests, Request> requests = new HashMap<Requests, Request>();
 	Storeroom storeroom = new Storeroom();
 
 	public Grandma(){
-		requests.put(Requests.FOOD, new Food());
+		requests.put(Requests.EAT, new Eat());
 		requests.put(Requests.DRINK, new Drink());
 		requests.put(Requests.MEDICINE, new Medicine());
 		requests.put(Requests.SLEEP, new Sleep());
@@ -31,7 +32,11 @@ public class Grandma {
 		requests.put(Requests.WASHCLOTHES, new WashClothes());
 	}
 	
-	public boolean handleRequest() {
+	public void handleRequest(Requests r){
+		requests.get(r).handleRequest();
+	}
+	
+	public boolean handleRequest(Grandma g) {
 		boolean success = false;
 		for(int key = 1; key <= requests.size(); key++){
 			success = requests.get(key).handleRequest();
@@ -45,4 +50,13 @@ public class Grandma {
 	public HashMap<Requests, Request> getRequests() {
 		return requests;
 	}
+
+	public Storeroom getStoreroom() {
+		return storeroom;
+	}
+
+	public void setStoreroom(Storeroom storeroom) {
+		this.storeroom = storeroom;
+	}
+	
 }
