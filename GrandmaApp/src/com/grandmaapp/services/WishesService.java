@@ -20,7 +20,7 @@ public class WishesService extends Service {
 		int time = Integer.parseInt(now.format2445().substring(9, 13));
 		Log.d("test", String.valueOf(time));
 		
-		return Service.START_STICKY;
+		return Service.START_NOT_STICKY;
 	}
 
 	@Override

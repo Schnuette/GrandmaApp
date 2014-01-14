@@ -10,6 +10,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -27,11 +29,13 @@ import com.grandmaapp.services.WishesService;
 
 public class GrandmaActivity extends Activity {
 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_grandma);
 		
+		//TODO read from sharedpreferences 
 
 		//startWishesService();
 		adjustGUI();
@@ -125,11 +129,20 @@ public class GrandmaActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		// save current state to shared preferences
-		// time, storage, wishes
-		ArrayList<String> valuesToSave = new ArrayList<String>();
-		String currentDateTimeString = DateFormat.getDateTimeInstance().format(
-				new Date());
-		valuesToSave.add(currentDateTimeString);
+		SharedPreferences prefs = getSharedPreferences("grandmaapp", Context.MODE_PRIVATE);
+		Editor editor = prefs.edit();
+		
+		//add time, format DD.MM.YYYY HH:MM:SS
+		editor.putString("time", DateFormat.getDateTimeInstance().format(
+				new Date()));
+		
+		//TODO
+		//add storage
+		
+		//TODO
+		//add wishes
+		
+        editor.commit();
 
 		super.onDestroy();
 	}
