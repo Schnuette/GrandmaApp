@@ -1,6 +1,9 @@
 package com.grandmaapp.activities;
 
+import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -10,6 +13,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
@@ -27,9 +31,9 @@ public class GrandmaActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_grandma);
+		
 
-
-		startWishesService();
+		//startWishesService();
 		adjustGUI();
 
 	}
@@ -76,8 +80,8 @@ public class GrandmaActivity extends Activity {
 		txt1.setBackgroundResource(R.drawable.button_selector);
 		txt1.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT)));
-		Typeface font = Typeface.createFromAsset(getAssets(), "Blippo.ttf");  
-		txt1.setTypeface(font);  
+		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Blippo.ttf");
+		txt1.setTypeface(font);
 		txt1.setTextSize(30);
 		linLay.addView(txt1);
 
@@ -105,9 +109,9 @@ public class GrandmaActivity extends Activity {
 	}
 
 	private void startWishesService() {
-		//Sekundentakt in dem der Service gestartet wird.
+		// Sekundentakt in dem der Service gestartet wird.
 		int refreshInS = 60;
-		
+
 		Calendar cal = Calendar.getInstance();
 
 		Intent intent = new Intent(this, WishesService.class);
@@ -116,6 +120,18 @@ public class GrandmaActivity extends Activity {
 		AlarmManager alarm = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 		alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(),
 				refreshInS * 1000, pintent);
+	}
+
+	@Override
+	protected void onDestroy() {
+		// save current state to shared preferences
+		// time, storage, wishes
+		ArrayList<String> valuesToSave = new ArrayList<String>();
+		String currentDateTimeString = DateFormat.getDateTimeInstance().format(
+				new Date());
+		valuesToSave.add(currentDateTimeString);
+
+		super.onDestroy();
 	}
 
 }
