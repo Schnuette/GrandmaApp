@@ -24,13 +24,13 @@ public class Shopping extends Request {
 	
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.SHOPPING) {
-			grandma.getStoreroom().fillFood();
+			//grandma.getStoreroom().fillFood();
 			
 			/* den kram koennte man evtl noch mal brauchen
 			 * falls einkaufsliste kommt
 			 */
 			
-			/* 
+			 
 			// wasser bei 3 flaschen auf 12 auffuellen
 			if (grandma.getStoreroom().getWaterBottles() <= 2) {
 				grandma.getStoreroom().setWaterBottles(Storeroom.MAXWATER);
@@ -45,7 +45,7 @@ public class Shopping extends Request {
 						.put(Dish.DOENER, Storeroom.MAXDINNER);
 				grandma.getStoreroom().getFood()
 						.put(Dish.PIZZA, Storeroom.MAXDINNER);
-				grandma.getStoreroom().setNumDinner(Storeroom.MAXDINNERSUM);
+				grandma.getStoreroom().setNumDinner(grandma.getStoreroom().calcDinnerSum());
 			}
 			// frühstück bei 1 auf 5
 			if (grandma.getStoreroom().getFood().get(Dish.BREAKFAST) <= 1) {
@@ -56,7 +56,7 @@ public class Shopping extends Request {
 			if (grandma.getStoreroom().getFood().get(Dish.SUPPER) <= 1) {
 				grandma.getStoreroom().getFood()
 						.put(Dish.SUPPER, Storeroom.MAXBREAKFASTSUPPER);
-			}*/
+			}
 			return true;
 		}
 		return false;

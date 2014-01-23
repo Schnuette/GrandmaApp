@@ -34,17 +34,26 @@ public class Grandma {
 		WASHCLOTHES
 	}
 	
+	public enum State{
+		DEAD,
+		HAPPY,
+		MAD,
+		ASLEEP
+	}
+	
 	
 	List<Request> requestsToHandle = new ArrayList<Request>();
 	Storeroom storeroom;
 	Activity mainActivity;
 	Editor editor;
+	State state;
 
 	public Grandma(Activity activity){
 		//TODO falls altes Spiel geladen wird, fuellstand aktualisieren
 		//TODO falls altes Spiel geladen wird, requests einpflegen
 		storeroom = new Storeroom();
 		mainActivity = activity;
+		state = State.HAPPY;
 	}
 	
 	public void addRequest(Request r){
@@ -107,4 +116,12 @@ public class Grandma {
 		return requestsToHandle;
 	}
 
+	public State getState() {
+		return state;
+	}
+
+	public void setState(State state) {
+		this.state = state;
+	}
+	
 }
