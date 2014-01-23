@@ -42,13 +42,13 @@ public class Storeroom {
 		food.put(Dish.SUPPER, MAXBREAKFASTSUPPER);
 	}
 	
-	public int calcDinnerSum(){
+	public void calcDinnerSum(){
 		int sum = 0;
 		sum += food.get(Dish.SCHNITZEL);
 		sum += food.get(Dish.NOODLES);
 		sum += food.get(Dish.DOENER);
 		sum += food.get(Dish.PIZZA);
-		return sum;
+		numDinner = sum;
 	}
 	
 	public int getCleanClothes() {

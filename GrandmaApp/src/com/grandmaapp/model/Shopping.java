@@ -45,7 +45,7 @@ public class Shopping extends Request {
 						.put(Dish.DOENER, Storeroom.MAXDINNER);
 				grandma.getStoreroom().getFood()
 						.put(Dish.PIZZA, Storeroom.MAXDINNER);
-				grandma.getStoreroom().setNumDinner(grandma.getStoreroom().calcDinnerSum());
+				grandma.getStoreroom().calcDinnerSum();
 			}
 			// frühstück bei 1 auf 5
 			if (grandma.getStoreroom().getFood().get(Dish.BREAKFAST) <= 1) {
