@@ -19,7 +19,8 @@ public class Notifications
 	{
 		//Creating intent, notification opens activity if touched
 		Intent resultIntent = new Intent (myActivity, GrandmaActivity.class);
-		resultIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK );
+		resultIntent.putExtra( "Notify", "reset" );
+		resultIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		
 		PendingIntent pResultIntent = PendingIntent.getActivity( myActivity, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT );
 
