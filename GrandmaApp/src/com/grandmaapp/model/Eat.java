@@ -10,6 +10,7 @@ public class Eat extends Request {
 	
 	public Eat(Dish d){
 		this.foodWish = d;
+		this.timeMS = HOUR_IN_MS;
 	}
 	
 	public boolean handleRequest(Requests r) {
@@ -44,6 +45,10 @@ public class Eat extends Request {
 		return false;
 	}
 
+	public Requests kind(){
+		return Requests.EAT;
+	}
+	
 	public Dish getFoodWish() {
 		return foodWish;
 	}

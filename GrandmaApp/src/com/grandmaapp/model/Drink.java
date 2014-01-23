@@ -4,6 +4,10 @@ import com.grandmaapp.model.Grandma.Requests;
 
 public class Drink extends Request {
 	
+	public Drink(){
+		timeMS = HOUR_IN_MS;
+	}
+	
 	public boolean handleRequest(Requests r) {
 		if(r == Requests.DRINK){
 			int numBottles = grandma.getStoreroom().getWaterBottles() - 1;
@@ -14,5 +18,9 @@ public class Drink extends Request {
 			return true;
 		}
 		return false;
+	}
+	
+	public Requests kind(){
+		return Requests.DRINK;
 	}
 }

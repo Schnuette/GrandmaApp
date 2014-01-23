@@ -4,11 +4,19 @@ import com.grandmaapp.model.Grandma.Requests;
 
 public class WashDishes extends Request {
 	
+	public WashDishes(){
+		timeMS = HOUR_IN_MS;
+	}
+	
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.WASHDISHES) {
 			// sobald button gedrückt wird gespült und request wird geloescht
 			return true;
 		}
 		return false;
+	}
+	
+	public Requests kind(){
+		return Requests.WASHDISHES;
 	}
 }

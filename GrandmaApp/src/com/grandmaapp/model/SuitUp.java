@@ -3,6 +3,10 @@ package com.grandmaapp.model;
 import com.grandmaapp.model.Grandma.Requests;
 
 public class SuitUp extends Request {
+	
+	public SuitUp(){
+		timeMS = HOUR_IN_MS;
+	}
 
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.SUITUP) {
@@ -20,5 +24,9 @@ public class SuitUp extends Request {
 			}
 		}
 		return false;
+	}
+	
+	public Requests kind(){
+		return Requests.SUITUP;
 	}
 }

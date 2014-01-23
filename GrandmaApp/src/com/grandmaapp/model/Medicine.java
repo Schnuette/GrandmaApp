@@ -14,6 +14,7 @@ public class Medicine extends Request {
 	
 	public Medicine(Daytime dt){
 		this.daytime = dt;
+		this.timeMS = HOUR_IN_MS;
 	}
 
 	public boolean handleRequest(Requests r) {
@@ -33,6 +34,10 @@ public class Medicine extends Request {
 			//TODO stirbt! popup warnung falsches med?
 			return false;
 		}
+	}
+	
+	public Requests kind(){
+		return Requests.MEDICINE;
 	}
 	
 	public Daytime getDaytime() {

@@ -4,9 +4,8 @@ import com.grandmaapp.model.Grandma.Requests;
 
 public class Sleep extends Request {
 
-	public boolean handleRequest() {
-		// TODO kram der so gemacht werden muss
-		return false;
+	public Sleep() {
+		timeMS = HOUR_IN_MS / 2;
 	}
 	
 	public boolean handleRequest(Requests r) {
@@ -16,6 +15,10 @@ public class Sleep extends Request {
 			return true;
 		}
 		return false;
+	}
+	
+	public Requests kind(){
+		return Requests.SLEEP;
 	}
 	
 }

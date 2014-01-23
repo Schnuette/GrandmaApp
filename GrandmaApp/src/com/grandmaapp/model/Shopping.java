@@ -1,9 +1,26 @@
 package com.grandmaapp.model;
 
+import android.text.format.Time;
+
 import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Storeroom.Dish;
 
 public class Shopping extends Request {
+	
+	public Shopping(){
+		//zeit dynamisch
+		Time now = new Time();
+		now.setToNow();
+		
+		//time as integer from 0 to 2359 (hour and minutes)
+		int hour = Integer.parseInt(now.format2445().substring(9, 11));
+		int minute = Integer.parseInt(now.format2445().substring(11, 13));
+		long currentTimeInMS = (hour * 60 * 60 * 1000) + (minute * 60 * 1000);
+		long tenInMS = 22 * 60 * 60 * 1000;
+		
+		// 2200 - aktuelle uhrzeit in ms
+		timeMS = tenInMS - currentTimeInMS;
+	}
 	
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.SHOPPING) {
@@ -43,6 +60,10 @@ public class Shopping extends Request {
 			return true;
 		}
 		return false;
+	}
+	
+	public Requests kind(){
+		return Requests.SHOPPING;
 	}
 	
 }
