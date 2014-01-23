@@ -1,13 +1,21 @@
 package com.grandmaapp.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
+
+import com.grandmaapp.model.Medicine.Daytime;
+import com.grandmaapp.model.Storeroom.Dish;
 
 public class Grandma {
 
 	public enum Requests{
 		EAT,
 		DRINK,
-		MEDICINE,
+		MEDICINE_MORNING,
+		MEDICINE_NOON,
+		MEDICINE_EVENING,
 		SLEEP,
 		SHOPPING,
 		SUITUP,
@@ -17,40 +25,30 @@ public class Grandma {
 	}
 	
 	
-	HashMap<Requests, Request> requests = new HashMap<Requests, Request>();
-	Storeroom storeroom = new Storeroom();
+	List<Request> requestsToHandle = new ArrayList<Request>();
+	Storeroom storeroom;
 
 	public Grandma(){
-		requests.put(Requests.EAT, new Eat());
-		requests.put(Requests.DRINK, new Drink());
-		requests.put(Requests.MEDICINE, new Medicine());
-		requests.put(Requests.SLEEP, new Sleep());
-		requests.put(Requests.SHOPPING, new Shopping());
-		requests.put(Requests.SUITUP, new SuitUp());
-		requests.put(Requests.CLEANFLAT, new CleanFlat());
-		requests.put(Requests.WASHDISHES, new WashDishes());
-		requests.put(Requests.WASHCLOTHES, new WashClothes());
+		//TODO falls altes Spiel geladen wird, fuellstand aktualisieren
+		//TODO falls altes Spiel geladen wird, requests einpflegen
+		storeroom = new Storeroom();
 	}
 	
-	public void handleRequest(Requests r){
-		requests.get(r).handleRequest();
+	public void addRequest(Request r){
+		r.setGrandma(this);
+		requestsToHandle.add(r);
 	}
 	
-	public boolean handleRequest(Grandma g) {
-		boolean success = false;
-		for(int key = 1; key <= requests.size(); key++){
-			success = requests.get(key).handleRequest();
-			if(success){
+	public boolean handleRequest(Requests r){
+		for(Request request: requestsToHandle){
+			if(request.handleRequest(r)){
+				requestsToHandle.remove(request);
 				return true;
 			}
 		}
 		return false;
 	}
 	
-	public HashMap<Requests, Request> getRequests() {
-		return requests;
-	}
-
 	public Storeroom getStoreroom() {
 		return storeroom;
 	}
@@ -58,5 +56,9 @@ public class Grandma {
 	public void setStoreroom(Storeroom storeroom) {
 		this.storeroom = storeroom;
 	}
-	
+
+	public List<Request> getRequestsToHandle() {
+		return requestsToHandle;
+	}
+
 }

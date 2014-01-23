@@ -1,10 +1,14 @@
 package com.grandmaapp.model;
 
-public class CleanFlat extends Request {
+import com.grandmaapp.model.Grandma.Requests;
 
-	public boolean handleRequest() {
-		// TODO kram der so gemacht werden muss
+public class CleanFlat extends Request {
+	
+	public boolean handleRequest(Requests r) {
+		if(r == Requests.CLEANFLAT){
+			// sobald button gedrückt wird wohnung sauber und request wird geloescht
+			return true;
+		}
 		return false;
 	}
-	
 }
