@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.example.grandmaapp.R;
+import com.grandmaapp.notification.Notifications;
 import com.grandmaapp.services.WishesService;
 
 public class GrandmaActivity extends Activity {
@@ -52,7 +53,17 @@ public class GrandmaActivity extends Activity {
 	public void zeigeEinstellungen(View view) {
 
 	}
-
+	
+	@Override
+	protected void onNewIntent(Intent intent)
+	{
+		String message = intent.getStringExtra( "Notify" );
+		if(message != null && message.equals( "reset" ))
+		{
+			Notifications.resetMessageCounter( );
+		}
+	}
+	
 	private void adjustGUI() {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);

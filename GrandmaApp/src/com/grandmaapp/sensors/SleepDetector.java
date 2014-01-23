@@ -1,4 +1,7 @@
-package com.example.grandmaapp;
+package com.grandmaapp.sensors;
+
+import com.example.grandmaapp.R;
+import com.example.grandmaapp.R.id;
 
 import android.app.Activity;
 import android.content.Context;
