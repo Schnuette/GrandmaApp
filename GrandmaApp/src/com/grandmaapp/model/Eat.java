@@ -8,6 +8,10 @@ public class Eat extends Request {
 
 	Dish foodWish;
 	
+	public Eat(){
+		this.timeMS = HOUR_IN_MS;
+	}
+	
 	public Eat(Dish d){
 		this.foodWish = d;
 		this.timeMS = HOUR_IN_MS;
