@@ -2,7 +2,9 @@ package com.grandmaapp.services;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
 
@@ -12,6 +14,9 @@ public class WishesService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Wuensche generieren, Benutzer informieren usw
+		
+		//zeiten der wünsche abfragen/speichern
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		
 		Time now = new Time();
 		now.setToNow();
