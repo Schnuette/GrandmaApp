@@ -78,5 +78,25 @@ public class Storeroom {
 	public void setNumDinner(int numDinner) {
 		this.numDinner = numDinner;
 	}
+
+	public int getMAXCLEANCLOTHES() {
+		return MAXCLEANCLOTHES;
+	}
+
+	public int getMAXWATER() {
+		return MAXWATER;
+	}
+
+	public int getMAXDINNERSUM() {
+		return MAXDINNERSUM;
+	}
+
+	public int getMAXDINNER() {
+		return MAXDINNER;
+	}
+
+	public int getMAXBREAKFASTSUPPER() {
+		return MAXBREAKFASTSUPPER;
+	}
 	
 }

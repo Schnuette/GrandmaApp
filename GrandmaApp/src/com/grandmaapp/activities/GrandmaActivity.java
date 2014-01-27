@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -26,29 +27,40 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 
 import com.example.grandmaapp.R;
+import com.grandmaapp.model.CleanFlat;
+import com.grandmaapp.model.Drink;
 import com.grandmaapp.model.Eat;
 import com.grandmaapp.model.Grandma;
+import com.grandmaapp.model.Medicine;
+import com.grandmaapp.model.Shopping;
+import com.grandmaapp.model.SuitUp;
 import com.grandmaapp.model.Grandma.Requests;
+import com.grandmaapp.model.Medicine.Daytime;
 import com.grandmaapp.model.Request;
+import com.grandmaapp.model.Sleep;
 import com.grandmaapp.model.Storeroom.Dish;
+import com.grandmaapp.model.WashClothes;
+import com.grandmaapp.model.WashDishes;
 import com.grandmaapp.notification.Notifications;
 import com.grandmaapp.services.WishesService;
 
 public class GrandmaActivity extends Activity {
 
 	Grandma grandma;
-	
+	HashMap<String, Button> requestList;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_grandma);
-		
-		grandma = new Grandma(this);
-		init();
-		
-		//TODO read from sharedpreferences 
 
-		//startWishesService();
+		grandma = new Grandma(this);
+		requestList = new HashMap<String, Button>();
+		init();
+
+		// TODO read from sharedpreferences
+
+		// startWishesService();
 		adjustGUI();
 
 	}
@@ -59,83 +71,162 @@ public class GrandmaActivity extends Activity {
 		getMenuInflater().inflate(R.menu.grandma, menu);
 		return true;
 	}
-	
-	public void init(){
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		
+
+	public void init() {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(this);
+
+		int maxDinner = grandma.getStoreroom().getMAXDINNER();
+		int maxBreakfastSupper = grandma.getStoreroom().getMAXBREAKFASTSUPPER();
 		int numSchnitzel = prefs.getInt("StoreSchnitzel", -1);
-		if(numSchnitzel > -1){
+		if (numSchnitzel > -1) {
 			grandma.getStoreroom().getFood().put(Dish.SCHNITZEL, numSchnitzel);
+		} else {
+			grandma.getStoreroom().getFood().put(Dish.SCHNITZEL, maxDinner);
 		}
 		int numNoodles = prefs.getInt("StoreNoodles", -1);
-		if(numNoodles > -1){
+		if (numNoodles > -1) {
 			grandma.getStoreroom().getFood().put(Dish.NOODLES, numNoodles);
+		} else {
+			grandma.getStoreroom().getFood().put(Dish.NOODLES, maxDinner);
 		}
 		int numDoener = prefs.getInt("StoreDoener", -1);
-		if(numDoener > -1){
+		if (numDoener > -1) {
 			grandma.getStoreroom().getFood().put(Dish.DOENER, numDoener);
+		} else {
+			grandma.getStoreroom().getFood().put(Dish.DOENER, maxDinner);
 		}
 		int numPizza = prefs.getInt("StorePizza", -1);
-		if(numPizza > -1){
+		if (numPizza > -1) {
 			grandma.getStoreroom().getFood().put(Dish.PIZZA, numPizza);
+		} else {
+			grandma.getStoreroom().getFood().put(Dish.PIZZA, maxDinner);
 		}
 		int numBreakfast = prefs.getInt("StoreBreakfast", -1);
-		if(numBreakfast > -1){
+		if (numBreakfast > -1) {
 			grandma.getStoreroom().getFood().put(Dish.BREAKFAST, numBreakfast);
+		} else {
+			grandma.getStoreroom().getFood()
+					.put(Dish.BREAKFAST, maxBreakfastSupper);
 		}
 		int numSupper = prefs.getInt("StoreSupper", -1);
-		if(numSupper > -1){
+		if (numSupper > -1) {
 			grandma.getStoreroom().getFood().put(Dish.SUPPER, numSupper);
+		} else {
+			grandma.getStoreroom().getFood()
+					.put(Dish.SUPPER, maxBreakfastSupper);
 		}
 		int numWater = prefs.getInt("StoreWater", -1);
-		if(numWater > -1){
+		if (numWater > -1) {
 			grandma.getStoreroom().setWaterBottles(numWater);
+		} else {
+			grandma.getStoreroom().setWaterBottles(
+					grandma.getStoreroom().getMAXWATER());
 		}
+
 		int numClothes = prefs.getInt("StoreClothes", -1);
-		if(numWater > -1){
+		if (numClothes > -1) {
 			grandma.getStoreroom().setCleanClothes(numClothes);
+		} else {
+			grandma.getStoreroom().setCleanClothes(
+					grandma.getStoreroom().getMAXCLEANCLOTHES());
 		}
-		
+
 		grandma.getStoreroom().calcDinnerSum();
-		
-		int time = prefs.getInt(Requests.EAT.toString(), -1);
-		if(time > -1){
+
+		long time = prefs.getInt(Requests.EAT.toString(), -1);
+		if (time > -1) {
 			Eat request = new Eat();
 			String foodWish = prefs.getString("FoodWish", null);
-			if(foodWish.equals(Dish.BREAKFAST.toString())){
+			if (foodWish.equals(Dish.BREAKFAST.toString())) {
 				request.setFoodWish(Dish.BREAKFAST);
-			}else if(foodWish.equals(Dish.DOENER.toString())){
+			} else if (foodWish.equals(Dish.DOENER.toString())) {
 				request.setFoodWish(Dish.DOENER);
-			}else if(foodWish.equals(Dish.NOODLES.toString())){
+			} else if (foodWish.equals(Dish.NOODLES.toString())) {
 				request.setFoodWish(Dish.NOODLES);
-			}else if(foodWish.equals(Dish.PIZZA.toString())){
+			} else if (foodWish.equals(Dish.PIZZA.toString())) {
 				request.setFoodWish(Dish.PIZZA);
-			}else if(foodWish.equals(Dish.SCHNITZEL.toString())){
+			} else if (foodWish.equals(Dish.SCHNITZEL.toString())) {
 				request.setFoodWish(Dish.SCHNITZEL);
-			}else if(foodWish.equals(Dish.SUPPER.toString())){
+			} else if (foodWish.equals(Dish.SUPPER.toString())) {
 				request.setFoodWish(Dish.SUPPER);
 			}
 			request.setTimeMS(time);
 			grandma.addRequest(request);
 		}
-		
-				
+		time = prefs.getInt(Requests.CLEANFLAT.toString(), -1);
+		if (time > -1) {
+			CleanFlat request = new CleanFlat();
+			request.setTimeMS(time);
+			grandma.addRequest(request);
+		}
+		time = prefs.getInt(Requests.DRINK.toString(), -1);
+		if (time > -1) {
+			Drink request = new Drink();
+			request.setTimeMS(time);
+			grandma.addRequest(request);
+		}
+		time = prefs.getInt(Requests.MEDICINE.toString(), -1);
+		if (time > -1) {
+			Medicine request = new Medicine();
+			String medWish = prefs.getString("MedWish", null);
+			if (medWish.equals(Daytime.MORNING.toString())) {
+				request.setDaytime(Daytime.MORNING);
+			}
+			if (medWish.equals(Daytime.NOON.toString())) {
+				request.setDaytime(Daytime.NOON);
+			}
+			if (medWish.equals(Daytime.EVENING.toString())) {
+				request.setDaytime(Daytime.EVENING);
+			}
+			request.setTimeMS(time);
+			grandma.addRequest(request);
+		}
+		time = prefs.getInt(Requests.SHOPPING.toString(), -1);
+		if (time > -1) {
+			Shopping request = new Shopping();
+			request.setTimeMS(time);
+			grandma.addRequest(request);
+		}
+		time = prefs.getInt(Requests.SLEEP.toString(), -1);
+		if (time > -1) {
+			Sleep request = new Sleep();
+			request.setTimeMS(time);
+			grandma.addRequest(request);
+		}
+		time = prefs.getInt(Requests.SUITUP.toString(), -1);
+		if (time > -1) {
+			SuitUp request = new SuitUp();
+			request.setTimeMS(time);
+			grandma.addRequest(request);
+		}
+		time = prefs.getInt(Requests.WASHCLOTHES.toString(), -1);
+		if (time > -1) {
+			WashClothes request = new WashClothes();
+			request.setTimeMS(time);
+			grandma.addRequest(request);
+		}
+		time = prefs.getInt(Requests.WASHDISHES.toString(), -1);
+		if (time > -1) {
+			WashDishes request = new WashDishes();
+			request.setTimeMS(time);
+			grandma.addRequest(request);
+		}
+
 	}
 
 	public void zeigeEinstellungen(View view) {
 
 	}
-	
+
 	@Override
-	protected void onNewIntent(Intent intent)
-	{
-		String message = intent.getStringExtra( "Notify" );
-		if(message != null && message.equals( "reset" ))
-		{
-			Notifications.resetMessageCounter( );
+	protected void onNewIntent(Intent intent) {
+		String message = intent.getStringExtra("Notify");
+		if (message != null && message.equals("reset")) {
+			Notifications.resetMessageCounter();
 		}
 	}
-	
+
 	private void adjustGUI() {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -167,7 +258,8 @@ public class GrandmaActivity extends Activity {
 		txt1.setBackgroundResource(R.drawable.button_selector);
 		txt1.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
 				LayoutParams.WRAP_CONTENT)));
-		Typeface font = Typeface.createFromAsset(getAssets(), "fonts/Blippo.ttf");
+		Typeface font = Typeface.createFromAsset(getAssets(),
+				"fonts/Blippo.ttf");
 		txt1.setTypeface(font);
 		txt1.setTextSize(30);
 		linLay.addView(txt1);
@@ -194,6 +286,10 @@ public class GrandmaActivity extends Activity {
 		linLay.addView(txt4);
 
 	}
+	
+	void addRequestButton(Request request){
+		//steffen fragen wegen name/typ für button
+	}
 
 	private void startWishesService() {
 		// Sekundentakt in dem der Service gestartet wird.
@@ -212,20 +308,21 @@ public class GrandmaActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		// save current state to shared preferences
-		SharedPreferences prefs = getSharedPreferences("grandmaapp", Context.MODE_PRIVATE);
+		SharedPreferences prefs = getSharedPreferences("grandmaapp",
+				Context.MODE_PRIVATE);
 		Editor editor = prefs.edit();
-		
-		//add time, format DD.MM.YYYY HH:MM:SS
-		editor.putString("time", DateFormat.getDateTimeInstance().format(
-				new Date()));
-		
-		//TODO
-		//add storage
-		
-		//TODO
-		//add wishes
-		
-        editor.commit();
+
+		// add time, format DD.MM.YYYY HH:MM:SS
+		editor.putString("time",
+				DateFormat.getDateTimeInstance().format(new Date()));
+
+		// TODO
+		// add storage
+
+		// TODO
+		// add wishes
+
+		editor.commit();
 
 		super.onDestroy();
 	}
