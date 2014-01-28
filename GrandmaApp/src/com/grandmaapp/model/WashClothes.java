@@ -6,6 +6,7 @@ public class WashClothes extends Request {
 	
 	public WashClothes(){
 		timeMS = HOUR_IN_MS * 12;
+		name = "Kleidung waschen";
 	}
 	
 	public boolean handleRequest(Requests r) {

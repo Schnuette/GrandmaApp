@@ -9,25 +9,8 @@ public class Request {
 	protected static long HOUR_IN_MS = 3600000;
 	
 	Grandma grandma;
-	CountDownTimer timer;
 	long timeMS;
-	
-	public void startTimer(){
-		timer = new CountDownTimer(timeMS, 1000) {
-			
-			@Override
-			public void onTick(long millisUntilFinished) {
-				// TODO Auto-generated method stub
-				
-			}
-			
-			@Override
-			public void onFinish() {
-				// TODO Auto-generated method stub
-				
-			}
-		}.start();
-	}
+	String name = null;
 	
 	public Requests kind(){
 		return null;
@@ -45,14 +28,6 @@ public class Request {
 		this.grandma = grandma;
 	}
 
-	public CountDownTimer getTimer() {
-		return timer;
-	}
-
-	public void setTimer(CountDownTimer timer) {
-		this.timer = timer;
-	}
-
 	public long getTimeMS() {
 		return timeMS;
 	}
@@ -60,5 +35,15 @@ public class Request {
 	public void setTimeMS(long timeMS) {
 		this.timeMS = timeMS;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 	
 }

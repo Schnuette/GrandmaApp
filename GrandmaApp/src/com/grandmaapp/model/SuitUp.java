@@ -6,6 +6,7 @@ public class SuitUp extends Request {
 	
 	public SuitUp(){
 		timeMS = HOUR_IN_MS;
+		name = "Ankleiden";
 	}
 
 	public boolean handleRequest(Requests r) {

@@ -20,6 +20,8 @@ public class Shopping extends Request {
 		
 		// 2200 - aktuelle uhrzeit in ms
 		timeMS = tenInMS - currentTimeInMS;
+		
+		name = "Einkaufen";
 	}
 	
 	public boolean handleRequest(Requests r) {

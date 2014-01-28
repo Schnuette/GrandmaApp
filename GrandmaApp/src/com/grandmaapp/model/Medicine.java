@@ -13,11 +13,13 @@ public class Medicine extends Request {
 	public Medicine(Daytime dt) {
 		this.daytime = dt;
 		this.timeMS = HOUR_IN_MS;
+		setMedName();	
 	}
 
 	public Medicine() {
 		this.daytime = Daytime.MORNING;
 		this.timeMS = HOUR_IN_MS;
+		name = "Medizin";
 	}
 
 	public boolean handleRequest(Requests r) {
@@ -47,6 +49,17 @@ public class Medicine extends Request {
 
 	public void setDaytime(Daytime daytime) {
 		this.daytime = daytime;
+		setMedName();
+	}
+	
+	private void setMedName(){
+		if(daytime == Daytime.EVENING){
+			name = "Abend-Medizin";
+		}else if(daytime == Daytime.MORNING){
+			name = "Morgen-Medizin";
+		}else if(daytime == Daytime.NOON){
+			name = "Mittags-Medizin";
+		}
 	}
 
 }
