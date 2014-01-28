@@ -15,7 +15,7 @@ public class Notifications
 	static private int notifyId = 1337; //Notification id for updating notification
 	static private int numMessages = 0; // Counts messages
 				
-	static public void newNotification(String subject, Activity myActivity)
+	static public void newNotification(String subject, Context myActivity)
 	{
 		//Creating intent, notification opens activity if touched
 		Intent resultIntent = new Intent (myActivity, GrandmaActivity.class);
