@@ -8,6 +8,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnShowListener;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 public class MiniGame
 {
@@ -37,17 +39,35 @@ public class MiniGame
 		WON;
 	}
 	
+	private static MiniGame instance;
+	
 	private Activity activity;
 	private Type choice;
 	private Result result;
 	private Type grandmaChoice;
 	private Request request;
 	
+	private MiniGame( )
+	{
+		
+	}
+	
+	public static MiniGame getInstance( )
+	{
+		if( instance == null )
+		{
+			instance = new MiniGame( );
+		}
+			
+		return instance;
+	}
+	
 	public void showChoices( )
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder( activity );
+		builder.setTitle( "Schere Stein Papier" );
 		builder.setCancelable( false );
-		builder.setPositiveButton( "", new OnClickListener( )
+		builder.setPositiveButton( "Schere", new OnClickListener( )
 		{
 			@Override
             public void onClick( DialogInterface dialog, int which )
@@ -57,7 +77,7 @@ public class MiniGame
 				determineWinner( );
             }
 		} )
-		.setNeutralButton( "", new OnClickListener( )
+		.setNeutralButton( "Stein", new OnClickListener( )
 		{
 			@Override
             public void onClick( DialogInterface dialog, int which )
@@ -67,7 +87,7 @@ public class MiniGame
 				determineWinner( );
             }
 		} )
-		.setNegativeButton( "", new OnClickListener( )
+		.setNegativeButton( "Papier", new OnClickListener( )
 		{
 			@Override
             public void onClick( DialogInterface dialog, int which )
@@ -86,14 +106,20 @@ public class MiniGame
 			@Override
 			public void onShow( DialogInterface dialogInterface )
 			{
+				Drawable scissors = activity.getResources( ).getDrawable( R.drawable.scissors );
+	            scissors.setBounds(0, 0, scissors.getIntrinsicWidth( ), scissors.getIntrinsicHeight( ));
 				dialog.getButton( AlertDialog.BUTTON_POSITIVE )
-				.setCompoundDrawables( activity.getResources( ).getDrawable( R.drawable.scissors ), null, null, null );
-				
-				dialog.getButton( AlertDialog.BUTTON_NEUTRAL )
-				.setCompoundDrawables( activity.getResources( ).getDrawable( R.drawable.rock ), null, null, null );
+				.setCompoundDrawables( scissors, null, null, null );
 
+				Drawable rock = activity.getResources( ).getDrawable( R.drawable.rock );
+				rock.setBounds( 0, 0, rock.getIntrinsicWidth( ), rock.getIntrinsicHeight( ) );
+				dialog.getButton( AlertDialog.BUTTON_NEUTRAL )
+				.setCompoundDrawables( rock, null, null, null );
+
+				Drawable paper = activity.getResources( ).getDrawable( R.drawable.paper );
+				paper.setBounds( 0, 0, paper.getIntrinsicWidth( ), paper.getIntrinsicHeight( ) );
 				dialog.getButton( AlertDialog.BUTTON_NEGATIVE )
-				.setCompoundDrawables( activity.getResources( ).getDrawable( R.drawable.paper ), null, null, null );
+				.setCompoundDrawables( paper, null, null, null );
 			}
 		} );
 		
@@ -102,7 +128,7 @@ public class MiniGame
 	
 	public void showResult( )
 	{
-		String text = "Oma waehlte " + grandmaChoice + " und du hast " + choice + " gewaehlt!";
+		String text = "Oma waehlte " + grandmaChoice + "!";
 		
 		if( result == Result.LOST )
 		{
@@ -114,7 +140,7 @@ public class MiniGame
 		}
 		else
 		{
-			text += " Es gab ein Unentschieden!";
+			text += " Es gibt ein Unentschieden!";
 		}
 		
 		AlertDialog.Builder builder = new AlertDialog.Builder( activity );
@@ -127,7 +153,7 @@ public class MiniGame
             {
 				
             }
-		} );	
+		} ).create( ).show( );	
 	}
 	
 	public void determineWinner( )
@@ -192,4 +218,14 @@ public class MiniGame
 		
 		showResult( );
 	}
+	
+	public void setActivity( Activity activity )
+	{
+		this.activity = activity;
+	}
+
+	public void setRequest( Request request )
+	{
+		this.request = request;
+	}	
 }
