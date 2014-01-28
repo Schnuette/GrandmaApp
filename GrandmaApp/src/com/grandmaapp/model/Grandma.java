@@ -13,7 +13,11 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
+import com.example.grandmaapp.R;
+import com.grandmaapp.activities.GrandmaActivity;
 import com.grandmaapp.model.Medicine.Daytime;
 import com.grandmaapp.model.Storeroom.Dish;
 
@@ -31,7 +35,8 @@ public class Grandma {
 		SUITUP,
 		CLEANFLAT,
 		WASHDISHES,
-		WASHCLOTHES
+		WASHCLOTHES,
+		GAME
 	}
 	
 	public enum State{
@@ -44,10 +49,10 @@ public class Grandma {
 	
 	List<Request> requestsToHandle = new ArrayList<Request>();
 	Storeroom storeroom;
-	Activity mainActivity;
+	GrandmaActivity mainActivity;
 	State state;
 
-	public Grandma(Activity activity){
+	public Grandma(GrandmaActivity activity){
 		//TODO falls altes Spiel geladen wird, fuellstand aktualisieren
 		//TODO falls altes Spiel geladen wird, requests einpflegen
 		storeroom = new Storeroom();
@@ -68,6 +73,19 @@ public class Grandma {
 	public boolean handleRequest(Requests r){
 		for(Request request: requestsToHandle){
 			if(request.handleRequest(r)){
+				// button entfernen aus requestList loeschen
+				LinearLayout linLay = (LinearLayout) mainActivity.findViewById(R.id.tasksLinLay);
+				Button button = mainActivity.getRequestList().get(request.kind().toString());
+				linLay.removeView(button);
+				mainActivity.getRequestList().remove(request.kind().toString());
+				
+				// aus den Prefs loeschen
+				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+				Editor editor = preferences.edit();
+				editor.remove(request.kind().toString());
+				editor.commit();
+				
+				// aus Datenmodell loeschen
 				requestsToHandle.remove(request);
 				return true;
 			}
