@@ -178,4 +178,8 @@ public class GrandmaActivity extends Activity {
 		editor.commit();
 	}
 
+	public HashMap<String, Button> getRequestList() {
+		return requestList;
+	}
+
 }
