@@ -65,8 +65,7 @@ public class Grandma {
 		requestsToHandle.add(r);
 		//TODO nur einmal einkaufen
 		
-		// ablaufzeiten der wuensche in shared prefs speichern
-		//SharedPreferences prefs = getSharedPreferences("grandmaapp", Context.MODE_PRIVATE);
+		state = State.MAD;
 		
 	}
 	
@@ -87,12 +86,24 @@ public class Grandma {
 				
 				// aus Datenmodell loeschen
 				requestsToHandle.remove(request);
+				
+				if(requestsToHandle.isEmpty()){
+					state = State.HAPPY;
+				}
 				return true;
 			}
 		}
 		return false;
 	}
 	
+	public GrandmaActivity getMainActivity() {
+		return mainActivity;
+	}
+
+	public void setMainActivity(GrandmaActivity mainActivity) {
+		this.mainActivity = mainActivity;
+	}
+
 	public int calcExpireTime(long l){
 		Time now = new Time();
 		now.setToNow();
@@ -110,7 +121,9 @@ public class Grandma {
 	public void init() {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(mainActivity);
+		Editor editor = prefs.edit();
 
+		// Vorratskammer wird geladen
 		int maxDinner = this.getStoreroom().getMAXDINNER();
 		int maxBreakfastSupper = this.getStoreroom().getMAXBREAKFASTSUPPER();
 		int numSchnitzel = prefs.getInt("StoreSchnitzel", -1);
@@ -118,24 +131,28 @@ public class Grandma {
 			this.getStoreroom().getFood().put(Dish.SCHNITZEL, numSchnitzel);
 		} else {
 			this.getStoreroom().getFood().put(Dish.SCHNITZEL, maxDinner);
+			editor.putInt("StoreSchnitzel", Storeroom.MAXDINNER);
 		}
 		int numNoodles = prefs.getInt("StoreNoodles", -1);
 		if (numNoodles > -1) {
 			this.getStoreroom().getFood().put(Dish.NOODLES, numNoodles);
 		} else {
 			this.getStoreroom().getFood().put(Dish.NOODLES, maxDinner);
+			editor.putInt("StoreNoodles", Storeroom.MAXDINNER);
 		}
 		int numDoener = prefs.getInt("StoreDoener", -1);
 		if (numDoener > -1) {
 			this.getStoreroom().getFood().put(Dish.DOENER, numDoener);
 		} else {
 			this.getStoreroom().getFood().put(Dish.DOENER, maxDinner);
+			editor.putInt("StoreDoener", Storeroom.MAXDINNER);
 		}
 		int numPizza = prefs.getInt("StorePizza", -1);
 		if (numPizza > -1) {
 			this.getStoreroom().getFood().put(Dish.PIZZA, numPizza);
 		} else {
 			this.getStoreroom().getFood().put(Dish.PIZZA, maxDinner);
+			editor.putInt("StorePizza", Storeroom.MAXDINNER);
 		}
 		int numBreakfast = prefs.getInt("StoreBreakfast", -1);
 		if (numBreakfast > -1) {
@@ -143,6 +160,7 @@ public class Grandma {
 		} else {
 			this.getStoreroom().getFood()
 					.put(Dish.BREAKFAST, maxBreakfastSupper);
+			editor.putInt("StoreBreakfast", Storeroom.MAXBREAKFASTSUPPER);
 		}
 		int numSupper = prefs.getInt("StoreSupper", -1);
 		if (numSupper > -1) {
@@ -150,6 +168,7 @@ public class Grandma {
 		} else {
 			this.getStoreroom().getFood()
 					.put(Dish.SUPPER, maxBreakfastSupper);
+			editor.putInt("StoreSupper", Storeroom.MAXBREAKFASTSUPPER);
 		}
 		int numWater = prefs.getInt("StoreWater", -1);
 		if (numWater > -1) {
@@ -157,6 +176,7 @@ public class Grandma {
 		} else {
 			this.getStoreroom().setWaterBottles(
 					this.getStoreroom().getMAXWATER());
+			editor.putInt("StoreWater", Storeroom.MAXWATER);
 		}
 
 		int numClothes = prefs.getInt("StoreClothes", -1);
@@ -165,10 +185,14 @@ public class Grandma {
 		} else {
 			this.getStoreroom().setCleanClothes(
 					this.getStoreroom().getMAXCLEANCLOTHES());
+			editor.putInt("StoreClothes", Storeroom.MAXCLEANCLOTHES);
 		}
 
 		this.getStoreroom().calcDinnerSum();
+		
+		editor.commit();
 
+		// Requests werden geladen
 		long time = prefs.getInt(Requests.EAT.toString(), -1);
 		if (time > -1) {
 			Eat request = new Eat();
