@@ -1,5 +1,9 @@
 package com.grandmaapp.model;
 
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+
 import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Medicine.Daytime;
 import com.grandmaapp.model.Storeroom.Dish;
@@ -25,9 +29,17 @@ public class Eat extends Request {
 				int numOfDish = grandma.getStoreroom().getFood().get(foodWish);
 				numOfDish -= 1;
 				grandma.getStoreroom().getFood().put(foodWish, numOfDish);
-				grandma.addRequest(new WashDishes());
+				//grandma.addRequest(new WashDishes());
+				
+				// prefs aktualisieren
+				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
+				Editor editor = preferences.edit();
+				// TODO essen unterscheiden
+				//editor.putInt("StoreWater", numBottles);
+				editor.commit();
+				
 				// Fruehstueck oder abendessen sonst Dinner
-				if (foodWish == Dish.BREAKFAST || foodWish == Dish.SUPPER) {
+				/*if (foodWish == Dish.BREAKFAST || foodWish == Dish.SUPPER) {
 					//einkaufen, falls Fruehstueck oder Abendessen leer ist
 					if (numOfDish < 1) {
 						grandma.addRequest(new Shopping());
@@ -43,7 +55,7 @@ public class Eat extends Request {
 					if (foodWish == Dish.SCHNITZEL) {
 						grandma.addRequest(new Medicine(Daytime.NOON));
 					}
-				}
+				}*/
 				return true;
 			}
 		}

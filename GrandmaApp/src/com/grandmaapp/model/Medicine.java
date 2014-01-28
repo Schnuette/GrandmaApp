@@ -1,6 +1,7 @@
 package com.grandmaapp.model;
 
 import com.grandmaapp.model.Grandma.Requests;
+import com.grandmaapp.model.Grandma.State;
 
 public class Medicine extends Request {
 
@@ -35,6 +36,7 @@ public class Medicine extends Request {
 			return true;
 		} else {
 			// TODO stirbt! popup warnung falsches med?
+			grandma.setState(State.DEAD);
 			return false;
 		}
 	}
