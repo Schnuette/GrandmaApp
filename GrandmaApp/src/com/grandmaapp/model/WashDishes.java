@@ -6,6 +6,7 @@ public class WashDishes extends Request {
 	
 	public WashDishes(){
 		timeMS = HOUR_IN_MS;
+		name = "Geschirr spülen";
 	}
 	
 	public boolean handleRequest(Requests r) {

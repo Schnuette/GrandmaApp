@@ -6,6 +6,7 @@ public class CleanFlat extends Request {
 	
 	public CleanFlat(){
 		timeMS = HOUR_IN_MS * 14;
+		name = "Wohnung putzen";
 	}
 	
 	public boolean handleRequest(Requests r) {

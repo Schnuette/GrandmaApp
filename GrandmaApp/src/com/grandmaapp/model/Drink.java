@@ -6,6 +6,7 @@ public class Drink extends Request {
 	
 	public Drink(){
 		timeMS = HOUR_IN_MS;
+		name = "Trinken";
 	}
 	
 	public boolean handleRequest(Requests r) {

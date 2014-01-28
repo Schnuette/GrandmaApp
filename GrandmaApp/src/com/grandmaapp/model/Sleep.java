@@ -6,6 +6,7 @@ public class Sleep extends Request {
 
 	public Sleep() {
 		timeMS = HOUR_IN_MS / 2;
+		name = "Schlafen";
 	}
 	
 	public boolean handleRequest(Requests r) {

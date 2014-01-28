@@ -10,6 +10,7 @@ public class Eat extends Request {
 	
 	public Eat(){
 		this.timeMS = HOUR_IN_MS;
+		name = "Essen";
 	}
 	
 	public Eat(Dish d){
