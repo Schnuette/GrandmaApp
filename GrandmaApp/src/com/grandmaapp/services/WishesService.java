@@ -228,7 +228,7 @@ public class WishesService extends Service {
 
 	public void notifyUser( String message )
 	{
-		Notifications.newNotification( message, this );
+		Notifications.getInstance( ).newNotification( message, this );
 	}
 	
 	@Override
