@@ -4,23 +4,42 @@ import com.example.grandmaapp.R;
 import com.grandmaapp.activities.GrandmaActivity;
 import android.app.Activity;
 import android.app.Notification;
+import android.app.Notification.InboxStyle;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 public class Notifications
 {
-	static NotificationManager notificationManager;
-	static private int notifyId = 1337; //Notification id for updating notification
-	static private int numMessages = 0; // Counts messages
+	static private Notifications instance;
+	
+	NotificationManager notificationManager;
+	private int notifyId; //Notification id for updating notification
+	private int numMessages; // Counts messages
+	private Notification.InboxStyle inBoxStyle;
 				
-	static public void newNotification(String subject, Context myActivity)
+	static public Notifications getInstance()
+	{
+		if(instance == null)
+		{
+			instance = new Notifications( );
+			instance.inBoxStyle  = new Notification.InboxStyle();
+			instance.notifyId = 1337;
+			instance.numMessages = 0;
+		}
+		return instance;
+	}
+	
+	private Notifications (){};
+	
+	public void newNotification(String subject, Context myActivity)
 	{
 		//Creating intent, notification opens activity if touched
 		Intent resultIntent = new Intent (myActivity, GrandmaActivity.class);
 		resultIntent.putExtra( "Notify", "reset" );
-		resultIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		resultIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		
 		PendingIntent pResultIntent = PendingIntent.getActivity( myActivity, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT );
 
@@ -31,8 +50,19 @@ public class Notifications
 		.setSmallIcon( R.drawable.ic_launcher )
 		.setContentIntent(pResultIntent)
 		.setNumber( ++numMessages );
+				
+		// Sets a title for the Inbox style big view
+		inBoxStyle.setBigContentTitle("Brunhildes Wünsche:");
+		
+		// Moves events into the big view
 
-		Notification noti = notiB.getNotification( );
+		inBoxStyle.addLine( subject );
+		inBoxStyle.setBuilder( notiB );
+		
+		// Moves the big view style object into the notification object.
+
+		Notification noti = inBoxStyle.build( );
+				//notiB.getNotification( );
 		
 		// Hide the notification after its selected
 		noti.flags |= Notification.FLAG_AUTO_CANCEL;
@@ -48,8 +78,9 @@ public class Notifications
 		return notifyId;
 	}
 	
-	static public void resetMessageCounter()
+	public void resetMessageCounter()
 	{
 		numMessages = 0;
+		inBoxStyle = new Notification.InboxStyle( );
 	}
 }

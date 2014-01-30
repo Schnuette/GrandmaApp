@@ -84,11 +84,19 @@ public class GrandmaActivity extends Activity {
 	}
 
 	@Override
-	protected void onNewIntent(Intent intent) {
-		String message = intent.getStringExtra("Notify");
-		if (message != null && message.equals("reset")) {
-			Notifications.resetMessageCounter();
-		}
+	protected void onNewIntent( Intent intent ) {
+		super.onNewIntent( intent );
+		String message = intent.getStringExtra( "Notify" );
+		if(message != null && message.equals( "reset" ))
+		{
+			Notifications.getInstance( ).resetMessageCounter();			
+		}	
+	}
+	
+	@Override
+	protected void onResume(  ) {
+		super.onResume(  );
+		Notifications.getInstance( ).resetMessageCounter();			
 	}
 
 	private void adjustGUI() {
@@ -111,7 +119,7 @@ public class GrandmaActivity extends Activity {
 		settingsBtn.setBackgroundResource(R.drawable.settings_selector);
 		supplyBtn.setBackgroundResource(R.drawable.supply_selector);
 		testBtn.setBackgroundResource(R.drawable.test_selector);
-
+		
 		settingsBtn.getLayoutParams().width = (width - (width / 10));
 		supplyBtn.getLayoutParams().width = (width - (width / 10));
 		testBtn.getLayoutParams().width = (width - (width / 10));
@@ -131,7 +139,7 @@ public class GrandmaActivity extends Activity {
 		requestButton.setTypeface(font);
 		requestButton.setTextSize(30);
 		linLay.addView(requestButton);
-		requestList.put(request.getName(), requestButton);
+		requestList.put(request.kind().toString(), requestButton);
 	}
 
 	private void startWishesService() {
@@ -151,8 +159,7 @@ public class GrandmaActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		// save current state to shared preferences
-		SharedPreferences prefs = getSharedPreferences("grandmaapp",
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		Editor editor = prefs.edit();
 
 		// add time, format DD.MM.YYYY HH:MM:SS
