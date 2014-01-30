@@ -131,7 +131,7 @@ public class GrandmaActivity extends Activity {
 		requestButton.setTypeface(font);
 		requestButton.setTextSize(30);
 		linLay.addView(requestButton);
-		requestList.put(request.getName(), requestButton);
+		requestList.put(request.kind().toString(), requestButton);
 	}
 
 	private void startWishesService() {
@@ -151,8 +151,7 @@ public class GrandmaActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		// save current state to shared preferences
-		SharedPreferences prefs = getSharedPreferences("grandmaapp",
-				Context.MODE_PRIVATE);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		Editor editor = prefs.edit();
 
 		// add time, format DD.MM.YYYY HH:MM:SS
@@ -176,6 +175,10 @@ public class GrandmaActivity extends Activity {
 		editor.putInt("DRINK", 1800000);
 		editor.putInt("CLEANFLAT", 3600000);
 		editor.commit();
+	}
+
+	public HashMap<String, Button> getRequestList() {
+		return requestList;
 	}
 
 }
