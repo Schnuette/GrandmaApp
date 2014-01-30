@@ -52,111 +52,55 @@ public class WishesService extends Service {
 		// Time based requests
 		if( time == 800 )
 		{
-			editor.putInt( "SUITUP", time + 50 );
-			notifyUser( "Brunhilde möchte angezogen werden!" );
+			createSuitUpRequest( time, editor );
 		}
-		else if( time == 850 )
+		else if( time == 830 )
 		{
-			editor.putInt( "MEDICINE", time + 100 );
-			editor.putString( "MedWish", "MORNING" );
-			
-			notifyUser( "Brunhilde muss ihre Morgen-Medizin nehmen!" );
+			createMorningMedicineRequest( time, editor );
 		}
 		else if( time == 900 )
 		{
-			editor.putInt( "EAT", time + 100 );
-			
-			editor.putString( "FoodWish", "BREAKFAST" );
-			notifyUser( "Brunhilde möchte Frühstück essen!" );
+			createBreakfastRequest( time, editor );
 		}
 		else if ( time == 1000 || time == 1300 || time == 1800 )
 		{
-			if( preferences.getInt( "StoreWater", -1 ) > 0 )
-			{
-				editor.putInt( "DRINK", time + 50 );
-				notifyUser( "Brunhilde möchte trinken!" );
-			}
+			createDrinkRequest( preferences, time, editor );
+		}
+		else if( time == 1110 || time == 
+				1115 )
+		{
+			createDrinkRequest( preferences, time, editor );
 		}
 		else if( time == 1200 )
 		{
-			String foodwish = "";
-			
-			ArrayList< String > availableFood = new ArrayList< String >( );
-			
-			if( preferences.getInt( "StoreSchnitzel", -1 ) > 0 )
-			{
-				availableFood.add( "SCHNITZEL" );
-			}
-			
-			if( preferences.getInt( "StoreNoodles", -1 ) > 0 )
-			{
-				availableFood.add( "NOODLES" );
-			}
-			
-			if( preferences.getInt( "StoreDoener", -1 ) > 0 )
-			{
-				availableFood.add( "DOENER" );
-			}
-			
-			if( preferences.getInt( "StorePizza", -1 ) > 0 )
-			{
-				availableFood.add( "PIZZA" );
-			}
-			
-			// If nothing is available a wish for shopping food is generated
-			if( availableFood.size( ) != 0 )
-			{
-				int choice = (int) Math.random( ) * availableFood.size( );
-			
-				foodwish = availableFood.get( choice );
-				
-				if( foodwish.equals( "SCHNITZEL" ) || foodwish.equals( "PIZZA" ) )
-				{
-					editor.putInt( "MEDICINE", time + 100 );
-					editor.putString( "MedWish", "NOON" );
-					
-					notifyUser( "Brunhilde braucht ihre Medizin!" );
-				}
-				
-				editor.putInt( "EAT", time + 100 );
-				editor.putString( "FoodWish", foodwish );
-				notifyUser( "Brunhilde möchte essen!" );
-			}
-			else
-			{
-				noFood = true;
-			}
+			noFood = createLunchRequest( preferences, time, editor );
 		}
 		else if( time == 1100 || time == 1400 || time == 1900 )
 		{
-			editor.putInt( "WASHDISHES", time + 100 );
-			notifyUser( "Brunhilde hat schmutziges Geschirr!" );
+			createWashDishesRequest( time, editor );
 		}
 		else if( time == 1650 )
 		{
-			editor.putInt( "MEDICINE", time + 100 );
-			editor.putString( "MedWish", "EVENING" );
+			createEveningMedicineRequest( time, editor );
 		}
 		else if(  time == 1700 )
 		{
-			editor.putInt( "EAT", time + 100 );
-			editor.putString( "FoodWish", "SUPPER" );
-			notifyUser( "Brunhilde möchte zu Abend essen!" );
+			createSupperRequest( time, editor );
 		}
 		else if( time == 2000 )
 		{
-			editor.putInt(  "SLEEP", time + 100 );
-			notifyUser( "Brunhilde möchte schlafen!" );
+			createSleepRequest( time, editor );
 		}
 		
 		// Storeroom supplies based request
+		
 		if( preferences.getInt( "StoreClothes", -1  ) <= 0 )
 		{
-			editor.putInt( "WASHCLOTHES", time + 1200 );
+			createWashClothesRequest( time, editor );
 		}
 		else if( noFood || preferences.getInt( "StoreWater", -1 ) <= 0 )
 		{
-			editor.putInt( "SHOPPING", time + 100 );
+			createShoppingRequest( time, editor );
 		}
 		
 		editor.commit();
@@ -164,7 +108,130 @@ public class WishesService extends Service {
 		return Service.START_NOT_STICKY;
 	}
 
-	private void notifyUser( String message )
+	public void createShoppingRequest( int time, Editor editor )
+    {
+	    editor.putInt( "SHOPPING", time + 100 );
+    }
+
+	public void createWashClothesRequest( int time, Editor editor )
+    {
+	    editor.putInt( "WASHCLOTHES", time + 1200 );
+    }
+
+	public void createSleepRequest( int time, Editor editor )
+    {
+	    editor.putInt(  "SLEEP", time + 100 );
+	    notifyUser( "Brunhilde möchte schlafen!" );
+    }
+
+	public void createSupperRequest( int time, Editor editor )
+    {
+	    editor.putInt( "EAT", time + 100 );
+	    editor.putString( "FoodWish", "SUPPER" );
+	    notifyUser( "Brunhilde möchte zu Abend essen!" );
+    }
+
+	public void createEveningMedicineRequest( int time, Editor editor )
+    {
+	    editor.putInt( "MEDICINE", time + 100 );
+	    editor.putString( "MedWish", "EVENING" );
+    }
+
+	public void createWashDishesRequest( int time, Editor editor )
+    {
+	    editor.putInt( "WASHDISHES", time + 100 );
+	    notifyUser( "Brunhilde hat schmutziges Geschirr!" );
+    }
+
+	public boolean createLunchRequest( SharedPreferences preferences, int time, Editor editor )
+    {
+	    String foodwish = "";
+	    
+	    ArrayList< String > availableFood = new ArrayList< String >( );
+	    
+	    if( preferences.getInt( "StoreSchnitzel", -1 ) > 0 )
+	    {
+	    	availableFood.add( "SCHNITZEL" );
+	    }
+	    
+	    if( preferences.getInt( "StoreNoodles", -1 ) > 0 )
+	    {
+	    	availableFood.add( "NOODLES" );
+	    }
+	    
+	    if( preferences.getInt( "StoreDoener", -1 ) > 0 )
+	    {
+	    	availableFood.add( "DOENER" );
+	    }
+	    
+	    if( preferences.getInt( "StorePizza", -1 ) > 0 )
+	    {
+	    	availableFood.add( "PIZZA" );
+	    }
+	    
+	    // If nothing is available a wish for shopping food is generated
+	    if( availableFood.size( ) != 0 )
+	    {
+	    	int choice = (int) Math.random( ) * availableFood.size( );
+	    
+	    	foodwish = availableFood.get( choice );
+	    	
+	    	if( foodwish.equals( "SCHNITZEL" ) || foodwish.equals( "PIZZA" ) )
+	    	{
+	    		editor.putInt( "MEDICINE", time + 100 );
+	    		editor.putString( "MedWish", "NOON" );
+	    		
+	    		notifyUser( "Brunhilde braucht ihre Medizin!" );
+	    	}
+	    	
+	    	editor.putInt( "EAT", time + 100 );
+	    	editor.putString( "FoodWish", foodwish );
+	    	notifyUser( "Brunhilde möchte essen!" );
+	    }
+	    else
+	    {
+	    	return true;
+	    }
+	    
+	    return false;
+    }
+
+	public void createDrinkRequest( SharedPreferences preferences, int time, Editor editor )
+    {
+	    if( preferences.getInt( "StoreWater", -1 ) > 0 )
+	    {
+	    	editor.putInt( "DRINK", time + 30 );
+	    	notifyUser( "Brunhilde möchte trinken!" );
+	    }
+	    else
+	    {
+	    	notifyUser( "Kein Wasser mehr vorrätig!" );
+	    }
+    }
+
+	public void createBreakfastRequest( int time, Editor editor )
+    {
+	    editor.putInt( "EAT", time + 100 );
+	    
+	    editor.putString( "FoodWish", "BREAKFAST" );
+	    notifyUser( "Brunhilde möchte Frühstück essen!" );
+    }
+
+	public void createMorningMedicineRequest( int time, Editor editor )
+    {
+	    editor.putInt( "MEDICINE", time + 100 );
+	    editor.putString( "MedWish", "MORNING" );
+	    
+	    notifyUser( "Brunhilde muss ihre Morgen-Medizin nehmen!" );
+    }
+
+	public void createSuitUpRequest( int time, Editor editor )
+    {
+	    editor.putInt( "SUITUP", time + 30 );
+	    notifyUser( "Brunhilde möchte angezogen werden!" );
+    }
+
+	public void notifyUser( String message )
 	{
 		Notifications.newNotification( message, this );
 	}
