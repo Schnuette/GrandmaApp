@@ -1,6 +1,7 @@
 package com.grandmaapp.model;
 
 import com.grandmaapp.model.Grandma.Requests;
+import com.grandmaapp.model.Grandma.State;
 
 public class Sleep extends Request {
 
@@ -13,6 +14,7 @@ public class Sleep extends Request {
 		if(r == Requests.SLEEP){
 			// sobald button gedrückt wird request wird geloescht
 			// TODO die app "schlafen legen"
+			grandma.setState(State.ASLEEP);
 			return true;
 		}
 		return false;
