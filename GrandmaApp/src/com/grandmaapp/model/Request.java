@@ -9,7 +9,7 @@ public class Request {
 	protected static long HOUR_IN_MS = 3600000;
 	
 	Grandma grandma;
-	long timeMS;
+	int runtime;
 	String name = null;
 	
 	public Requests kind(){
@@ -28,12 +28,12 @@ public class Request {
 		this.grandma = grandma;
 	}
 
-	public long getTimeMS() {
-		return timeMS;
+	public int getRuntime() {
+		return runtime;
 	}
 
-	public void setTimeMS(long timeMS) {
-		this.timeMS = timeMS;
+	public void setRuntime(int runtime) {
+		this.runtime = runtime;
 	}
 
 	public String getName() {

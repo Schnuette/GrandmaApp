@@ -9,7 +9,7 @@ import com.grandmaapp.model.Grandma.Requests;
 public class WashClothes extends Request {
 	
 	public WashClothes(){
-		timeMS = HOUR_IN_MS * 12;
+		//timeMS = HOUR_IN_MS * 12;
 		name = "Kleidung waschen";
 	}
 	

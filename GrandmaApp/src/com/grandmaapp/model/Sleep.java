@@ -6,7 +6,7 @@ import com.grandmaapp.model.Grandma.State;
 public class Sleep extends Request {
 
 	public Sleep() {
-		timeMS = HOUR_IN_MS / 2;
+		//timeMS = HOUR_IN_MS / 2;
 		name = "Schlafen";
 	}
 	
