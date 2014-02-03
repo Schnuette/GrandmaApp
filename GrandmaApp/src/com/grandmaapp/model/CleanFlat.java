@@ -5,7 +5,7 @@ import com.grandmaapp.model.Grandma.Requests;
 public class CleanFlat extends Request {
 	
 	public CleanFlat(){
-		timeMS = HOUR_IN_MS * 14;
+		//runtime = HOUR_IN_MS * 14;
 		name = "Wohnung putzen";
 	}
 	

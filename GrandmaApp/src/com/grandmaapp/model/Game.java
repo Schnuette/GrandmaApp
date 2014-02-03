@@ -5,7 +5,7 @@ import com.grandmaapp.model.Grandma.Requests;
 public class Game extends Request {
 
 	public Game(){
-		timeMS = HOUR_IN_MS;
+		//timeMS = HOUR_IN_MS;
 		name = "Spielen";
 	}
 	

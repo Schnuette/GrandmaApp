@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -53,8 +54,6 @@ public class Grandma {
 	State state;
 
 	public Grandma(GrandmaActivity activity){
-		//TODO falls altes Spiel geladen wird, fuellstand aktualisieren
-		//TODO falls altes Spiel geladen wird, requests einpflegen
 		storeroom = new Storeroom();
 		mainActivity = activity;
 		state = State.HAPPY;
@@ -66,7 +65,6 @@ public class Grandma {
 		//TODO nur einmal einkaufen
 		
 		state = State.MAD;
-		
 	}
 	
 	public boolean handleRequest(Requests r){
@@ -116,6 +114,29 @@ public class Grandma {
 		int expireTime = (int)(((expireTimeInMS / 3600000L) * 100L) + (expireTimeInMS % 3600000L));		
 		
 		return expireTime;
+	}
+	
+	public int calcRuntime(int expireTime){
+		//aktuelle Zeit in ms
+		Time now = new Time();
+		now.setToNow();
+		
+		//time as integer from 0 to 2359 (hour and minutes)
+		int hour = Integer.parseInt(now.format2445().substring(9, 11));
+		int minute = Integer.parseInt(now.format2445().substring(11, 13));
+		long currentTimeInMS = (hour * 60 * 60 * 1000) + (minute * 60 * 1000);
+		
+		// ablaufzeit in ms
+		long expireTimeInMS = HHMMtoMS(expireTime);
+				
+		// ablaufzeit - aktuelle uhrzeit in ms
+		long runtimeinMS = (expireTimeInMS - currentTimeInMS);	
+		// laufzeit in hhmm format
+		int runtimeH = (int)((runtimeinMS / 3600000L));
+		int runtimeM = (int)((runtimeinMS % 3600000L) / 60000L);
+		int runtime = runtimeH * 100 + runtimeM;
+		
+		return runtime;
 	}
 	
 	public void init() {
@@ -193,7 +214,7 @@ public class Grandma {
 		editor.commit();
 
 		// Requests werden geladen
-		long time = prefs.getInt(Requests.EAT.toString(), -1);
+		int time = prefs.getInt(Requests.EAT.toString(), -1);
 		if (time > -1) {
 			Eat request = new Eat();
 			String foodWish = prefs.getString("FoodWish", null);
@@ -210,19 +231,21 @@ public class Grandma {
 			} else if (foodWish.equals(Dish.SUPPER.toString())) {
 				request.setFoodWish(Dish.SUPPER);
 			}
-			request.setTimeMS(time);
+			request.setRuntime(calcRuntime(time));
 			this.addRequest(request);
 		}
 		time = prefs.getInt(Requests.CLEANFLAT.toString(), -1);
 		if (time > -1) {
 			CleanFlat request = new CleanFlat();
-			request.setTimeMS(time);
+			request.setRuntime(calcRuntime(time));
+			Log.d("test", "cleanflat runtime " + time);
+			Log.d("test", "cleanflat runtime " + request.getRuntime());
 			this.addRequest(request);
 		}
 		time = prefs.getInt(Requests.DRINK.toString(), -1);
 		if (time > -1) {
 			Drink request = new Drink();
-			request.setTimeMS(time);
+			request.setRuntime(calcRuntime(time));
 			this.addRequest(request);
 		}
 		time = prefs.getInt(Requests.MEDICINE.toString(), -1);
@@ -238,37 +261,37 @@ public class Grandma {
 			if (medWish.equals(Daytime.EVENING.toString())) {
 				request.setDaytime(Daytime.EVENING);
 			}
-			request.setTimeMS(time);
+			request.setRuntime(calcRuntime(time));
 			this.addRequest(request);
 		}
 		time = prefs.getInt(Requests.SHOPPING.toString(), -1);
 		if (time > -1) {
 			Shopping request = new Shopping();
-			request.setTimeMS(time);
+			request.setRuntime(calcRuntime(time));
 			this.addRequest(request);
 		}
 		time = prefs.getInt(Requests.SLEEP.toString(), -1);
 		if (time > -1) {
 			Sleep request = new Sleep();
-			request.setTimeMS(time);
+			request.setRuntime(calcRuntime(time));
 			this.addRequest(request);
 		}
 		time = prefs.getInt(Requests.SUITUP.toString(), -1);
 		if (time > -1) {
 			SuitUp request = new SuitUp();
-			request.setTimeMS(time);
+			request.setRuntime(calcRuntime(time));
 			this.addRequest(request);
 		}
 		time = prefs.getInt(Requests.WASHCLOTHES.toString(), -1);
 		if (time > -1) {
 			WashClothes request = new WashClothes();
-			request.setTimeMS(time);
+			request.setRuntime(calcRuntime(time));
 			this.addRequest(request);
 		}
 		time = prefs.getInt(Requests.WASHDISHES.toString(), -1);
 		if (time > -1) {
 			WashDishes request = new WashDishes();
-			request.setTimeMS(time);
+			request.setRuntime(calcRuntime(time));
 			this.addRequest(request);
 		}
 
@@ -292,6 +315,14 @@ public class Grandma {
 
 	public void setState(State state) {
 		this.state = state;
+	}
+
+	public long HHMMtoMS(int time) {
+		// hhmm format in ms umrechnen
+		int hour = (time/100);
+		int minute = (time%100);
+		long timeInMS = (hour * 60 * 60 * 1000) + (minute * 60 * 1000);
+		return timeInMS;
 	}
 	
 }

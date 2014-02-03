@@ -11,6 +11,7 @@ import com.grandmaapp.model.Storeroom.Dish;
 public class Shopping extends Request {
 	
 	public Shopping(){
+		/*
 		//zeit dynamisch
 		Time now = new Time();
 		now.setToNow();
@@ -23,7 +24,7 @@ public class Shopping extends Request {
 		
 		// 2200 - aktuelle uhrzeit in ms
 		timeMS = tenInMS - currentTimeInMS;
-		
+		*/
 		name = "Einkaufen";
 	}
 	

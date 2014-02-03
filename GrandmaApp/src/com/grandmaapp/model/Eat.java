@@ -13,13 +13,13 @@ public class Eat extends Request {
 	Dish foodWish;
 	
 	public Eat(){
-		this.timeMS = HOUR_IN_MS;
+		//this.timeMS = HOUR_IN_MS;
 		name = "Essen";
 	}
 	
 	public Eat(Dish d){
 		this.foodWish = d;
-		this.timeMS = HOUR_IN_MS;
+		//this.timeMS = HOUR_IN_MS;
 	}
 	
 	public boolean handleRequest(Requests r) {

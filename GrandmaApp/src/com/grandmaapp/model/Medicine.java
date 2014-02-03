@@ -13,13 +13,13 @@ public class Medicine extends Request {
 
 	public Medicine(Daytime dt) {
 		this.daytime = dt;
-		this.timeMS = HOUR_IN_MS;
+		//this.timeMS = HOUR_IN_MS;
 		setMedName();	
 	}
 
 	public Medicine() {
 		this.daytime = Daytime.MORNING;
-		this.timeMS = HOUR_IN_MS;
+		//this.timeMS = HOUR_IN_MS;
 		name = "Medizin";
 	}
 

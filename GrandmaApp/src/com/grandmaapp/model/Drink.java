@@ -9,7 +9,7 @@ import com.grandmaapp.model.Grandma.Requests;
 public class Drink extends Request {
 	
 	public Drink(){
-		timeMS = HOUR_IN_MS;
+		//timeMS = HOUR_IN_MS;
 		name = "Trinken";
 	}
 	
