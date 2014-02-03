@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -64,7 +65,7 @@ public class GrandmaActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_grandma);
 		
-
+		test();
 		
 		grandma = new Grandma(this);
 		requestList = new HashMap<String, Button>();
@@ -141,6 +142,7 @@ public class GrandmaActivity extends Activity {
 	void addRequestButton(Request request) {
 		LinearLayout linLay = (LinearLayout) findViewById(R.id.tasksLinLay);
 		Button requestButton = new Button(this);
+		requestButton.setTag(request.kind());
 		long runtimeInMS = grandma.HHMMtoMS(request.getRuntime());
 		CountDown countdown = new CountDown(runtimeInMS, 1000, requestButton, request.getName());
 		countdown.start();
@@ -151,8 +153,14 @@ public class GrandmaActivity extends Activity {
 				"fonts/Blippo.ttf");
 		requestButton.setTypeface(font);
 		requestButton.setTextSize(30);
+		requestButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				grandma.handleRequest((Requests) v.getTag());
+			}
+		});
 		linLay.addView(requestButton);
-		requestList.put(request.getName(), requestButton);
+		requestList.put(request.kind().toString(), requestButton);
 	}
 
 	private void startWishesService() {

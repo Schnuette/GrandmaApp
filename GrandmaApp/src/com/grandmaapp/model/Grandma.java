@@ -14,6 +14,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,16 +68,17 @@ public class Grandma {
 		
 		state = State.MAD;
 		ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
-		grandmaImgV.setBackgroundResource(R.drawable.grandma_unzufrieden);
+		grandmaImgV.setImageResource(R.drawable.grandma_unzufrieden);
 	}
 	
 	public boolean handleRequest(Requests r){
 		for(Request request: requestsToHandle){
 			if(request.handleRequest(r)){
 				// button entfernen aus requestList loeschen
-				LinearLayout linLay = (LinearLayout) mainActivity.findViewById(R.id.tasksLinLay);
 				Button button = mainActivity.getRequestList().get(request.kind().toString());
-				linLay.removeView(button);
+				ViewGroup layout = (ViewGroup) button.getParent();
+				if(null!=layout) //for safety only  as you are doing onClick
+				layout.removeView(button);
 				mainActivity.getRequestList().remove(request.kind().toString());
 				
 				// aus den Prefs loeschen
@@ -91,7 +93,7 @@ public class Grandma {
 				if(requestsToHandle.isEmpty()){
 					state = State.HAPPY;
 					ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
-					grandmaImgV.setBackgroundResource(R.drawable.grandma_zufrieden);
+					grandmaImgV.setImageResource(R.drawable.grandma_zufrieden);
 				}
 				return true;
 			}
