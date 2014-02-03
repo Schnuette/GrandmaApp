@@ -19,6 +19,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
+import android.text.format.Time;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -36,7 +37,9 @@ import com.grandmaapp.model.CleanFlat;
 import com.grandmaapp.model.CountDown;
 import com.grandmaapp.model.Drink;
 import com.grandmaapp.model.Eat;
+import com.grandmaapp.model.Game;
 import com.grandmaapp.model.Grandma;
+import com.grandmaapp.model.Grandma.State;
 import com.grandmaapp.model.Medicine;
 import com.grandmaapp.model.Shopping;
 import com.grandmaapp.model.SuitUp;
@@ -60,9 +63,9 @@ public class GrandmaActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_grandma);
+		
 
-		test();
-
+		
 		grandma = new Grandma(this);
 		requestList = new HashMap<String, Button>();
 		grandma.init();
@@ -70,11 +73,14 @@ public class GrandmaActivity extends Activity {
 			addRequestButton(request);
 		}
 
+		if(grandma.getRequestsToHandle().isEmpty()){
+			test();
+		}
+		
 		// TODO read from sharedpreferences
 
 		// startWishesService();
 		adjustGUI();
-		initPopupView();
 
 	}
 
@@ -134,8 +140,8 @@ public class GrandmaActivity extends Activity {
 	void addRequestButton(Request request) {
 		LinearLayout linLay = (LinearLayout) findViewById(R.id.tasksLinLay);
 		Button requestButton = new Button(this);
-		CountDown countdown = new CountDown(request.getTimeMS(), 1000,
-				requestButton, request.getName());
+		long runtimeInMS = grandma.HHMMtoMS(request.getRuntime());
+		CountDown countdown = new CountDown(runtimeInMS, 1000, requestButton, request.getName());
 		countdown.start();
 		requestButton.setBackgroundResource(R.drawable.button_selector);
 		requestButton.setLayoutParams((new LayoutParams(
@@ -145,7 +151,7 @@ public class GrandmaActivity extends Activity {
 		requestButton.setTypeface(font);
 		requestButton.setTextSize(30);
 		linLay.addView(requestButton);
-		requestList.put(request.kind().toString(), requestButton);
+		requestList.put(request.getName(), requestButton);
 	}
 
 	private void startWishesService() {
@@ -199,6 +205,15 @@ public class GrandmaActivity extends Activity {
 		cleanFlat.setTypeface(font);
 		cleanFlat.setTextSize(30);
 		cleanFlat.setText("Wohnung putzen");
+		cleanFlat.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.CLEANFLAT) == false){
+					CleanFlat clean = new CleanFlat();
+					clean.handleRequest(Requests.CLEANFLAT);
+				}
+			}
+		});
 		requestsList.addView(cleanFlat);
 
 		Button drink = new Button(this);
@@ -208,6 +223,15 @@ public class GrandmaActivity extends Activity {
 		drink.setTypeface(font);
 		drink.setTextSize(30);
 		drink.setText("Trinken");
+		drink.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.DRINK) == false){
+					Drink drink = new Drink();
+					drink.handleRequest(Requests.DRINK);
+				}
+			}
+		});
 		requestsList.addView(drink);
 
 		Button eatSchnitzel = new Button(this);
@@ -217,6 +241,15 @@ public class GrandmaActivity extends Activity {
 		eatSchnitzel.setTypeface(font);
 		eatSchnitzel.setTextSize(30);
 		eatSchnitzel.setText("Essen (Schnitzel)");
+		eatSchnitzel.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.EAT) == false){
+					Eat eat = new Eat(Dish.SCHNITZEL);
+					eat.handleRequest(Requests.EAT);
+				}
+			}
+		});
 		requestsList.addView(eatSchnitzel);
 
 		Button eatNoodles = new Button(this);
@@ -226,6 +259,15 @@ public class GrandmaActivity extends Activity {
 		eatNoodles.setTypeface(font);
 		eatNoodles.setTextSize(30);
 		eatNoodles.setText("Essen (Nudeln)");
+		eatNoodles.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.EAT) == false){
+					Eat eat = new Eat(Dish.NOODLES);
+					eat.handleRequest(Requests.EAT);
+				}
+			}
+		});
 		requestsList.addView(eatNoodles);
 
 		Button eatDoener = new Button(this);
@@ -235,6 +277,15 @@ public class GrandmaActivity extends Activity {
 		eatDoener.setTypeface(font);
 		eatDoener.setTextSize(30);
 		eatDoener.setText("Essen (Doener)");
+		eatDoener.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.EAT) == false){
+					Eat eat = new Eat(Dish.DOENER);
+					eat.handleRequest(Requests.EAT);
+				}
+			}
+		});
 		requestsList.addView(eatDoener);
 
 		Button eatPizza = new Button(this);
@@ -244,6 +295,15 @@ public class GrandmaActivity extends Activity {
 		eatPizza.setTypeface(font);
 		eatPizza.setTextSize(30);
 		eatPizza.setText("Essen (Pizza)");
+		eatPizza.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.EAT) == false){
+					Eat eat = new Eat(Dish.PIZZA);
+					eat.handleRequest(Requests.EAT);
+				}
+			}
+		});
 		requestsList.addView(eatPizza);
 
 		Button eatBreakfast = new Button(this);
@@ -253,6 +313,15 @@ public class GrandmaActivity extends Activity {
 		eatBreakfast.setTypeface(font);
 		eatBreakfast.setTextSize(30);
 		eatBreakfast.setText("Essen (Frühstück)");
+		eatBreakfast.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.EAT) == false){
+					Eat eat = new Eat(Dish.BREAKFAST);
+					eat.handleRequest(Requests.EAT);
+				}
+			}
+		});
 		requestsList.addView(eatBreakfast);
 
 		Button eatSupper = new Button(this);
@@ -262,6 +331,15 @@ public class GrandmaActivity extends Activity {
 		eatSupper.setTypeface(font);
 		eatSupper.setTextSize(30);
 		eatSupper.setText("Essen (Abendbrot)");
+		eatSupper.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.EAT) == false){
+					Eat eat = new Eat(Dish.SUPPER);
+					eat.handleRequest(Requests.EAT);
+				}
+			}
+		});
 		requestsList.addView(eatSupper);
 
 		Button game = new Button(this);
@@ -271,6 +349,17 @@ public class GrandmaActivity extends Activity {
 		game.setTypeface(font);
 		game.setTextSize(30);
 		game.setText("Spielen");
+		game.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.getState() != State.ASLEEP){
+					if(grandma.handleRequest(Requests.GAME) == false){
+						Game game = new Game();
+						game.handleRequest(Requests.GAME);
+					}
+				}
+			}
+		});
 		requestsList.addView(game);
 
 		Button medicineMorning = new Button(this);
@@ -280,6 +369,16 @@ public class GrandmaActivity extends Activity {
 		medicineMorning.setTypeface(font);
 		medicineMorning.setTextSize(30);
 		medicineMorning.setText("Medizin (Morgen)");
+		medicineMorning.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.MEDICINE_MORNING) == false){
+					Medicine meds = new Medicine(Daytime.EVENING);
+					meds.handleRequest(Requests.MEDICINE_MORNING);
+					//grandma dies!
+				}
+			}
+		});
 		requestsList.addView(medicineMorning);
 
 		Button medicineNoon = new Button(this);
@@ -289,6 +388,16 @@ public class GrandmaActivity extends Activity {
 		medicineNoon.setTypeface(font);
 		medicineNoon.setTextSize(30);
 		medicineNoon.setText("Medizin (Mittag)");
+		medicineNoon.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.MEDICINE_NOON) == false){
+					Medicine meds = new Medicine(Daytime.EVENING);
+					meds.handleRequest(Requests.MEDICINE_NOON);
+					//grandma dies!
+				}
+			}
+		});
 		requestsList.addView(medicineNoon);
 
 		Button medicineEvening = new Button(this);
@@ -298,6 +407,16 @@ public class GrandmaActivity extends Activity {
 		medicineEvening.setTypeface(font);
 		medicineEvening.setTextSize(30);
 		medicineEvening.setText("Medizin (Abend)");
+		medicineEvening.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.MEDICINE_EVENING) == false){
+					Medicine meds = new Medicine(Daytime.MORNING);
+					meds.handleRequest(Requests.MEDICINE_EVENING);
+					//grandma dies!
+				}
+			}
+		});
 		requestsList.addView(medicineEvening);
 
 		Button shopping = new Button(this);
@@ -307,6 +426,15 @@ public class GrandmaActivity extends Activity {
 		shopping.setTypeface(font);
 		shopping.setTextSize(30);
 		shopping.setText("Einkaufen");
+		shopping.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.SHOPPING) == false){
+					Shopping shop = new Shopping();
+					shop.handleRequest(Requests.SHOPPING);
+				}
+			}
+		});
 		requestsList.addView(shopping);
 
 		Button sleep = new Button(this);
@@ -316,6 +444,12 @@ public class GrandmaActivity extends Activity {
 		sleep.setTypeface(font);
 		sleep.setTextSize(30);
 		sleep.setText("Schlafen");
+		sleep.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				//do nothing (?)
+			}
+		});
 		requestsList.addView(sleep);
 
 		Button suitUp = new Button(this);
@@ -325,6 +459,15 @@ public class GrandmaActivity extends Activity {
 		suitUp.setTypeface(font);
 		suitUp.setTextSize(30);
 		suitUp.setText("Ankleiden");
+		suitUp.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.SUITUP) == false){
+					SuitUp suitUp = new SuitUp();
+					suitUp.handleRequest(Requests.SUITUP);
+				}
+			}
+		});
 		requestsList.addView(suitUp);
 
 		Button washClothes = new Button(this);
@@ -334,6 +477,15 @@ public class GrandmaActivity extends Activity {
 		washClothes.setTypeface(font);
 		washClothes.setTextSize(30);
 		washClothes.setText("Kleidung waschen");
+		washClothes.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.WASHCLOTHES) == false){
+					WashClothes washC = new WashClothes();
+					washC.handleRequest(Requests.WASHCLOTHES);
+				}
+			}
+		});
 		requestsList.addView(washClothes);
 
 		Button washDishes = new Button(this);
@@ -343,6 +495,15 @@ public class GrandmaActivity extends Activity {
 		washDishes.setTypeface(font);
 		washDishes.setTextSize(30);
 		washDishes.setText("Geschirr spülen");
+		washDishes.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(grandma.handleRequest(Requests.WASHDISHES) == false){
+					WashDishes washD = new WashDishes();
+					washD.handleRequest(Requests.WASHDISHES);
+				}
+			}
+		});
 		requestsList.addView(washDishes);
 
 		
@@ -368,8 +529,17 @@ public class GrandmaActivity extends Activity {
 		SharedPreferences preferences = PreferenceManager
 				.getDefaultSharedPreferences(this);
 		Editor editor = preferences.edit();
-		editor.putInt("DRINK", 1800000);
-		editor.putInt("CLEANFLAT", 3600000);
+		
+		Time now = new Time();
+		now.setToNow();
+		
+		//time as integer from 0 to 2359 (hour and minutes)
+		int hour = Integer.parseInt(now.format2445().substring(9, 11));
+		int minute = Integer.parseInt(now.format2445().substring(11, 13));
+		//long currentTimeInMS = (hour * 60 * 60 * 1000) + (minute * 60 * 1000);
+		
+		editor.putInt("DRINK", ((hour+1)*100 + minute));
+		editor.putInt("CLEANFLAT", ((hour+2)*100 + minute));
 		editor.commit();
 	}
 
