@@ -81,6 +81,7 @@ public class GrandmaActivity extends Activity {
 
 		// startWishesService();
 		adjustGUI();
+		initPopupView();
 
 	}
 
@@ -208,8 +209,10 @@ public class GrandmaActivity extends Activity {
 		cleanFlat.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.CLEANFLAT) == false){
 					CleanFlat clean = new CleanFlat();
+					clean.setGrandma(grandma);
 					clean.handleRequest(Requests.CLEANFLAT);
 				}
 			}
@@ -226,8 +229,10 @@ public class GrandmaActivity extends Activity {
 		drink.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.DRINK) == false){
 					Drink drink = new Drink();
+					drink.setGrandma(grandma);
 					drink.handleRequest(Requests.DRINK);
 				}
 			}
@@ -244,8 +249,10 @@ public class GrandmaActivity extends Activity {
 		eatSchnitzel.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.EAT) == false){
 					Eat eat = new Eat(Dish.SCHNITZEL);
+					eat.setGrandma(grandma);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -262,8 +269,10 @@ public class GrandmaActivity extends Activity {
 		eatNoodles.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.EAT) == false){
 					Eat eat = new Eat(Dish.NOODLES);
+					eat.setGrandma(grandma);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -280,8 +289,10 @@ public class GrandmaActivity extends Activity {
 		eatDoener.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.EAT) == false){
 					Eat eat = new Eat(Dish.DOENER);
+					eat.setGrandma(grandma);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -298,8 +309,10 @@ public class GrandmaActivity extends Activity {
 		eatPizza.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.EAT) == false){
 					Eat eat = new Eat(Dish.PIZZA);
+					eat.setGrandma(grandma);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -316,8 +329,10 @@ public class GrandmaActivity extends Activity {
 		eatBreakfast.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.EAT) == false){
 					Eat eat = new Eat(Dish.BREAKFAST);
+					eat.setGrandma(grandma);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -334,8 +349,10 @@ public class GrandmaActivity extends Activity {
 		eatSupper.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.EAT) == false){
 					Eat eat = new Eat(Dish.SUPPER);
+					eat.setGrandma(grandma);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -352,9 +369,11 @@ public class GrandmaActivity extends Activity {
 		game.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.getState() != State.ASLEEP){
 					if(grandma.handleRequest(Requests.GAME) == false){
 						Game game = new Game();
+						game.setGrandma(grandma);
 						game.handleRequest(Requests.GAME);
 					}
 				}
@@ -372,8 +391,10 @@ public class GrandmaActivity extends Activity {
 		medicineMorning.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.MEDICINE_MORNING) == false){
 					Medicine meds = new Medicine(Daytime.EVENING);
+					meds.setGrandma(grandma);
 					meds.handleRequest(Requests.MEDICINE_MORNING);
 					//grandma dies!
 				}
@@ -391,8 +412,10 @@ public class GrandmaActivity extends Activity {
 		medicineNoon.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.MEDICINE_NOON) == false){
 					Medicine meds = new Medicine(Daytime.EVENING);
+					meds.setGrandma(grandma);
 					meds.handleRequest(Requests.MEDICINE_NOON);
 					//grandma dies!
 				}
@@ -410,8 +433,10 @@ public class GrandmaActivity extends Activity {
 		medicineEvening.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.MEDICINE_EVENING) == false){
 					Medicine meds = new Medicine(Daytime.MORNING);
+					meds.setGrandma(grandma);
 					meds.handleRequest(Requests.MEDICINE_EVENING);
 					//grandma dies!
 				}
@@ -429,8 +454,10 @@ public class GrandmaActivity extends Activity {
 		shopping.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.SHOPPING) == false){
 					Shopping shop = new Shopping();
+					shop.setGrandma(grandma);
 					shop.handleRequest(Requests.SHOPPING);
 				}
 			}
@@ -448,6 +475,7 @@ public class GrandmaActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				//do nothing (?)
+				alert.dismiss();
 			}
 		});
 		requestsList.addView(sleep);
@@ -462,8 +490,10 @@ public class GrandmaActivity extends Activity {
 		suitUp.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.SUITUP) == false){
 					SuitUp suitUp = new SuitUp();
+					suitUp.setGrandma(grandma);
 					suitUp.handleRequest(Requests.SUITUP);
 				}
 			}
@@ -480,8 +510,10 @@ public class GrandmaActivity extends Activity {
 		washClothes.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.WASHCLOTHES) == false){
 					WashClothes washC = new WashClothes();
+					washC.setGrandma(grandma);
 					washC.handleRequest(Requests.WASHCLOTHES);
 				}
 			}
@@ -498,8 +530,10 @@ public class GrandmaActivity extends Activity {
 		washDishes.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				alert.dismiss();
 				if(grandma.handleRequest(Requests.WASHDISHES) == false){
 					WashDishes washD = new WashDishes();
+					washD.setGrandma(grandma);
 					washD.handleRequest(Requests.WASHDISHES);
 				}
 			}
