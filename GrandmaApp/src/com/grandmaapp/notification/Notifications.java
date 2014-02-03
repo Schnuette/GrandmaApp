@@ -38,6 +38,8 @@ public class Notifications
 	{
 		//Creating intent, notification opens activity if touched
 		Intent resultIntent = new Intent (myActivity, GrandmaActivity.class);
+		
+		// Creating an extra for the intent for resetting the counter on app resum
 		resultIntent.putExtra( "Notify", "reset" );
 		resultIntent.setFlags( Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 		
@@ -55,15 +57,12 @@ public class Notifications
 		inBoxStyle.setBigContentTitle("Brunhildes Wünsche:");
 		
 		// Moves events into the big view
-
 		inBoxStyle.addLine( subject );
 		inBoxStyle.setBuilder( notiB );
 		
 		// Moves the big view style object into the notification object.
-
 		Notification noti = inBoxStyle.build( );
-				//notiB.getNotification( );
-		
+				
 		// Hide the notification after its selected
 		noti.flags |= Notification.FLAG_AUTO_CANCEL;
 		

@@ -86,6 +86,8 @@ public class GrandmaActivity extends Activity {
 	@Override
 	protected void onNewIntent( Intent intent ) {
 		super.onNewIntent( intent );
+		
+		// Checks if the intent has the extra named Notify with the message reset that indicates a counter reset request
 		String message = intent.getStringExtra( "Notify" );
 		if(message != null && message.equals( "reset" ))
 		{
@@ -96,6 +98,7 @@ public class GrandmaActivity extends Activity {
 	@Override
 	protected void onResume(  ) {
 		super.onResume(  );
+		// Resets the message counter on app resume
 		Notifications.getInstance( ).resetMessageCounter();			
 	}
 
