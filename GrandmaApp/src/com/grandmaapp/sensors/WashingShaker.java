@@ -132,9 +132,7 @@ public class WashingShaker implements SensorEventListener
 	 */
 	public void onShaking( )
 	{
-		shaking = true;
-		((TextView) activity.findViewById( R.id.Shake )).setText( "You are shaking!" );
-		((TextView) activity.findViewById( R.id.Shake )).setBackgroundColor( Color.GREEN );		
+		shaking = true;		
 	}
 	
 	/**
@@ -142,9 +140,7 @@ public class WashingShaker implements SensorEventListener
 	 */
 	public void onShakingStopped( )
 	{
-		shaking = false;
-		((TextView) activity.findViewById( R.id.Shake )).setText( "You are not shaking!" );
-		((TextView) activity.findViewById( R.id.Shake )).setBackgroundColor( Color.RED );		
+		shaking = false;	
 	}
 	
 	public boolean isShaking( )

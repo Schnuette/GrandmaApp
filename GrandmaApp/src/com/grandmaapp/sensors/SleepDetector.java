@@ -101,11 +101,6 @@ public class SleepDetector implements SensorEventListener
 	    			// ...do something appropriate
 	    			onSleep( );
 	    		}
-	    		else // To be removed when in real usage
-	    		{
-	    			((TextView) activity.findViewById( R.id.Sleep )).setText( "Time left until sleep: " + ( (currentTime - oldTime) / 1000000000.d) );
-	    			((TextView) activity.findViewById( R.id.Sleep )).setBackgroundColor( Color.RED );
-	    		}
 	    	}
 	    	// ...otherwise the proximity sensor is covered and we need the start time of the coverage
 	    	else
@@ -121,8 +116,6 @@ public class SleepDetector implements SensorEventListener
 	public void onSleep( )
 	{
 		sleeping = true;
-		((TextView) activity.findViewById( R.id.Sleep )).setText( "Sleeping" );
-		((TextView) activity.findViewById( R.id.Sleep )).setBackgroundColor( Color.GREEN );
 	}
 	
 	/**

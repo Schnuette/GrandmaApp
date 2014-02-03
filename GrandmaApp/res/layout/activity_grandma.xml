@@ -12,7 +12,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="10dp"
-        android:onClick="zeigeEinstellungen" />
+        android:onClick="onDoRequestButton" />
 
     <Button
         android:id="@+id/testBtn"
