@@ -51,6 +51,7 @@ public class WashingShaker implements SensorEventListener
 		return instance;
 	}
 	
+	
 	private WashingShaker( )
 	{
 	}
@@ -132,7 +133,9 @@ public class WashingShaker implements SensorEventListener
 	 */
 	public void onShaking( )
 	{
-		shaking = true;		
+		shaking = true;
+
+	
 	}
 	
 	/**
@@ -140,7 +143,7 @@ public class WashingShaker implements SensorEventListener
 	 */
 	public void onShakingStopped( )
 	{
-		shaking = false;	
+		shaking = false;
 	}
 	
 	public boolean isShaking( )
