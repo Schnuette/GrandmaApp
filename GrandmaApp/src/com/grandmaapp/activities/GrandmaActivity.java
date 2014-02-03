@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
+import android.text.format.Time;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -56,7 +57,7 @@ public class GrandmaActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_grandma);
 		
-		test();
+		
 		
 		grandma = new Grandma(this);
 		requestList = new HashMap<String, Button>();
@@ -65,9 +66,13 @@ public class GrandmaActivity extends Activity {
 			addRequestButton(request);
 		}
 
+		if(grandma.getRequestsToHandle().isEmpty()){
+			test();
+		}
+		
 		// TODO read from sharedpreferences
 
-		// startWishesService();
+		startWishesService();
 		adjustGUI();
 
 	}
@@ -84,11 +89,22 @@ public class GrandmaActivity extends Activity {
 	}
 
 	@Override
-	protected void onNewIntent(Intent intent) {
-		String message = intent.getStringExtra("Notify");
-		if (message != null && message.equals("reset")) {
-			Notifications.resetMessageCounter();
-		}
+	protected void onNewIntent( Intent intent ) {
+		super.onNewIntent( intent );
+		
+		// Checks if the intent has the extra named Notify with the message reset that indicates a counter reset request
+		String message = intent.getStringExtra( "Notify" );
+		if(message != null && message.equals( "reset" ))
+		{
+			Notifications.getInstance( ).resetMessageCounter();			
+		}	
+	}
+	
+	@Override
+	protected void onResume(  ) {
+		super.onResume(  );
+		// Resets the message counter on app resume
+		Notifications.getInstance( ).resetMessageCounter();			
 	}
 
 	private void adjustGUI() {
@@ -121,7 +137,8 @@ public class GrandmaActivity extends Activity {
 	void addRequestButton(Request request) {
 		LinearLayout linLay = (LinearLayout) findViewById(R.id.tasksLinLay);
 		Button requestButton = new Button(this);
-		CountDown countdown = new CountDown(request.getTimeMS(), 1000, requestButton, request.getName());
+		long runtimeInMS = grandma.HHMMtoMS(request.getRuntime());
+		CountDown countdown = new CountDown(runtimeInMS, 1000, requestButton, request.getName());
 		countdown.start();
 		requestButton.setBackgroundResource(R.drawable.button_selector);
 		requestButton.setLayoutParams((new LayoutParams(
@@ -173,8 +190,17 @@ public class GrandmaActivity extends Activity {
 	private void test(){
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		Editor editor = preferences.edit();
-		editor.putInt("DRINK", 1800000);
-		editor.putInt("CLEANFLAT", 3600000);
+		
+		Time now = new Time();
+		now.setToNow();
+		
+		//time as integer from 0 to 2359 (hour and minutes)
+		int hour = Integer.parseInt(now.format2445().substring(9, 11));
+		int minute = Integer.parseInt(now.format2445().substring(11, 13));
+		//long currentTimeInMS = (hour * 60 * 60 * 1000) + (minute * 60 * 1000);
+		
+		editor.putInt("DRINK", ((hour+1)*100 + minute));
+		editor.putInt("CLEANFLAT", ((hour+2)*100 + minute));
 		editor.commit();
 	}
 
