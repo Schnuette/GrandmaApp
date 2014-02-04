@@ -68,7 +68,7 @@ public class Grandma {
 		
 		state = State.MAD;
 		ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
-		grandmaImgV.setImageResource(R.drawable.grandma_unzufrieden);
+		grandmaImgV.setImageResource(R.drawable.grandma_mad);
 	}
 	
 	public boolean handleRequest(Requests r){
@@ -93,7 +93,7 @@ public class Grandma {
 				if(requestsToHandle.isEmpty()){
 					state = State.HAPPY;
 					ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
-					grandmaImgV.setImageResource(R.drawable.grandma_zufrieden);
+					grandmaImgV.setImageResource(R.drawable.grandma_happy);
 				}
 				return true;
 			}

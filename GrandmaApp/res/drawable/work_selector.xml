@@ -3,8 +3,8 @@
     <item 
         android:state_pressed="true"
         android:state_enabled="true"
-        android:drawable="@drawable/button_settings_pressed" />
+        android:drawable="@drawable/button_work_pressed" />
     <item 
         android:state_enabled="true"
-        android:drawable="@drawable/button_settings" />
+        android:drawable="@drawable/button_work" />
 </selector>

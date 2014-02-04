@@ -6,7 +6,7 @@
     tools:context=".GrandmaActivity" >
 
     <Button
-        android:id="@+id/einstellungenBtn"
+        android:id="@+id/workBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -23,7 +23,7 @@
         android:layout_marginRight="10dp" />
 
     <Button
-        android:id="@+id/vorraeteBtn"
+        android:id="@+id/storeroomBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -36,12 +36,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/grandma_zufrieden" />
+        android:src="@drawable/grandma_happy" />
 
     <ScrollView
+        android:id="@+id/taskScrollView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/einstellungenBtn"
+        android:layout_above="@+id/workBtn"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/grandmaImgView"
@@ -51,7 +52,7 @@
             android:id="@+id/tasksLinLay"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/einstellungenBtn"
+            android:layout_above="@+id/workBtn"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/grandmaImgView"
