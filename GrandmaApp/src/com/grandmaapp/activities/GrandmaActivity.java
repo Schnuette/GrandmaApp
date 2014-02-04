@@ -52,6 +52,9 @@ import com.grandmaapp.model.Storeroom.Dish;
 import com.grandmaapp.model.WashClothes;
 import com.grandmaapp.model.WashDishes;
 import com.grandmaapp.notification.Notifications;
+import com.grandmaapp.sensors.MiniGame;
+import com.grandmaapp.sensors.SleepDetector;
+import com.grandmaapp.sensors.WashingShaker;
 import com.grandmaapp.services.WishesReceiver;
 import com.grandmaapp.services.WishesService;
 
@@ -88,6 +91,10 @@ public class GrandmaActivity extends Activity {
 			test();
 		}
 
+		MiniGame.getInstance( ).setActivity( this );
+		WashingShaker.getInstance( ).init( this );
+		SleepDetector.getInstance( ).init( this );
+		
 		WishesReceiver.setActivity(this);
 		WishesReceiver.setGrandma(grandma);
 
