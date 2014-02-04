@@ -22,7 +22,7 @@ public class WashClothes extends Request {
 			// Schrank wird wieder mit sauberer Kleidung gefuellt
 			grandma.getStoreroom().setCleanClothes(Storeroom.MAXCLEANCLOTHES);
 			
-			// TODO prefs aktualisieren
+			// prefs aktualisieren
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
 			Editor editor = preferences.edit();
 			editor.putInt("StoreClothes", Storeroom.MAXCLEANCLOTHES);

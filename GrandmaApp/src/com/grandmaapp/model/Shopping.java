@@ -32,11 +32,6 @@ public class Shopping extends Request {
 	
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.SHOPPING) {
-			//grandma.getStoreroom().fillFood();
-			
-			/* den kram koennte man evtl noch mal brauchen
-			 * falls einkaufsliste kommt
-			 */
 			
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
 			Editor editor = preferences.edit();
@@ -46,22 +41,25 @@ public class Shopping extends Request {
 				grandma.getStoreroom().setWaterBottles(Storeroom.MAXWATER);
 				editor.putInt("StoreWater", Storeroom.MAXWATER);	
 			}
-			// bei 2 mittagessen auffüllen
-			if (grandma.getStoreroom().getNumDinner() <= 2) {
-				grandma.getStoreroom().getFood()
-						.put(Dish.SCHNITZEL, Storeroom.MAXDINNER);
+			// wenn ein mittagessen leer -> auffüllen
+			if (grandma.getStoreroom().getFood().get(Dish.SCHNITZEL) < 1) {
+				grandma.getStoreroom().getFood().put(Dish.SCHNITZEL, Storeroom.MAXDINNER);
 				editor.putInt("StoreSchnitzel", Storeroom.MAXDINNER);
-				grandma.getStoreroom().getFood()
-						.put(Dish.NOODLES, Storeroom.MAXDINNER);
-				editor.putInt("StoreNoodles", Storeroom.MAXDINNER);
-				grandma.getStoreroom().getFood()
-						.put(Dish.DOENER, Storeroom.MAXDINNER);
-				editor.putInt("StoreDoener", Storeroom.MAXDINNER);
-				grandma.getStoreroom().getFood()
-						.put(Dish.PIZZA, Storeroom.MAXDINNER);
-				editor.putInt("StorePizza", Storeroom.MAXDINNER);
-				grandma.getStoreroom().calcDinnerSum();
 			}
+			if (grandma.getStoreroom().getFood().get(Dish.NOODLES) < 1) {
+				grandma.getStoreroom().getFood().put(Dish.NOODLES, Storeroom.MAXDINNER);
+				editor.putInt("StoreNoodles", Storeroom.MAXDINNER);
+			}
+			if (grandma.getStoreroom().getFood().get(Dish.DOENER) < 1) {
+				grandma.getStoreroom().getFood().put(Dish.DOENER, Storeroom.MAXDINNER);
+				editor.putInt("StoreDoener", Storeroom.MAXDINNER);
+			}
+			if (grandma.getStoreroom().getFood().get(Dish.PIZZA) < 1) {
+				grandma.getStoreroom().getFood().put(Dish.PIZZA, Storeroom.MAXDINNER);
+				editor.putInt("StorePizza", Storeroom.MAXDINNER);
+			}
+			grandma.getStoreroom().calcDinnerSum();
+
 			// frühstück bei 1 auf 5
 			if (grandma.getStoreroom().getFood().get(Dish.BREAKFAST) <= 1) {
 				grandma.getStoreroom().getFood()

@@ -1,6 +1,10 @@
 package com.grandmaapp.model;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+
 import com.grandmaapp.model.Grandma.Requests;
+import com.grandmaapp.model.Grandma.State;
 import com.grandmaapp.sensors.MiniGame;
 
 public class Game extends Request {
@@ -12,9 +16,28 @@ public class Game extends Request {
 	
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.GAME) {
-			// TODO sobald button gedrückt wird hier spiel starten
-			MiniGame.getInstance( ).show( );
-			return true;
+			/* 
+			 * wenn grandma wach ist kann sie spielen
+			 */
+			if(grandma.getState() != State.ASLEEP){
+				MiniGame.getInstance( ).show( );
+				return true;
+			}
+			else{
+				AlertDialog.Builder builder = new AlertDialog.Builder(
+						grandma.getMainActivity());
+				builder.setTitle("");
+				builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								alert.dismiss();
+							}
+				});
+				builder.setMessage("Brunhilde schläft und kann jetzt nicht spielen.");
+				alert = builder.create();
+				alert.show();
+			}	
+			
 		}
 		return false;
 	}

@@ -7,6 +7,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 import com.grandmaapp.model.Grandma.Requests;
+import com.grandmaapp.model.Grandma.State;
 
 public class SuitUp extends Request {
 	
@@ -28,24 +29,30 @@ public class SuitUp extends Request {
 							alert.dismiss();
 						}
 			});
-			
-			if (cleanClothes > 0) {
-				cleanClothes -= 1;
-				grandma.getStoreroom().setCleanClothes(cleanClothes);
-				
-				// prefs aktualisieren
-				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
-				Editor editor = preferences.edit();
-				editor.putInt("StoreClothes", cleanClothes);
-				editor.commit();
-				
-				builder.setMessage("Du hast Brunhilde neu eingekleidet! Sie hat noch " + cleanClothes + " saubere Kleidung.");
-				alert = builder.create();
-				alert.show();
-				return true;
+			if(grandma.getState() != State.ASLEEP){
+				if (cleanClothes > 0) {
+					cleanClothes -= 1;
+					grandma.getStoreroom().setCleanClothes(cleanClothes);
+
+					// prefs aktualisieren
+					SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
+					Editor editor = preferences.edit();
+					editor.putInt("StoreClothes", cleanClothes);
+					editor.commit();
+
+					builder.setMessage("Du hast Brunhilde neu eingekleidet! Sie hat noch "
+							+ cleanClothes + " saubere Kleidung.");
+					alert = builder.create();
+					alert.show();
+					return true;
+				} else {
+					builder.setMessage("Brunhilde hat keine saubere Kleidung mehr. Du musst erst waschen!");
+					alert = builder.create();
+					alert.show();
+				}
 			}
-			else {
-				builder.setMessage("Brunhilde hat keine saubere Kleidung mehr. Du musst erst waschen!");
+			else{
+				builder.setMessage("Brunhilde schläft und braucht keine neue Kleidung.");
 				alert = builder.create();
 				alert.show();
 			}

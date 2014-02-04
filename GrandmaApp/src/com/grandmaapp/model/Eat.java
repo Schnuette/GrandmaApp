@@ -43,7 +43,6 @@ public class Eat extends Request {
 				if(numOfDish > 0){
 					numOfDish -= 1;
 					grandma.getStoreroom().getFood().put(foodWish, numOfDish);
-					// grandma.addRequest(new WashDishes());
 
 					// prefs aktualisieren
 					SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
