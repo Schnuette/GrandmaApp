@@ -1,5 +1,7 @@
 package com.grandmaapp.model;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
@@ -18,8 +20,18 @@ public class SuitUp extends Request {
 			// saubere Klamotten aus Vorratsschrank
 			int cleanClothes = grandma.getStoreroom().getCleanClothes();
 					
+			AlertDialog.Builder builder = new AlertDialog.Builder(grandma.getMainActivity());
+			builder.setTitle("");
+			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							alert.dismiss();
+						}
+			});
+			
 			if (cleanClothes > 0) {
-				grandma.getStoreroom().setCleanClothes(cleanClothes - 1);
+				cleanClothes -= 1;
+				grandma.getStoreroom().setCleanClothes(cleanClothes);
 				
 				// prefs aktualisieren
 				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
@@ -27,15 +39,16 @@ public class SuitUp extends Request {
 				editor.putInt("StoreClothes", cleanClothes);
 				editor.commit();
 				
-				/*if (cleanClothes == 1) {
-					grandma.addRequest(new WashClothes());
-				}*/
+				builder.setMessage("Du hast Brunhilde neu eingekleidet! Sie hat noch " + cleanClothes + " saubere Kleidung.");
+				alert = builder.create();
+				alert.show();
 				return true;
 			}
-			/*else {
-				grandma.addRequest(new WashClothes());
-				//TODO nur noch begrenzt zeit bis oma ausrastet und stirbt wegen alter kleidung
-			}*/
+			else {
+				builder.setMessage("Brunhilde hat keine saubere Kleidung mehr. Du musst erst waschen!");
+				alert = builder.create();
+				alert.show();
+			}
 		}
 		return false;
 	}

@@ -1,5 +1,7 @@
 package com.grandmaapp.model;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
@@ -24,39 +26,69 @@ public class Eat extends Request {
 	
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.EAT) {
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(
+					grandma.getMainActivity());
+			builder.setTitle("");
+			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							alert.dismiss();
+						}
+			});
+			
 			if (foodWish != null) {
 				// ein Essen nehmen, spuelen und einkaufen, falls das essen danach leer ist
 				int numOfDish = grandma.getStoreroom().getFood().get(foodWish);
-				numOfDish -= 1;
-				grandma.getStoreroom().getFood().put(foodWish, numOfDish);
-				//grandma.addRequest(new WashDishes());
-				
-				// prefs aktualisieren
-				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
-				Editor editor = preferences.edit();
-				// TODO essen unterscheiden
-				//editor.putInt("StoreWater", numBottles);
-				editor.commit();
-				
-				// Fruehstueck oder abendessen sonst Dinner
-				/*if (foodWish == Dish.BREAKFAST || foodWish == Dish.SUPPER) {
-					//einkaufen, falls Fruehstueck oder Abendessen leer ist
-					if (numOfDish < 1) {
-						grandma.addRequest(new Shopping());
+				if(numOfDish > 0){
+					numOfDish -= 1;
+					grandma.getStoreroom().getFood().put(foodWish, numOfDish);
+					// grandma.addRequest(new WashDishes());
+
+					// prefs aktualisieren
+					SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
+					Editor editor = preferences.edit();
+					switch (foodWish) {
+					case BREAKFAST:
+						editor.putInt("StoreBreakfast", numOfDish);
+						builder.setMessage("Brunhilde hat gefrühstückt.");
+						break;
+					case SUPPER:
+						editor.putInt("StoreSupper", numOfDish);
+						builder.setMessage("Brunhilde hat zu Abend gegessen.");
+						break;
+					case SCHNITZEL:
+						editor.putInt("StoreSchnitzel", numOfDish);
+						builder.setMessage("Brunhilde hat ein Schnitzel gegessen.");
+						break;
+					case NOODLES:
+						editor.putInt("StoreNoodles", numOfDish);
+						builder.setMessage("Brunhilde hat Nudeln gegessen.");
+						break;
+					case DOENER:
+						editor.putInt("StoreDoener", numOfDish);
+						builder.setMessage("Brunhilde hat einen Döner gegessen.");
+						break;
+					case PIZZA:
+						editor.putInt("StorePizza", numOfDish);
+						builder.setMessage("Brunhilde hat eine Pizza gegessen.");
+						break;
 					}
-				} else {
-					int numDinner = grandma.getStoreroom().getNumDinner() - 1;
-					grandma.getStoreroom().setNumDinner(numDinner);
-					//einkaufen, falls nur noch wenige Mittagessen übrig sind
-					if (numDinner < 2) {
-						grandma.addRequest(new Shopping());
+					editor.commit();
+
+					if (!realRequest) {
+						builder.setMessage("Brunhilde hat das Essen verschmäht! Sie hat keinen Hunger.");
 					}
-					// bei schwerem Essen: Medikamente
-					if (foodWish == Dish.SCHNITZEL) {
-						grandma.addRequest(new Medicine(Daytime.NOON));
-					}
-				}*/
-				return true;
+
+					alert = builder.create();
+					alert.show();
+					return true;
+				}
+				else{
+					builder.setMessage("Das Essen ist leer. Du musst erst einkaufen gehen!");
+					alert = builder.create();
+					alert.show();
+				}
 			}
 		}
 		return false;

@@ -1,5 +1,6 @@
 package com.grandmaapp.model;
 
+import android.app.AlertDialog;
 import android.os.CountDownTimer;
 
 import com.grandmaapp.model.Grandma.Requests;
@@ -11,6 +12,8 @@ public class Request {
 	Grandma grandma;
 	int runtime;
 	String name = null;
+	AlertDialog alert;
+	boolean realRequest = true;
 	
 	public Requests kind(){
 		return null;
@@ -43,7 +46,13 @@ public class Request {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
+
+	public boolean isRealRequest() {
+		return realRequest;
+	}
+
+	public void setRealRequest(boolean realRequest) {
+		this.realRequest = realRequest;
+	}	
 	
 }

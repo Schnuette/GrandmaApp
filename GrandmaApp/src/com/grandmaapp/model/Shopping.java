@@ -1,5 +1,7 @@
 package com.grandmaapp.model;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
@@ -73,6 +75,18 @@ public class Shopping extends Request {
 				editor.putInt("StoreSupper", Storeroom.MAXBREAKFASTSUPPER);
 			}
 			editor.commit();
+			
+			AlertDialog.Builder builder = new AlertDialog.Builder(grandma.getMainActivity());
+			builder.setTitle("");
+			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							alert.dismiss();
+						}
+			});
+			builder.setMessage("Du warst einkaufen.");
+			alert = builder.create();
+			alert.show();
 			return true;
 		}
 		return false;

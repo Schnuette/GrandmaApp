@@ -1,5 +1,8 @@
 package com.grandmaapp.model;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+
 import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Grandma.State;
 
@@ -28,15 +31,30 @@ public class Medicine extends Request {
 		 * pruefen welches Medikament verabreicht wird und welches Medikament
 		 * die Grandma braucht
 		 */
-		if (r == Requests.MEDICINE_MORNING && daytime == Daytime.MORNING) {
-			return true;
-		} else if (r == Requests.MEDICINE_EVENING && daytime == Daytime.EVENING) {
-			return true;
-		} else if (r == Requests.MEDICINE_NOON && daytime == Daytime.NOON) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(grandma.getMainActivity());
+		builder.setTitle("");
+		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						alert.dismiss();
+					}
+		});
+		
+		if ((r == Requests.MEDICINE_MORNING && daytime == Daytime.MORNING) || 
+				(r == Requests.MEDICINE_EVENING && daytime == Daytime.EVENING) || 
+				(r == Requests.MEDICINE_NOON && daytime == Daytime.NOON)) {
+
+			builder.setMessage("Brunhilde hat ihre richtigen Medikamente bekommen!");
+			alert = builder.create();
+			alert.show();
 			return true;
 		} else {
-			// TODO stirbt! popup warnung falsches med?
+			// TODO stirbt! popup warnung falsches med? oma bild tot setzen?
 			grandma.setState(State.DEAD);
+			
+			builder.setMessage("Brunhilde hat die falschen Medikamente bekommen und stirbt!");
+			alert = builder.create();
+			alert.show();
 			return false;
 		}
 	}
