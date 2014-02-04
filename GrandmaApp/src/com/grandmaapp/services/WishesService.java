@@ -74,7 +74,7 @@ public class WishesService extends Service {
 		{
 			createDrinkRequest( preferences, time, editor );
 		}
-		else if( time == 1600 )
+		else if( time == 1200 )
 		{
 			noFood = createLunchRequest( preferences, time, editor );
 		}
