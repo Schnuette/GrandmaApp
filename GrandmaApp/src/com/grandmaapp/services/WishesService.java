@@ -99,7 +99,7 @@ public class WishesService extends Service {
 			createSleepRequest( time, editor );
 		}
 		
-		if( checkForCleanFlatDay( ) )
+		if( time > 1000 && checkForCleanFlatDay( ) )
 		{
 			createCleanFlatRequest( time, editor );
 		}
@@ -157,7 +157,7 @@ public class WishesService extends Service {
 	
 	public void createCleanFlatRequest( int time, Editor editor )
 	{
-	    editor.putInt( "CLEANFLAT", time + 200 );
+	    editor.putInt( "CLEANFLAT", time + 1000 );
 	    sendMessageToActivity( NEW_REQUEST, "CLEANFLAT" );		
 	}
 	
