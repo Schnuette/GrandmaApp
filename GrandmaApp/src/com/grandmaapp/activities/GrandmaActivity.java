@@ -73,7 +73,7 @@ public class GrandmaActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_grandma);
-		
+
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		editor = preferences.edit();
 		now = new Time();
@@ -91,10 +91,10 @@ public class GrandmaActivity extends Activity {
 			test();
 		}
 
-		MiniGame.getInstance( ).setActivity( this );
-		WashingShaker.getInstance( ).init( this );
-		SleepDetector.getInstance( ).init( this );
-		
+		MiniGame.getInstance().setActivity(this);
+		WashingShaker.getInstance().init(this);
+		SleepDetector.getInstance().init(this);
+
 		WishesReceiver.setActivity(this);
 		WishesReceiver.setGrandma(grandma);
 
@@ -249,6 +249,7 @@ public class GrandmaActivity extends Activity {
 				if (grandma.handleRequest(Requests.DRINK) == false) {
 					Drink drink = new Drink();
 					drink.setGrandma(grandma);
+					drink.setRealRequest(false);
 					drink.handleRequest(Requests.DRINK);
 				}
 			}
@@ -269,6 +270,7 @@ public class GrandmaActivity extends Activity {
 				if (grandma.handleRequest(Requests.EAT) == false) {
 					Eat eat = new Eat(Dish.SCHNITZEL);
 					eat.setGrandma(grandma);
+					eat.setRealRequest(false);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -289,6 +291,7 @@ public class GrandmaActivity extends Activity {
 				if (grandma.handleRequest(Requests.EAT) == false) {
 					Eat eat = new Eat(Dish.NOODLES);
 					eat.setGrandma(grandma);
+					eat.setRealRequest(false);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -309,6 +312,7 @@ public class GrandmaActivity extends Activity {
 				if (grandma.handleRequest(Requests.EAT) == false) {
 					Eat eat = new Eat(Dish.DOENER);
 					eat.setGrandma(grandma);
+					eat.setRealRequest(false);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -329,6 +333,7 @@ public class GrandmaActivity extends Activity {
 				if (grandma.handleRequest(Requests.EAT) == false) {
 					Eat eat = new Eat(Dish.PIZZA);
 					eat.setGrandma(grandma);
+					eat.setRealRequest(false);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -349,6 +354,7 @@ public class GrandmaActivity extends Activity {
 				if (grandma.handleRequest(Requests.EAT) == false) {
 					Eat eat = new Eat(Dish.BREAKFAST);
 					eat.setGrandma(grandma);
+					eat.setRealRequest(false);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -369,6 +375,7 @@ public class GrandmaActivity extends Activity {
 				if (grandma.handleRequest(Requests.EAT) == false) {
 					Eat eat = new Eat(Dish.SUPPER);
 					eat.setGrandma(grandma);
+					eat.setRealRequest(false);
 					eat.handleRequest(Requests.EAT);
 				}
 			}
@@ -498,7 +505,7 @@ public class GrandmaActivity extends Activity {
 					sleep.setRealRequest(false);
 					sleep.handleRequest(Requests.SLEEP);
 				}
-				
+
 			}
 		});
 		requestsList.addView(sleep);
@@ -581,15 +588,20 @@ public class GrandmaActivity extends Activity {
 	private void initTestPopup() {
 		View testDialogView = getLayoutInflater().inflate(
 				R.layout.test_dialog_layout, null);
-		
-		Button eatBreakfast = (Button) testDialogView.findViewById(R.id.eatBreakfast);
+
+		Button eatBreakfast = (Button) testDialogView
+				.findViewById(R.id.eatBreakfast);
 		eatBreakfast.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createBreakfastRequest(time, editor);
+				if (!requestList.containsKey(Requests.EAT.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createBreakfastRequest(time,
+							editor);
+				}
 				testDialog.dismiss();
 			}
 		});
@@ -598,9 +610,13 @@ public class GrandmaActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createLunchRequest(preferences, time, editor);
+				if (!requestList.containsKey(Requests.EAT.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createLunchRequest(preferences,
+							time, editor);
+				}
 				testDialog.dismiss();
 			}
 		});
@@ -609,9 +625,13 @@ public class GrandmaActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createSupperRequest(time, editor);
+				if (!requestList.containsKey(Requests.EAT.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createSupperRequest(time,
+							editor);
+				}
 				testDialog.dismiss();
 			}
 		});
@@ -620,31 +640,47 @@ public class GrandmaActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createDrinkRequest(preferences, time, editor);
+				if (!requestList.containsKey(Requests.DRINK.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createDrinkRequest(preferences,
+							time, editor);
+				}
 				testDialog.dismiss();
 			}
 		});
-		Button medsMorning = (Button) testDialogView.findViewById(R.id.medsMorning);
+		Button medsMorning = (Button) testDialogView
+				.findViewById(R.id.medsMorning);
 		medsMorning.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createMorningMedicineRequest(time, editor);
+				if (!requestList.containsKey(Requests.MEDICINE_MORNING
+						.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createMorningMedicineRequest(
+							time, editor);
+				}
 				testDialog.dismiss();
 			}
 		});
-		Button medsEvening = (Button) testDialogView.findViewById(R.id.medsEvening);
+		Button medsEvening = (Button) testDialogView
+				.findViewById(R.id.medsEvening);
 		medsEvening.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createEveningMedicineRequest(time, editor);
+				if (!requestList.containsKey(Requests.MEDICINE_EVENING
+						.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createEveningMedicineRequest(
+							time, editor);
+				}
 				testDialog.dismiss();
 			}
 		});
@@ -653,9 +689,13 @@ public class GrandmaActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createShoppingRequest(time, editor);
+				if (!requestList.containsKey(Requests.SHOPPING.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createShoppingRequest(time,
+							editor);
+				}
 				testDialog.dismiss();
 			}
 		});
@@ -664,9 +704,13 @@ public class GrandmaActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createCleanFlatRequest(time, editor);
+				if (!requestList.containsKey(Requests.CLEANFLAT.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createCleanFlatRequest(time,
+							editor);
+				}
 				testDialog.dismiss();
 			}
 		});
@@ -675,31 +719,45 @@ public class GrandmaActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createSuitUpRequest(time, editor);
+				if (!requestList.containsKey(Requests.SUITUP.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createSuitUpRequest(time,
+							editor);
+				}
 				testDialog.dismiss();
 			}
 		});
-		Button washDishes = (Button) testDialogView.findViewById(R.id.washDishes);
+		Button washDishes = (Button) testDialogView
+				.findViewById(R.id.washDishes);
 		washDishes.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createWashDishesRequest(time, editor);
+				if (!requestList.containsKey(Requests.WASHDISHES.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createWashDishesRequest(time,
+							editor);
+				}
 				testDialog.dismiss();
 			}
 		});
-		Button washClothes = (Button) testDialogView.findViewById(R.id.washClothes);
+		Button washClothes = (Button) testDialogView
+				.findViewById(R.id.washClothes);
 		washClothes.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createWashClothesRequest(time, editor);
+				if (!requestList.containsKey(Requests.WASHCLOTHES.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createWashClothesRequest(time,
+							editor);
+				}
 				testDialog.dismiss();
 			}
 		});
@@ -708,9 +766,12 @@ public class GrandmaActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createGameRequest(time, editor);
+				if (!requestList.containsKey(Requests.GAME.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance().createGameRequest(time, editor);
+				}
 				testDialog.dismiss();
 			}
 		});
@@ -719,13 +780,17 @@ public class GrandmaActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				now.setToNow();
-				int time = Integer.parseInt(now.format2445().substring(9, 13));
-				WishesService.getInstance().createSleepRequest(time, editor);
+				if (!requestList.containsKey(Requests.SLEEP.toString())) {
+					now.setToNow();
+					int time = Integer.parseInt(now.format2445().substring(9,
+							13));
+					WishesService.getInstance()
+							.createSleepRequest(time, editor);
+				}
 				testDialog.dismiss();
 			}
 		});
-		
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("");
 		builder.setView(testDialogView);

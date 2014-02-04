@@ -103,6 +103,26 @@ public class Eat extends Request {
 
 	public void setFoodWish(Dish foodWish) {
 		this.foodWish = foodWish;
+		switch (foodWish) {
+		case BREAKFAST:
+			name = "Frühstücken";
+			break;
+		case SUPPER:
+			name = "Abendbrot";
+			break;
+		case SCHNITZEL:
+			name = "Essen (Schnitzel)";
+			break;
+		case NOODLES:
+			name = "Essen (Nudeln)";
+			break;
+		case DOENER:
+			name = "Essen (Döner)";
+			break;
+		case PIZZA:
+			name = "Essen (Pizza)";
+			break;
+		}
 	}
 	
 }
