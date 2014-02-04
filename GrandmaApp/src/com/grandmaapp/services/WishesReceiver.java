@@ -36,7 +36,7 @@ public class WishesReceiver extends BroadcastReceiver
             	{
             		activity.addRequestButton( grandma.createDrinkRequest( time ) );
             	}
-            	else if( extra.equals( "WASHINGCLOTHES" ) )
+            	else if( extra.equals( "WASHCLOTHES" ) )
             	{
             		activity.addRequestButton( grandma.createWashClothesRequest( time ) );
             	}
@@ -59,6 +59,14 @@ public class WishesReceiver extends BroadcastReceiver
             	else if( extra.equals( "SUITUP" ) )
             	{
             		activity.addRequestButton( grandma.createSuitUpRequest( time ) );
+            	}
+            	else if( extra.equals( "GAME" ) )
+            	{
+            		activity.addRequestButton( grandma.createGameRequest( time ) );
+            	}
+            	else if( extra.equals( "CLEANFLAT" ) )
+            	{
+            		activity.addRequestButton( grandma.createCleanFlatRequest( time ) );
             	}
             	
                 //Do something with the string

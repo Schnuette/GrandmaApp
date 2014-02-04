@@ -74,7 +74,7 @@ public class WishesService extends Service {
 		{
 			createDrinkRequest( preferences, time, editor );
 		}
-		else if( time == 1600 )
+		else if( time == 1200 )
 		{
 			noFood = createLunchRequest( preferences, time, editor );
 		}
@@ -151,7 +151,7 @@ public class WishesService extends Service {
 	    editor.putInt( "GAME", time + 100 );
 		editor.commit( );
 		
-	    sendMessageToActivity( "GAME", time + 100 );	
+	    sendMessageToActivity( "GAME", time + 100 );
 	}
 	
 	public void createCleanFlatRequest( int time, Editor editor )
