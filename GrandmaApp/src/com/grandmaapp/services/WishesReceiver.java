@@ -36,7 +36,7 @@ public class WishesReceiver extends BroadcastReceiver
             	{
             		activity.addRequestButton( grandma.createDrinkRequest( time ) );
             	}
-            	else if( extra.equals( "WASHINGCLOTHES" ) )
+            	else if( extra.equals( "WASHCLOTHES" ) )
             	{
             		activity.addRequestButton( grandma.createWashClothesRequest( time ) );
             	}
