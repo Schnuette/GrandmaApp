@@ -21,6 +21,7 @@ public class WishesReceiver extends BroadcastReceiver
         if(intent.getAction().equals( WishesService.BROADCAST_ID) )
         {
             String extra = intent.getStringExtra(WishesService.NEW_REQUEST);
+            int time = intent.getIntExtra( WishesService.NEW_REQUEST, -1 );
             
             if( extra != null )
             {
@@ -29,35 +30,35 @@ public class WishesReceiver extends BroadcastReceiver
         		
             	if( extra.equals( "EAT" ) )
             	{
-            		activity.addRequestButton( grandma.createEatRequest( prefs, 0 ) );
+            		activity.addRequestButton( grandma.createEatRequest( prefs, time ) );
             	}
             	else if( extra.equals( "DRINK" ) )
             	{
-            		activity.addRequestButton( grandma.createDrinkRequest( 0 ) );
+            		activity.addRequestButton( grandma.createDrinkRequest( time ) );
             	}
             	else if( extra.equals( "WASHINGCLOTHES" ) )
             	{
-            		activity.addRequestButton( grandma.createWashClothesRequest( 0 ) );
+            		activity.addRequestButton( grandma.createWashClothesRequest( time ) );
             	}
             	else if( extra.equals( "SHOPPING" ) )
             	{
-            		activity.addRequestButton( grandma.createShoppingRequest( 0 ) );
+            		activity.addRequestButton( grandma.createShoppingRequest( time ) );
             	}
             	else if( extra.equals( "MEDICINE" ) )
             	{
-            		activity.addRequestButton( grandma.createMedicineRequest( prefs, 0 ) );
+            		activity.addRequestButton( grandma.createMedicineRequest( prefs, time ) );
             	}
             	else if( extra.equals( "SLEEP" ) )
             	{
-            		activity.addRequestButton( grandma.createSleepRequest( 0 ) );
+            		activity.addRequestButton( grandma.createSleepRequest( time ) );
             	}
             	else if( extra.equals( "WASHDISHES" ) )
             	{
-            		activity.addRequestButton( grandma.createWashDishesRequest( 0 ) );
+            		activity.addRequestButton( grandma.createWashDishesRequest( time ) );
             	}
             	else if( extra.equals( "SUITUP" ) )
             	{
-            		activity.addRequestButton( grandma.createSuitUpRequest( 0 ) );
+            		activity.addRequestButton( grandma.createSuitUpRequest( time ) );
             	}
             }
             
