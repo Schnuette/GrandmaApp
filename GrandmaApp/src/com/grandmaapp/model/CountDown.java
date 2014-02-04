@@ -25,9 +25,11 @@ public class CountDown extends CountDownTimer{
 	public void onTick(long millisUntilFinished) {
 		// TODO Auto-generated method stub
 		if(millisUntilFinished < 3600000){
-			reqButton.setText(reqName + " " + millisUntilFinished/60000 + ":" + (millisUntilFinished%60000)/1000);
+			// Ausgabe im Format mm:ss
+			reqButton.setText(reqName + " " + String.format("%02d", millisUntilFinished/60000) + ":" + String.format("%02d", (millisUntilFinished%60000)/1000));
 		}else{
-			reqButton.setText(reqName + " " + millisUntilFinished/3600000 + ":" + (millisUntilFinished%3600000)/60000);
+			// Ausgabe im Format hh:mm
+			reqButton.setText(reqName + " " + String.format("%02d", millisUntilFinished/3600000) + ":" + String.format("%02d", (millisUntilFinished%3600000)/60000));
 		}
 		
 	}
