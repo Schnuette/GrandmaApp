@@ -15,7 +15,10 @@ public class Drink extends Request {
 	
 	public boolean handleRequest(Requests r) {
 		if(r == Requests.DRINK){
-			int numBottles = grandma.getStoreroom().getWaterBottles() - 1;
+			int numBottles = grandma.getStoreroom().getWaterBottles();
+			if(numBottles > 0){
+			
+			numBottles -= 1;
 			grandma.getStoreroom().setWaterBottles(numBottles);
 			
 			// prefs aktualisieren
@@ -28,6 +31,7 @@ public class Drink extends Request {
 				grandma.addRequest(new Shopping());
 			}*/
 			return true;
+			}
 		}
 		return false;
 	}
