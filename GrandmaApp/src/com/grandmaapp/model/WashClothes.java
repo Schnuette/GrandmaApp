@@ -5,6 +5,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 import com.grandmaapp.model.Grandma.Requests;
+import com.grandmaapp.sensors.WashingShaker;
 
 public class WashClothes extends Request {
 	
@@ -15,6 +16,9 @@ public class WashClothes extends Request {
 	
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.WASHCLOTHES) {
+			
+			WashingShaker.getInstance( ).show( );
+			
 			// Schrank wird wieder mit sauberer Kleidung gefuellt
 			grandma.getStoreroom().setCleanClothes(Storeroom.MAXCLEANCLOTHES);
 			

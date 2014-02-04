@@ -1,6 +1,7 @@
 package com.grandmaapp.model;
 
 import com.grandmaapp.model.Grandma.Requests;
+import com.grandmaapp.sensors.MiniGame;
 
 public class Game extends Request {
 
@@ -12,7 +13,7 @@ public class Game extends Request {
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.GAME) {
 			// TODO sobald button gedrückt wird hier spiel starten
-			
+			MiniGame.getInstance( ).show( );
 			return true;
 		}
 		return false;

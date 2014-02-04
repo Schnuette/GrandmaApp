@@ -107,6 +107,8 @@ public class WashingShaker implements SensorEventListener
 	 */
 	public void show( )
 	{
+		enable( );
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder( activity );
 		builder.setTitle( "Brunhilde will die Wäsche gewaschen haben!" );
 		builder.setCancelable( false );
@@ -200,20 +202,18 @@ public class WashingShaker implements SensorEventListener
 	{
 		shaking = true;
 		
-		text.setText( "" + time );
-		
 		if( time == 0 )
 		{
 			dialog.getButton( AlertDialog.BUTTON_POSITIVE ).setEnabled( true );
-			text.setTextColor( Color.GREEN );
+			text.setText( "Die Wäsche ist gewaschen!" );
 		}
-		else if ( time <= TIME_UNTIL_WASHED / 3.f * 2.f )
+		else if ( time > TIME_UNTIL_WASHED / 3.f * 2.f )
 		{
-			text.setTextColor( Color.rgb( 255, 127, 0 ) );
+			text.setText( "Schüttle weiter, die Wäsche ist noch schmutzig!" );
 		}
-		else if( time > TIME_UNTIL_WASHED / 3.f * 2.f )
+		else if( time <= TIME_UNTIL_WASHED / 3.f * 2.f )
 		{
-			text.setTextColor( Color.RED );
+			text.setText( "Schüttle weiter, die Wäsche ist fast sauber!" );
 		}
 	}
 	

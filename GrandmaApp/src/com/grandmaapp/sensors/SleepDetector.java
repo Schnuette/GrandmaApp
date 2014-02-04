@@ -89,6 +89,8 @@ public class SleepDetector implements SensorEventListener
 	 */
 	public void show( )
 	{
+		enable( );
+		
 		AlertDialog.Builder builder = new AlertDialog.Builder( activity );
 		builder.setTitle( "Brunhilde will schlafen!" );
 		builder.setCancelable( false );
@@ -97,11 +99,13 @@ public class SleepDetector implements SensorEventListener
 			@Override
             public void onClick( DialogInterface dialog, int which )
             {
+				disable( );
+				reset( );
             }
 		} );
 		
 		text = new TextView( builder.getContext( ) );
-		text.setText( "Lege deine Hand über das Display bis Brunhilde schläft!\n Brunhilde ist wach!" );
+		text.setText( "Lege deine Hand über das Display bis Brunhilde schläft!\nBrunhilde ist wach!" );
 		builder.setView( text );
 		
 		dialog = builder.create( );
@@ -158,12 +162,9 @@ public class SleepDetector implements SensorEventListener
 	 */
 	public void onSleep( )
 	{
-		text.setText( text.getText( ).toString( ).split( "\n" )[0] );
+		text.setText( text.getText( ).toString( ).split( "\n" )[0] + "\nBrunhilde schläft!" );
 		dialog.getButton( AlertDialog.BUTTON_POSITIVE ).setEnabled( true );
 		sleeping = true;
-		
-		disable( );
-		reset( );
 	}
 	
 	/**

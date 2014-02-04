@@ -5,10 +5,13 @@ import com.grandmaapp.model.Request;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.DialogInterface.OnShowListener;
 import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorManager;
 import android.util.Log;
 
 public class MiniGame
@@ -62,7 +65,7 @@ public class MiniGame
 		return instance;
 	}
 	
-	public void showChoices( )
+	public void show( )
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder( activity );
 		builder.setTitle( "Schere Stein Papier" );
