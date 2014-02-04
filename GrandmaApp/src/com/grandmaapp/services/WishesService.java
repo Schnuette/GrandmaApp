@@ -5,14 +5,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-import com.grandmaapp.activities.GrandmaActivity;
-import com.grandmaapp.model.Eat;
-import com.grandmaapp.model.Medicine;
-import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.notification.Notifications;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -27,10 +22,12 @@ public class WishesService extends Service {
 	public static final String BROADCAST_ID = "GRANDMA_APP";
 	public static final String NEW_REQUEST = "NewRequest";
 	
-	private Context context;
+	private static WishesService instance;
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		
+		instance = this;
 		// TODO Wuensche generieren, Benutzer informieren usw
 		
 		//zeiten der wünsche abfragen/speichern
@@ -56,8 +53,6 @@ public class WishesService extends Service {
 //			Medicine meds = (Medicine) r;
 //			editor.putString("MedWish", meds.getDaytime().toString());
 //		}
-		
-		context = this;
 		
 		boolean noFood = false;
 		
@@ -176,7 +171,7 @@ public class WishesService extends Service {
 	public void createSleepRequest( int time, Editor editor )
     {
 	    editor.putInt(  "SLEEP", time + 100 );
-	    notifyUser( "Brunhilde möchte schlafen!", context );
+	    notifyUser( "Brunhilde möchte schlafen!" );
 	    
 	    sendMessageToActivity( NEW_REQUEST, "SLEEP" );
     }
@@ -185,7 +180,7 @@ public class WishesService extends Service {
     {
 	    editor.putInt( "EAT", time + 100 );
 	    editor.putString( "FoodWish", "SUPPER" );
-	    notifyUser( "Brunhilde möchte zu Abend essen!", context );
+	    notifyUser( "Brunhilde möchte zu Abend essen!" );
 	    
 	    sendMessageToActivity( NEW_REQUEST, "EAT" );
     }
@@ -201,7 +196,7 @@ public class WishesService extends Service {
 	public void createWashDishesRequest( int time, Editor editor )
     {
 	    editor.putInt( "WASHDISHES", time + 100 );
-	    notifyUser( "Brunhilde hat schmutziges Geschirr!", context );
+	    notifyUser( "Brunhilde hat schmutziges Geschirr!" );
 	    
 	    sendMessageToActivity( NEW_REQUEST, "WASHDISHES" );
     }
@@ -244,14 +239,14 @@ public class WishesService extends Service {
 	    		editor.putInt( "MEDICINE", time + 100 );
 	    		editor.putString( "MedWish", "NOON" );
 	    		
-	    		notifyUser( "Brunhilde braucht ihre Medizin!", context );
+	    		notifyUser( "Brunhilde braucht ihre Medizin!" );
 	    		
 	    	    sendMessageToActivity( NEW_REQUEST, "MEDICINE" );
 	    	}
 	    	
 	    	editor.putInt( "EAT", time + 100 );
 	    	editor.putString( "FoodWish", foodwish );
-	    	notifyUser( "Brunhilde möchte essen!", context );
+	    	notifyUser( "Brunhilde möchte essen!" );
 	    	
 		    sendMessageToActivity( NEW_REQUEST, "EAT" );
 	    }
@@ -268,13 +263,13 @@ public class WishesService extends Service {
 	    if( preferences.getInt( "StoreWater", -1 ) > 0 )
 	    {
 	    	editor.putInt( "DRINK", time + 30 );
-	    	notifyUser( "Brunhilde möchte trinken!", context );
+	    	notifyUser( "Brunhilde möchte trinken!" );
 	    	
 		    sendMessageToActivity( NEW_REQUEST, "DRINK" );
 	    }
 	    else
 	    {
-	    	notifyUser( "Kein Wasser mehr vorrätig!", context );
+	    	notifyUser( "Kein Wasser mehr vorrätig!" );
 	    }
     }
 
@@ -283,7 +278,7 @@ public class WishesService extends Service {
 	    editor.putInt( "EAT", time + 100 );
 	    
 	    editor.putString( "FoodWish", "BREAKFAST" );
-	    notifyUser( "Brunhilde möchte Frühstück essen!", context );
+	    notifyUser( "Brunhilde möchte Frühstück essen!" );
 	    
 	    sendMessageToActivity( NEW_REQUEST, "EAT" );
     }
@@ -293,7 +288,7 @@ public class WishesService extends Service {
 	    editor.putInt( "MEDICINE", time + 100 );
 	    editor.putString( "MedWish", "MORNING" );
 	    
-	    notifyUser( "Brunhilde muss ihre Morgen-Medizin nehmen!", context );
+	    notifyUser( "Brunhilde muss ihre Morgen-Medizin nehmen!" );
 	    
 	    sendMessageToActivity( NEW_REQUEST, "MEDICINE" );
     }
@@ -301,25 +296,15 @@ public class WishesService extends Service {
 	public void createSuitUpRequest( int time, Editor editor )
     {
 	    editor.putInt( "SUITUP", time + 30 );
-	    notifyUser( "Brunhilde möchte angezogen werden!", context );
+	    notifyUser( "Brunhilde möchte angezogen werden!" );
 	    
 	    sendMessageToActivity( NEW_REQUEST, "SUITUP" );
     }
 
-	public void notifyUser( String message, Context context )
+	public void notifyUser( String message )
 	{
 		Notifications.getInstance( ).newNotification( message, this );
 	}
-	
-	public Context getContext( )
-    {
-	    return context;
-    }
-
-	public void setContext( Context context )
-    {
-	    this.context = context;
-    }
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -327,4 +312,8 @@ public class WishesService extends Service {
 		return null;
 	}
 
+	public static WishesService getInstance( )
+    {
+	    return instance;
+    }
 }
