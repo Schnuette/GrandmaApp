@@ -14,7 +14,9 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.example.grandmaapp.R;
@@ -65,15 +67,18 @@ public class Grandma {
 		//TODO nur einmal einkaufen
 		
 		state = State.MAD;
+		ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
+		grandmaImgV.setImageResource(R.drawable.grandma_mad);
 	}
 	
 	public boolean handleRequest(Requests r){
 		for(Request request: requestsToHandle){
 			if(request.handleRequest(r)){
 				// button entfernen aus requestList loeschen
-				LinearLayout linLay = (LinearLayout) mainActivity.findViewById(R.id.tasksLinLay);
 				Button button = mainActivity.getRequestList().get(request.kind().toString());
-				linLay.removeView(button);
+				ViewGroup layout = (ViewGroup) button.getParent();
+				if(null!=layout) //for safety only  as you are doing onClick
+				layout.removeView(button);
 				mainActivity.getRequestList().remove(request.kind().toString());
 				
 				// aus den Prefs loeschen
@@ -87,6 +92,8 @@ public class Grandma {
 				
 				if(requestsToHandle.isEmpty()){
 					state = State.HAPPY;
+					ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
+					grandmaImgV.setImageResource(R.drawable.grandma_happy);
 				}
 				return true;
 			}
@@ -216,85 +223,121 @@ public class Grandma {
 		// Requests werden geladen
 		int time = prefs.getInt(Requests.EAT.toString(), -1);
 		if (time > -1) {
-			Eat request = new Eat();
-			String foodWish = prefs.getString("FoodWish", null);
-			if (foodWish.equals(Dish.BREAKFAST.toString())) {
-				request.setFoodWish(Dish.BREAKFAST);
-			} else if (foodWish.equals(Dish.DOENER.toString())) {
-				request.setFoodWish(Dish.DOENER);
-			} else if (foodWish.equals(Dish.NOODLES.toString())) {
-				request.setFoodWish(Dish.NOODLES);
-			} else if (foodWish.equals(Dish.PIZZA.toString())) {
-				request.setFoodWish(Dish.PIZZA);
-			} else if (foodWish.equals(Dish.SCHNITZEL.toString())) {
-				request.setFoodWish(Dish.SCHNITZEL);
-			} else if (foodWish.equals(Dish.SUPPER.toString())) {
-				request.setFoodWish(Dish.SUPPER);
-			}
-			request.setRuntime(calcRuntime(time));
-			this.addRequest(request);
+			createEatRequest(prefs, time);
 		}
 		time = prefs.getInt(Requests.CLEANFLAT.toString(), -1);
 		if (time > -1) {
-			CleanFlat request = new CleanFlat();
-			request.setRuntime(calcRuntime(time));
-			Log.d("test", "cleanflat runtime " + time);
-			Log.d("test", "cleanflat runtime " + request.getRuntime());
-			this.addRequest(request);
+			createCleanFlatRequest(time);
 		}
 		time = prefs.getInt(Requests.DRINK.toString(), -1);
 		if (time > -1) {
-			Drink request = new Drink();
-			request.setRuntime(calcRuntime(time));
-			this.addRequest(request);
+			createDrinkRequest(time);
 		}
 		time = prefs.getInt(Requests.MEDICINE.toString(), -1);
 		if (time > -1) {
-			Medicine request = new Medicine();
-			String medWish = prefs.getString("MedWish", null);
-			if (medWish.equals(Daytime.MORNING.toString())) {
-				request.setDaytime(Daytime.MORNING);
-			}
-			if (medWish.equals(Daytime.NOON.toString())) {
-				request.setDaytime(Daytime.NOON);
-			}
-			if (medWish.equals(Daytime.EVENING.toString())) {
-				request.setDaytime(Daytime.EVENING);
-			}
-			request.setRuntime(calcRuntime(time));
-			this.addRequest(request);
+			createMedicineRequest(prefs, time);
 		}
 		time = prefs.getInt(Requests.SHOPPING.toString(), -1);
 		if (time > -1) {
-			Shopping request = new Shopping();
-			request.setRuntime(calcRuntime(time));
-			this.addRequest(request);
+			createShoppingRequest(time);
 		}
 		time = prefs.getInt(Requests.SLEEP.toString(), -1);
 		if (time > -1) {
-			Sleep request = new Sleep();
-			request.setRuntime(calcRuntime(time));
-			this.addRequest(request);
+			createSleepRequest(time);
 		}
 		time = prefs.getInt(Requests.SUITUP.toString(), -1);
 		if (time > -1) {
-			SuitUp request = new SuitUp();
-			request.setRuntime(calcRuntime(time));
-			this.addRequest(request);
+			createSuitUpRequest(time);
 		}
 		time = prefs.getInt(Requests.WASHCLOTHES.toString(), -1);
 		if (time > -1) {
-			WashClothes request = new WashClothes();
-			request.setRuntime(calcRuntime(time));
-			this.addRequest(request);
+			createWashClothesRequest(time);
 		}
 		time = prefs.getInt(Requests.WASHDISHES.toString(), -1);
 		if (time > -1) {
-			WashDishes request = new WashDishes();
-			request.setRuntime(calcRuntime(time));
-			this.addRequest(request);
+			createWashDishesRequest(time);
 		}
 
+	}
+
+	public void createWashDishesRequest(int time) {
+		WashDishes request = new WashDishes();
+		request.setRuntime(calcRuntime(time));
+		this.addRequest(request);
+	}
+
+	public void createWashClothesRequest(int time) {
+		WashClothes request = new WashClothes();
+		request.setRuntime(calcRuntime(time));
+		this.addRequest(request);
+	}
+
+	public void createSuitUpRequest(int time) {
+		SuitUp request = new SuitUp();
+		request.setRuntime(calcRuntime(time));
+		this.addRequest(request);
+	}
+
+	public void createSleepRequest(int time) {
+		Sleep request = new Sleep();
+		request.setRuntime(calcRuntime(time));
+		this.addRequest(request);
+	}
+
+	public void createShoppingRequest(int time) {
+		Shopping request = new Shopping();
+		request.setRuntime(calcRuntime(time));
+		this.addRequest(request);
+	}
+
+	public void createMedicineRequest(SharedPreferences prefs, int time) {
+		Medicine request = new Medicine();
+		String medWish = prefs.getString("MedWish", null);
+		if (medWish.equals(Daytime.MORNING.toString())) {
+			request.setDaytime(Daytime.MORNING);
+		}
+		if (medWish.equals(Daytime.NOON.toString())) {
+			request.setDaytime(Daytime.NOON);
+		}
+		if (medWish.equals(Daytime.EVENING.toString())) {
+			request.setDaytime(Daytime.EVENING);
+		}
+		request.setRuntime(calcRuntime(time));
+		this.addRequest(request);
+	}
+
+	public void createDrinkRequest(int time) {
+		Drink request = new Drink();
+		request.setRuntime(calcRuntime(time));
+		this.addRequest(request);
+	}
+
+	public void createCleanFlatRequest(int time) {
+		CleanFlat request = new CleanFlat();
+		request.setRuntime(calcRuntime(time));
+		Log.d("test", "cleanflat runtime " + time);
+		Log.d("test", "cleanflat runtime " + request.getRuntime());
+		this.addRequest(request);
+	}
+
+	public void createEatRequest(SharedPreferences prefs, int time) {
+		Eat request = new Eat();
+		String foodWish = prefs.getString("FoodWish", null);
+		if (foodWish.equals(Dish.BREAKFAST.toString())) {
+			request.setFoodWish(Dish.BREAKFAST);
+		} else if (foodWish.equals(Dish.DOENER.toString())) {
+			request.setFoodWish(Dish.DOENER);
+		} else if (foodWish.equals(Dish.NOODLES.toString())) {
+			request.setFoodWish(Dish.NOODLES);
+		} else if (foodWish.equals(Dish.PIZZA.toString())) {
+			request.setFoodWish(Dish.PIZZA);
+		} else if (foodWish.equals(Dish.SCHNITZEL.toString())) {
+			request.setFoodWish(Dish.SCHNITZEL);
+		} else if (foodWish.equals(Dish.SUPPER.toString())) {
+			request.setFoodWish(Dish.SUPPER);
+		}
+		request.setRuntime(calcRuntime(time));
+		this.addRequest(request);
 	}
 	
 	public Storeroom getStoreroom() {

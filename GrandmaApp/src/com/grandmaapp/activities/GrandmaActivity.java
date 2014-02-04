@@ -77,8 +77,6 @@ public class GrandmaActivity extends Activity {
 		if(grandma.getRequestsToHandle().isEmpty()){
 			test();
 		}
-		
-		// TODO read from sharedpreferences
 
 		// startWishesService();
 		adjustGUI();
@@ -123,17 +121,17 @@ public class GrandmaActivity extends Activity {
 		ImageView grandmaImgV = (ImageView) findViewById(R.id.grandmaImgView);
 		grandmaImgV.getLayoutParams().height = height;
 
-		grandmaImgV.setImageResource(R.drawable.grandma_zufrieden);
+		grandmaImgV.setImageResource(R.drawable.grandma_happy);
 
-		Button settingsBtn = (Button) findViewById(R.id.einstellungenBtn);
-		Button supplyBtn = (Button) findViewById(R.id.vorraeteBtn);
+		Button workBtn = (Button) findViewById(R.id.workBtn);
+		Button supplyBtn = (Button) findViewById(R.id.storeroomBtn);
 		Button testBtn = (Button) findViewById(R.id.testBtn);
 
-		settingsBtn.setBackgroundResource(R.drawable.settings_selector);
+		workBtn.setBackgroundResource(R.drawable.work_selector);
 		supplyBtn.setBackgroundResource(R.drawable.supply_selector);
 		testBtn.setBackgroundResource(R.drawable.test_selector);
 		
-		settingsBtn.getLayoutParams().width = (width - (width / 10));
+		workBtn.getLayoutParams().width = (width - (width / 10));
 		supplyBtn.getLayoutParams().width = (width - (width / 10));
 		testBtn.getLayoutParams().width = (width - (width / 10));
 
@@ -187,12 +185,6 @@ public class GrandmaActivity extends Activity {
 		// add time, format DD.MM.YYYY HH:MM:SS
 		editor.putString("time",
 				DateFormat.getDateTimeInstance().format(new Date()));
-
-		// TODO
-		// add storage
-
-		// TODO
-		// add wishes
 
 		editor.commit();
 
@@ -484,6 +476,7 @@ public class GrandmaActivity extends Activity {
 			public void onClick(View v) {
 				//do nothing (?)
 				alert.dismiss();
+				grandma.handleRequest(Requests.SLEEP);
 			}
 		});
 		requestsList.addView(sleep);
