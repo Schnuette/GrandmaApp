@@ -1,3 +1,7 @@
+/*
+ * Main-Activity
+ * contains all GUI elements
+ */
 package com.grandmaapp.activities;
 
 import java.text.DateFormat;
@@ -35,7 +39,6 @@ import com.grandmaapp.model.Eat;
 import com.grandmaapp.model.Game;
 import com.grandmaapp.model.Grandma;
 import com.grandmaapp.model.Grandma.Requests;
-import com.grandmaapp.model.Grandma.State;
 import com.grandmaapp.model.Medicine;
 import com.grandmaapp.model.Medicine.Daytime;
 import com.grandmaapp.model.Request;
@@ -62,7 +65,10 @@ public class GrandmaActivity extends Activity {
 	Time now;
 	SharedPreferences preferences;
 	Editor editor;
+	View testDialogView;
 
+	// called when application is started initializes the global variables,
+	// adjusts and inits the GUI, starts the service and calls all init-methods
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -88,8 +94,8 @@ public class GrandmaActivity extends Activity {
 
 		startWishesService();
 		adjustGUI();
-		initPopupView();
-		initTestPopup();
+		initWorkDialog();
+		initTestDialog();
 
 	}
 
@@ -100,6 +106,7 @@ public class GrandmaActivity extends Activity {
 		return true;
 	}
 
+	// method notifying the user
 	@Override
 	protected void onNewIntent(Intent intent) {
 		super.onNewIntent(intent);
@@ -112,6 +119,7 @@ public class GrandmaActivity extends Activity {
 		}
 	}
 
+	// resetting the message counter on app resume
 	@Override
 	protected void onResume() {
 		super.onResume();
@@ -119,6 +127,8 @@ public class GrandmaActivity extends Activity {
 		Notifications.getInstance().resetMessageCounter();
 	}
 
+	// method adjusting the GUI changing height and width of background image
+	// view and buttons
 	private void adjustGUI() {
 		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 				WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -144,11 +154,13 @@ public class GrandmaActivity extends Activity {
 
 	}
 
+	// adds a request button to the global hash map and the interface list
 	public void addRequestButton(Request request) {
 		LinearLayout linLay = (LinearLayout) findViewById(R.id.tasksLinLay);
 		Button requestButton = new Button(this);
 		requestButton.setTag(request.kind());
 		long runtimeInMS = grandma.HHMMtoMS(request.getRuntime());
+		//countdown showing name of request and time to fullfil request
 		CountDown countdown = new CountDown(runtimeInMS, 1000, requestButton,
 				request.getName());
 		countdown.start();
@@ -169,6 +181,8 @@ public class GrandmaActivity extends Activity {
 		requestList.put(request.kind().toString(), requestButton);
 	}
 
+	// starts the service, service refreshes every 60 seconds checking if a
+	// request hast to be created
 	private void startWishesService() {
 		// Sekundentakt in dem der Service gestartet wird.
 		int refreshInS = 60;
@@ -183,6 +197,7 @@ public class GrandmaActivity extends Activity {
 				refreshInS * 1000, pintent);
 	}
 
+	// if the application terminates this method is called
 	@Override
 	protected void onDestroy() {
 		// add time, format DD.MM.YYYY HH:MM:SS
@@ -194,7 +209,9 @@ public class GrandmaActivity extends Activity {
 		super.onDestroy();
 	}
 
-	private void initPopupView() {
+	// initilise the work dialog, creating a linear layout and adding all
+	// request buttons
+	private void initWorkDialog() {
 		Typeface font = Typeface.createFromAsset(getAssets(),
 				"fonts/Blippo.ttf");
 		View requestsPopupView = getLayoutInflater().inflate(
@@ -202,7 +219,7 @@ public class GrandmaActivity extends Activity {
 
 		LinearLayout requestsList = (LinearLayout) requestsPopupView
 				.findViewById(R.id.requestList);
-		// add requestButtons
+		// create and add requestButtons
 		Button cleanFlat = new Button(this);
 		cleanFlat.setBackgroundResource(R.drawable.button_selector);
 		cleanFlat.setLayoutParams((new LayoutParams(LayoutParams.MATCH_PARENT,
@@ -381,13 +398,11 @@ public class GrandmaActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				workDialog.dismiss();
-				if (grandma.getState() != State.ASLEEP) {
-					if (grandma.handleRequest(Requests.GAME) == false) {
-						Game game = new Game();
-						game.setGrandma(grandma);
-						game.setRealRequest(false);
-						game.handleRequest(Requests.GAME);
-					}
+				if (grandma.handleRequest(Requests.GAME) == false) {
+					Game game = new Game();
+					game.setGrandma(grandma);
+					game.setRealRequest(false);
+					game.handleRequest(Requests.GAME);
 				}
 			}
 		});
@@ -573,8 +588,10 @@ public class GrandmaActivity extends Activity {
 		workDialog = builder.create();
 	}
 
-	private void initTestPopup() {
-		View testDialogView = getLayoutInflater().inflate(
+	// initialise the dialog for creating requests, adding onclicklistener to
+	// all buttons in the linear layout
+	private void initTestDialog() {
+		testDialogView = getLayoutInflater().inflate(
 				R.layout.test_dialog_layout, null);
 
 		Button eatBreakfast = (Button) testDialogView
@@ -645,7 +662,9 @@ public class GrandmaActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (!requestList.containsKey(Requests.MEDICINE_MORNING
-						.toString())) {
+						.toString())
+						|| !requestList.containsKey(Requests.MEDICINE_EVENING
+								.toString())) {
 					now.setToNow();
 					int time = Integer.parseInt(now.format2445().substring(9,
 							13));
@@ -662,7 +681,9 @@ public class GrandmaActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				if (!requestList.containsKey(Requests.MEDICINE_EVENING
-						.toString())) {
+						.toString())
+						|| !requestList.containsKey(Requests.MEDICINE_MORNING
+								.toString())) {
 					now.setToNow();
 					int time = Integer.parseInt(now.format2445().substring(9,
 							13));
@@ -778,6 +799,34 @@ public class GrandmaActivity extends Activity {
 				testDialog.dismiss();
 			}
 		});
+		Button simulate = (Button) testDialogView.findViewById(R.id.simulate);
+		simulate.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				testDialog.dismiss();
+				((Button) testDialogView.findViewById(R.id.eatBreakfast))
+						.performClick();
+				((Button) testDialogView.findViewById(R.id.drink))
+						.performClick();
+				((Button) testDialogView.findViewById(R.id.medsMorning))
+						.performClick();
+				((Button) testDialogView.findViewById(R.id.shopping))
+						.performClick();
+				((Button) testDialogView.findViewById(R.id.cleanFlat))
+						.performClick();
+				((Button) testDialogView.findViewById(R.id.suitUp))
+						.performClick();
+				((Button) testDialogView.findViewById(R.id.washDishes))
+						.performClick();
+				((Button) testDialogView.findViewById(R.id.washClothes))
+						.performClick();
+				((Button) testDialogView.findViewById(R.id.game))
+						.performClick();
+				((Button) testDialogView.findViewById(R.id.sleep))
+						.performClick();
+			}
+		});
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("");
@@ -794,14 +843,18 @@ public class GrandmaActivity extends Activity {
 		testDialog = builder.create();
 	}
 
+	// work button clicked, shows the dialog for handling requests
 	public void onDoRequestButton(View doRequestButton) {
 		workDialog.show();
 	}
 
+	// test Button clicked, shows the dialog for adding requests
 	public void testButtonClicked(View testBtn) {
 		testDialog.show();
 	}
 
+	// storeroom Button clicked, showing the actual stock of the storeroom in a
+	// dialog
 	public void storeroomButtonClicked(View storeroomBtn) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("");
@@ -818,6 +871,7 @@ public class GrandmaActivity extends Activity {
 		storeroomDialog.show();
 	}
 
+	// returns a string with the actual storeroom stock
 	public String getStoreroomStock() {
 		String stock = "Lagerraum\n\nMahlzeiten\nSchnitzel: "
 				+ grandma.getStoreroom().getFood().get(Dish.SCHNITZEL)
@@ -838,6 +892,7 @@ public class GrandmaActivity extends Activity {
 		return stock;
 	}
 
+	// returns the list of request buttons
 	public HashMap<String, Button> getRequestList() {
 		return requestList;
 	}

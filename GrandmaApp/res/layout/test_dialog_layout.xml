@@ -87,6 +87,12 @@
             android:layout_height="wrap_content"
             android:text="Schlafenswunsch" />
 
+        <Button
+            android:id="@+id/simulate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="&quot;Alle&quot; Wünsche hinzufügen" />
+
     </LinearLayout>
 
 </ScrollView>
