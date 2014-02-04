@@ -21,7 +21,7 @@ public class WishesService extends Service {
 	
 	public static final String BROADCAST_ID = "GRANDMA_APP";
 	public static final String NEW_REQUEST = "NewRequest";
-	public static final String NEW_REQUEST_TIME = "NewRequest";
+	public static final String NEW_REQUEST_TIME = "NewRequestTime";
 	
 	private static WishesService instance;
 	
