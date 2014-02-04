@@ -100,11 +100,9 @@ public class WishesService extends Service {
 			createCleanFlatRequest( time, editor );
 		}
 		
-		if( time >= 1500 && time <= 1800 )
+		if( time == 1500)
 		{
-			int hours = (int) Math.random( ) * 3;
-			int min = (int) Math.random( ) * 60;
-			createGameRequest( time + hours * 100 + min, editor );
+			createGameRequest( time, editor );
 		}
 		// Storeroom supplies based request
 		
@@ -148,10 +146,10 @@ public class WishesService extends Service {
 
 	public void createGameRequest( int time, Editor editor )
 	{
-	    editor.putInt( "GAME", time + 100 );
+	    editor.putInt( "GAME", time + 200 );
 		editor.commit( );
 		
-	    sendMessageToActivity( "GAME", time + 100 );
+	    sendMessageToActivity( "GAME", time + 200 );
 	}
 	
 	public void createCleanFlatRequest( int time, Editor editor )

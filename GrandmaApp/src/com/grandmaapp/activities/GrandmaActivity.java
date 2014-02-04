@@ -1,7 +1,6 @@
 package com.grandmaapp.activities;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,21 +16,16 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.PopupWindow;
 
 import com.example.grandmaapp.R;
 import com.grandmaapp.model.CleanFlat;
@@ -40,15 +34,15 @@ import com.grandmaapp.model.Drink;
 import com.grandmaapp.model.Eat;
 import com.grandmaapp.model.Game;
 import com.grandmaapp.model.Grandma;
+import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Grandma.State;
 import com.grandmaapp.model.Medicine;
-import com.grandmaapp.model.Shopping;
-import com.grandmaapp.model.SuitUp;
-import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Medicine.Daytime;
 import com.grandmaapp.model.Request;
+import com.grandmaapp.model.Shopping;
 import com.grandmaapp.model.Sleep;
 import com.grandmaapp.model.Storeroom.Dish;
+import com.grandmaapp.model.SuitUp;
 import com.grandmaapp.model.WashClothes;
 import com.grandmaapp.model.WashDishes;
 import com.grandmaapp.notification.Notifications;
@@ -78,17 +72,11 @@ public class GrandmaActivity extends Activity {
 		editor = preferences.edit();
 		now = new Time();
 
-		test();
-
 		grandma = new Grandma(this);
 		requestList = new HashMap<String, Button>();
 		grandma.init();
 		for (Request request : grandma.getRequestsToHandle()) {
 			addRequestButton(request);
-		}
-
-		if (grandma.getRequestsToHandle().isEmpty()) {
-			test();
 		}
 
 		MiniGame.getInstance().setActivity(this);
@@ -828,22 +816,6 @@ public class GrandmaActivity extends Activity {
 		});
 		storeroomDialog = builder.create();
 		storeroomDialog.show();
-	}
-
-	private void test() {
-
-		Time now = new Time();
-		now.setToNow();
-
-		// time as integer from 0 to 2359 (hour and minutes)
-		int hour = Integer.parseInt(now.format2445().substring(9, 11));
-		int minute = Integer.parseInt(now.format2445().substring(11, 13));
-		// long currentTimeInMS = (hour * 60 * 60 * 1000) + (minute * 60 *
-		// 1000);
-
-		editor.putInt("DRINK", ((hour + 1) * 100 + minute));
-		editor.putInt("CLEANFLAT", ((hour + 2) * 100 + minute));
-		editor.commit();
 	}
 
 	public String getStoreroomStock() {
