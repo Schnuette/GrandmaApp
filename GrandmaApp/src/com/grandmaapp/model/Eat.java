@@ -7,21 +7,26 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 
 import com.grandmaapp.model.Grandma.Requests;
-import com.grandmaapp.model.Medicine.Daytime;
+import com.grandmaapp.model.Grandma.State;
 import com.grandmaapp.model.Storeroom.Dish;
+
+/*
+ * handles the Request to Eat
+ * the eat request needs a dish
+ * if request was handled successfully a dialog will show up and a the eaten food will be removed from the storeroom
+ * if the food is empty, request won't be handled  
+ */
 
 public class Eat extends Request {
 
 	Dish foodWish;
 	
 	public Eat(){
-		//this.timeMS = HOUR_IN_MS;
 		name = "Essen";
 	}
 	
 	public Eat(Dish d){
 		this.foodWish = d;
-		//this.timeMS = HOUR_IN_MS;
 	}
 	
 	public boolean handleRequest(Requests r) {
@@ -38,45 +43,49 @@ public class Eat extends Request {
 			});
 			
 			if (foodWish != null) {
-				// ein Essen nehmen, spuelen und einkaufen, falls das essen danach leer ist
 				int numOfDish = grandma.getStoreroom().getFood().get(foodWish);
 				if(numOfDish > 0){
+					// update food in the storeroom 
 					numOfDish -= 1;
 					grandma.getStoreroom().getFood().put(foodWish, numOfDish);
 
-					// prefs aktualisieren
+					// update the food in the preferences 
 					SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
 					Editor editor = preferences.edit();
 					switch (foodWish) {
 					case BREAKFAST:
 						editor.putInt("StoreBreakfast", numOfDish);
-						builder.setMessage("Brunhilde hat gefrühstückt.");
+						builder.setMessage("Brunhilde hat gefrühstückt. \n\n Anzahl: " + numOfDish);
 						break;
 					case SUPPER:
 						editor.putInt("StoreSupper", numOfDish);
-						builder.setMessage("Brunhilde hat zu Abend gegessen.");
+						builder.setMessage("Brunhilde hat zu Abend gegessen. \n\n Anzahl: " + numOfDish);
 						break;
 					case SCHNITZEL:
 						editor.putInt("StoreSchnitzel", numOfDish);
-						builder.setMessage("Brunhilde hat ein Schnitzel gegessen.");
+						builder.setMessage("Brunhilde hat ein Schnitzel gegessen. \n\n Anzahl: " + numOfDish);
 						break;
 					case NOODLES:
 						editor.putInt("StoreNoodles", numOfDish);
-						builder.setMessage("Brunhilde hat Nudeln gegessen.");
+						builder.setMessage("Brunhilde hat Nudeln gegessen. \n\n Anzahl: " + numOfDish);
 						break;
 					case DOENER:
 						editor.putInt("StoreDoener", numOfDish);
-						builder.setMessage("Brunhilde hat einen Döner gegessen.");
+						builder.setMessage("Brunhilde hat einen Döner gegessen. \n\n Anzahl: " + numOfDish);
 						break;
 					case PIZZA:
 						editor.putInt("StorePizza", numOfDish);
-						builder.setMessage("Brunhilde hat eine Pizza gegessen.");
+						builder.setMessage("Brunhilde hat eine Pizza gegessen. \n\n Anzahl: " + numOfDish);
 						break;
 					}
 					editor.commit();
 
+					// different dialog message if no food request exists or brunhilde sleeps
 					if (!realRequest) {
-						builder.setMessage("Brunhilde hat das Essen verschmäht! Sie hat keinen Hunger.");
+						builder.setMessage("Brunhilde hat das Essen verschmäht! \n Sie hat keinen Hunger.");
+						if(grandma.getState() == State.ASLEEP){
+							builder.setMessage("Brunhilde kann jetzt nicht essen \n Sie schläft.");
+						}
 					}
 
 					alert = builder.create();

@@ -9,16 +9,21 @@ import android.preference.PreferenceManager;
 import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Grandma.State;
 
+/*
+ * handles the Request to dress brunhilde
+ * takes clean clothes from the storeroom if brunhilde isn't asleep
+ * if no clean clothes left, request won't be handled
+ * 
+ */
+
 public class SuitUp extends Request {
 	
 	public SuitUp(){
-		//timeMS = HOUR_IN_MS;
 		name = "Ankleiden";
 	}
 
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.SUITUP) {
-			// saubere Klamotten aus Vorratsschrank
 			int cleanClothes = grandma.getStoreroom().getCleanClothes();
 					
 			AlertDialog.Builder builder = new AlertDialog.Builder(grandma.getMainActivity());
@@ -31,10 +36,11 @@ public class SuitUp extends Request {
 			});
 			if(grandma.getState() != State.ASLEEP){
 				if (cleanClothes > 0) {
+					// update clothes in the storeroom
 					cleanClothes -= 1;
 					grandma.getStoreroom().setCleanClothes(cleanClothes);
 
-					// prefs aktualisieren
+					// update clothes in the preferences
 					SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
 					Editor editor = preferences.edit();
 					editor.putInt("StoreClothes", cleanClothes);

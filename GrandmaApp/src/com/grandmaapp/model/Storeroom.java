@@ -2,7 +2,11 @@ package com.grandmaapp.model;
 
 import java.util.HashMap;
 
-import com.grandmaapp.model.Grandma.Requests;
+/*
+ * represent a store room and contains all food, water and clothes
+ * food saved in a hashmap and food is separated by the enum Dish
+ * 
+ */
 
 public class Storeroom {
 
@@ -26,22 +30,8 @@ public class Storeroom {
 	int numDinner;
 	HashMap<Dish, Integer> food = new HashMap<Dish, Integer>();
 	
-	public void fillStoreroom(){
-		cleanClothes = MAXCLEANCLOTHES;
-		this.fillFood();
-	}
 	
-	public void fillFood(){
-		waterBottles = MAXWATER;
-		numDinner = MAXDINNERSUM;
-		food.put(Dish.SCHNITZEL, MAXDINNER);
-		food.put(Dish.NOODLES, MAXDINNER);
-		food.put(Dish.DOENER, MAXDINNER);
-		food.put(Dish.PIZZA, MAXDINNER);
-		food.put(Dish.BREAKFAST, MAXBREAKFASTSUPPER);
-		food.put(Dish.SUPPER, MAXBREAKFASTSUPPER);
-	}
-	
+	// calculates the sum of all left dinners
 	public void calcDinnerSum(){
 		int sum = 0;
 		sum += food.get(Dish.SCHNITZEL);

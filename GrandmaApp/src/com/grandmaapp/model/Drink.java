@@ -8,10 +8,16 @@ import android.preference.PreferenceManager;
 
 import com.grandmaapp.model.Grandma.Requests;
 
+/*
+ * handles the Request to Drink
+ * if request was handled successfully a dialog will show up and a water will be removed from the storeroom
+ * if there's no water left, request won't be handled 
+ * 
+ */
+
 public class Drink extends Request {
 	
 	public Drink(){
-		//timeMS = HOUR_IN_MS;
 		name = "Trinken";
 	}
 	
@@ -31,21 +37,22 @@ public class Drink extends Request {
 			int numBottles = grandma.getStoreroom().getWaterBottles();
 			if(numBottles > 0){
 			
+				// update water in the storeroom
 				numBottles -= 1;
 				grandma.getStoreroom().setWaterBottles(numBottles);
 
-				// prefs aktualisieren
+				// update water in the preferences 
 				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
 				Editor editor = preferences.edit();
 				editor.putInt("StoreWater", numBottles);
 				editor.commit();
 
-
+				// different dialog message if drink button was pressed without an request
 				if (realRequest) {	
-					builder.setMessage("Ein Wasser wurde aus der Vorratskammer entfernt.\n Noch " + numBottles + " Flaschen übrig.");
+					builder.setMessage("Ein Wasser wurde aus der Vorratskammer entfernt.\n\n Noch " + numBottles + " Flaschen übrig.");
 				}
 				else{
-					builder.setMessage("Brunhilde möchte jetzt nichts trinken!\n Noch " + numBottles + " Flaschen übrig.");
+					builder.setMessage("Brunhilde möchte jetzt nichts trinken!\n Sie schüttet das Wasser weg.\n\n Noch " + numBottles + " Flaschen übrig.");
 				}
 				alert = builder.create();
 				alert.show();

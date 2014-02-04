@@ -1,14 +1,8 @@
 package com.grandmaapp.model;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
@@ -17,12 +11,22 @@ import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.example.grandmaapp.R;
 import com.grandmaapp.activities.GrandmaActivity;
 import com.grandmaapp.model.Medicine.Daytime;
 import com.grandmaapp.model.Storeroom.Dish;
+
+/*
+ * represents the grandma
+ * enum Requests represents all kind of Requests
+ * enum State represents the mood of brunhilde
+ * 
+ * this class does all the datamodel behaviour
+ * it manages all the requests like adding and handle them
+ * at start grandma loads the data from the preferences list in the model
+ * 
+ */
 
 public class Grandma {
 
@@ -55,15 +59,17 @@ public class Grandma {
 	GrandmaActivity mainActivity;
 	State state;
 
+	// constructor
 	public Grandma(GrandmaActivity activity){
 		storeroom = new Storeroom();
 		mainActivity = activity;
 		state = State.HAPPY;
 	}
 	
+	// add a new Request to the Requestlist
 	public void addRequest(Request r){
 		r.setGrandma(this);
-		// wenn es einen request schon gibt, wird kein neuer erzeugt
+		// breaks if a request of this kind already exist
 		for(Request request: requestsToHandle){
 			if(request.getClass().toString().equals(r.getClass().toString())){
 				Log.d("test", request.getClass().toString() + " " + r.getClass().toString());
@@ -72,25 +78,28 @@ public class Grandma {
 		}
 		requestsToHandle.add(r);		
 		
+		// grandma is mad and image is changed
 		state = State.MAD;
 		ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
 		grandmaImgV.setImageResource(R.drawable.grandma_mad);
 	}
 	
+	// handle the request if it exists and deletes it
 	public boolean handleRequest(Requests r){
 		for(Request request: requestsToHandle){
 			if(request.handleRequest(r)){
-				// button entfernen aus requestList loeschen
+				// delete request button
 				Button button = mainActivity.getRequestList().get(request.kind().toString());
 				ViewGroup layout = (ViewGroup) button.getParent();
 				if(null!=layout) //for safety only  as you are doing onClick
-				layout.removeView(button);
+					layout.removeView(button);
 				mainActivity.getRequestList().remove(request.kind().toString());
 				
-				// aus den Prefs loeschen
+				// remove Request from preferences
 				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
 				Editor editor = preferences.edit();
 				if(request.kind() == Requests.MEDICINE_MORNING || request.kind() == Requests.MEDICINE_EVENING || request.kind() == Requests.MEDICINE_NOON){
+					// request is saved with key MEDICINE in the preferences and with daytime in the request
 					editor.remove(Requests.MEDICINE.toString());
 				}
 				else{
@@ -98,9 +107,10 @@ public class Grandma {
 				}
 				editor.commit();
 				
-				// aus Datenmodell loeschen
+				// remove from data model
 				requestsToHandle.remove(request);
 				
+				// sets the grandma to Happy if no requests left to handle
 				if(requestsToHandle.isEmpty() && state != State.ASLEEP){
 					state = State.HAPPY;
 					ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
@@ -112,44 +122,22 @@ public class Grandma {
 		return false;
 	}
 	
-	public GrandmaActivity getMainActivity() {
-		return mainActivity;
-	}
-
-	public void setMainActivity(GrandmaActivity mainActivity) {
-		this.mainActivity = mainActivity;
-	}
-
-	public int calcExpireTime(long l){
-		Time now = new Time();
-		now.setToNow();
-		
-		//time as integer from 0 to 2359 (hour and minutes)
-		int hour = Integer.parseInt(now.format2445().substring(9, 13));
-		int minute = Integer.parseInt(now.format2445().substring(11, 13));
-		long expireTimeInMS = (hour * 60 * 60 * 1000) + (minute * 60 * 1000) + l;
-		
-		int expireTime = (int)(((expireTimeInMS / 3600000L) * 100L) + (expireTimeInMS % 3600000L));		
-		
-		return expireTime;
-	}
-	
+	// calculates the runtime from the expireTime of the Request and the current time
 	public int calcRuntime(int expireTime){
-		//aktuelle Zeit in ms
+		// current time in ms
 		Time now = new Time();
-		now.setToNow();
-		
-		//time as integer from 0 to 2359 (hour and minutes)
+		now.setToNow();		
+		// time as integer from 0 to 2359 (hour and minutes)
 		int hour = Integer.parseInt(now.format2445().substring(9, 11));
 		int minute = Integer.parseInt(now.format2445().substring(11, 13));
-		long currentTimeInMS = (hour * 60 * 60 * 1000) + (minute * 60 * 1000);
 		
-		// ablaufzeit in ms
+		long currentTimeInMS = (hour * 60 * 60 * 1000) + (minute * 60 * 1000);
 		long expireTimeInMS = HHMMtoMS(expireTime);
 				
-		// ablaufzeit - aktuelle uhrzeit in ms
+		// expire - current time in ms
 		long runtimeinMS = (expireTimeInMS - currentTimeInMS);	
-		// laufzeit in hhmm format
+		
+		// runtime in hhmm format
 		int runtimeH = (int)((runtimeinMS / 3600000L));
 		int runtimeM = (int)((runtimeinMS % 3600000L) / 60000L);
 		int runtime = runtimeH * 100 + runtimeM;
@@ -157,12 +145,24 @@ public class Grandma {
 		return runtime;
 	}
 	
+	// convert from hhmm format into ms 
+	public long HHMMtoMS(int time) {
+		int hour = (time/100);
+		int minute = (time%100);
+		long timeInMS = (hour * 60 * 60 * 1000) + (minute * 60 * 1000);
+		
+		return timeInMS;
+	}
+	
+	// loads storeroom and old requests from the preferences
 	public void init() {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(mainActivity);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity);
 		Editor editor = prefs.edit();
 
-		// Vorratskammer wird geladen
+		/*
+		 *  load storeroom from preferences
+		 *  if no value is set in the prefs, value will be max value
+		 */
 		int maxDinner = this.getStoreroom().getMAXDINNER();
 		int maxBreakfastSupper = this.getStoreroom().getMAXBREAKFASTSUPPER();
 		int numSchnitzel = prefs.getInt("StoreSchnitzel", -1);
@@ -231,7 +231,11 @@ public class Grandma {
 		
 		editor.commit();
 
-		// Requests werden geladen
+		/*
+		 *  load Requests from preferences
+		 *  key: kind of request
+		 *  value: expire time of the request
+		 */
 		int time = prefs.getInt(Requests.EAT.toString(), -1);
 		if (time > -1) {
 			createEatRequest(prefs, time);
@@ -275,6 +279,10 @@ public class Grandma {
 
 	}
 	
+	/*
+	 * new requests will be created and added to the data model
+	 * runtime will be calculated from the expire time
+	 */
 	public Game createGameRequest(int time){
 		Game request = new Game();
 		request.setRuntime(calcRuntime(time));
@@ -323,8 +331,10 @@ public class Grandma {
 		return request;
 	}
 
+	
 	public Medicine createMedicineRequest(SharedPreferences prefs, int time) {
 		Medicine request = new Medicine();
+		// med request saved as MEDECINE in prefs. daytime is saved under MedWish
 		String medWish = prefs.getString("MedWish", null);
 		if (medWish.equals(Daytime.MORNING.toString())) {
 			request.setDaytime(Daytime.MORNING);
@@ -352,8 +362,6 @@ public class Grandma {
 	public CleanFlat createCleanFlatRequest(int time) {
 		CleanFlat request = new CleanFlat();
 		request.setRuntime(calcRuntime(time));
-		Log.d("test", "cleanflat runtime " + time);
-		Log.d("test", "cleanflat runtime " + request.getRuntime());
 		this.addRequest(request);
 		
 		return request;
@@ -361,6 +369,7 @@ public class Grandma {
 
 	public Eat createEatRequest(SharedPreferences prefs, int time) {
 		Eat request = new Eat();
+		// eat request saved as EAT in prefs. dish is saved under FoodWish
 		String foodWish = prefs.getString("FoodWish", null);
 		if (foodWish.equals(Dish.BREAKFAST.toString())) {
 			request.setFoodWish(Dish.BREAKFAST);
@@ -381,6 +390,14 @@ public class Grandma {
 		return request;
 	}
 	
+	public GrandmaActivity getMainActivity() {
+		return mainActivity;
+	}
+
+	public void setMainActivity(GrandmaActivity mainActivity) {
+		this.mainActivity = mainActivity;
+	}
+	
 	public Storeroom getStoreroom() {
 		return storeroom;
 	}
@@ -399,14 +416,6 @@ public class Grandma {
 
 	public void setState(State state) {
 		this.state = state;
-	}
-
-	public long HHMMtoMS(int time) {
-		// hhmm format in ms umrechnen
-		int hour = (time/100);
-		int minute = (time%100);
-		long timeInMS = (hour * 60 * 60 * 1000) + (minute * 60 * 1000);
-		return timeInMS;
 	}
 	
 }

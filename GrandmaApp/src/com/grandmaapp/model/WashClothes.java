@@ -7,22 +7,28 @@ import android.preference.PreferenceManager;
 import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.sensors.WashingShaker;
 
+/*
+ * handles the Request to wash clothes
+ * starts the WashingShaker and refill clean clothes in the storeroom
+ * 
+ */
+
 public class WashClothes extends Request {
 	
 	public WashClothes(){
-		//timeMS = HOUR_IN_MS * 12;
 		name = "Kleidung waschen";
 	}
 	
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.WASHCLOTHES) {
-			
+			// starts the Washingshaker
 			WashingShaker.getInstance( ).show( );
 			
-			// Schrank wird wieder mit sauberer Kleidung gefuellt
+			// TODO in washingshaker ok button auslagern?
+			// refill storeroom with clean clothes
 			grandma.getStoreroom().setCleanClothes(Storeroom.MAXCLEANCLOTHES);
 			
-			// prefs aktualisieren
+			// update clothes in the preferences
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(grandma.getMainActivity());
 			Editor editor = preferences.edit();
 			editor.putInt("StoreClothes", Storeroom.MAXCLEANCLOTHES);

@@ -6,6 +6,15 @@ import android.content.DialogInterface;
 import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Grandma.State;
 
+/*
+ * handles the Request to take medicine
+ * the eat request needs a daytime (morning, noon or evening)
+ * request handled successfully if daytime of request and given medicine fit and dialog shows up
+ * wrong medicine cause death of brunhilde
+ * e.g. if daytime is MORNING, handleRequest needs MEDICINE_MORNING
+ * 
+ */
+
 public class Medicine extends Request {
 
 	public enum Daytime {
@@ -16,21 +25,15 @@ public class Medicine extends Request {
 
 	public Medicine(Daytime dt) {
 		this.daytime = dt;
-		//this.timeMS = HOUR_IN_MS;
 		setMedName();	
 	}
 
 	public Medicine() {
 		this.daytime = Daytime.MORNING;
-		//this.timeMS = HOUR_IN_MS;
 		name = "Medizin";
 	}
 
 	public boolean handleRequest(Requests r) {
-		/*
-		 * pruefen welches Medikament verabreicht wird und welches Medikament
-		 * die Grandma braucht
-		 */
 		AlertDialog.Builder builder = new AlertDialog.Builder(grandma.getMainActivity());
 		builder.setTitle("");
 		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -39,17 +42,16 @@ public class Medicine extends Request {
 						alert.dismiss();
 					}
 		});
-		
+		// given med and daytime need to fit
 		if ((r == Requests.MEDICINE_MORNING && daytime == Daytime.MORNING) || 
 				(r == Requests.MEDICINE_EVENING && daytime == Daytime.EVENING) || 
 				(r == Requests.MEDICINE_NOON && daytime == Daytime.NOON)) {
-
+			
 			builder.setMessage("Brunhilde hat ihre richtigen Medikamente bekommen!");
 			alert = builder.create();
 			alert.show();
 			return true;
 		} else {
-			// TODO stirbt! popup warnung falsches med? oma bild tot setzen?
 			grandma.setState(State.DEAD);
 			
 			builder.setMessage("Brunhilde hat die falschen Medikamente bekommen und stirbt!");

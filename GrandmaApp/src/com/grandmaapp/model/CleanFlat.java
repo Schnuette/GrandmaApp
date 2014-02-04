@@ -5,16 +5,21 @@ import android.content.DialogInterface;
 
 import com.grandmaapp.model.Grandma.Requests;
 
+/*
+ * handles the Request to clean the flat
+ * if request was handled successfully a dialog will show up
+ * 
+ */
+
 public class CleanFlat extends Request {
 	
 	public CleanFlat(){
-		//runtime = HOUR_IN_MS * 14;
 		name = "Wohnung putzen";
 	}
 	
 	public boolean handleRequest(Requests r) {
 		if(r == Requests.CLEANFLAT){
-			// sobald button gedrückt wird wohnung sauber und request wird geloescht
+		
 			AlertDialog.Builder builder = new AlertDialog.Builder(
 					grandma.getMainActivity());
 			builder.setTitle("");
@@ -27,6 +32,7 @@ public class CleanFlat extends Request {
 			builder.setMessage("Die Wohnung ist jetzt wieder sauber!");
 			alert = builder.create();
 			alert.show();
+			
 			return true;
 		}
 		return false;

@@ -5,6 +5,12 @@ import android.content.DialogInterface;
 
 import com.grandmaapp.model.Grandma.Requests;
 
+/*
+ * handles the Request to Wash the Dishes
+ * if request was handled successfully a dialog will show up
+ * 
+ */
+
 public class WashDishes extends Request {
 	
 	public WashDishes(){
@@ -14,9 +20,7 @@ public class WashDishes extends Request {
 	
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.WASHDISHES) {
-			// sobald button gedrückt wird gespült und request wird geloescht
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					grandma.getMainActivity());
+			AlertDialog.Builder builder = new AlertDialog.Builder(grandma.getMainActivity());
 			builder.setTitle("");
 			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 						@Override

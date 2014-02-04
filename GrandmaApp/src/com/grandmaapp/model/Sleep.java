@@ -9,16 +9,21 @@ import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Grandma.State;
 import com.grandmaapp.sensors.SleepDetector;
 
+/*
+ * handles the Request to Sleep
+ * starts the sleepdetector if brunhilde has a real Sleep Request
+ * else a dialog is shown
+ * 
+ */
+
 public class Sleep extends Request {
 
 	public Sleep() {
-		//timeMS = HOUR_IN_MS / 2;
 		name = "Schlafen";
 	}
 	
 	public boolean handleRequest(Requests r) {
 		if(r == Requests.SLEEP){
-			
 			AlertDialog.Builder builder = new AlertDialog.Builder(grandma.getMainActivity());
 			builder.setTitle("");
 			builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -28,26 +33,27 @@ public class Sleep extends Request {
 						}
 					});
 			
-			// sobald button gedrückt wird request wird geloescht
 			if (realRequest) {
+				// starts Sleepdetector
+				SleepDetector.getInstance().show();
+				grandma.setState(State.ASLEEP);
+
+				// TODO auslagern in SleepDetector.onSleep()
+				ImageView grandmaImgV = (ImageView) grandma.getMainActivity().findViewById(R.id.grandmaImgView);
+				grandmaImgV.setImageResource(R.drawable.grandma_asleep);
+				return true;
+			}
+			else{
 				if (grandma.getState() != State.ASLEEP) {
-					SleepDetector.getInstance().show();
-					grandma.setState(State.ASLEEP);
-					
-					ImageView grandmaImgV = (ImageView) grandma.getMainActivity().findViewById(R.id.grandmaImgView);
-					grandmaImgV.setImageResource(R.drawable.grandma_asleep);
-				} 
+					builder.setMessage("Brunhilde möchte jetzt nicht schlafen.");
+					alert = builder.create();
+					alert.show();
+				}
 				else {
 					builder.setMessage("Brunhilde schläft bereits.");
 					alert = builder.create();
 					alert.show();
 				}
-			return true;
-			}
-			else{
-				builder.setMessage("Brunhilde möchte jetzt nicht schlafen.");
-				alert = builder.create();
-				alert.show();
 			}
 		}
 		return false;

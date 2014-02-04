@@ -7,19 +7,23 @@ import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Grandma.State;
 import com.grandmaapp.sensors.MiniGame;
 
+/*
+ * handles the Request to play minigame
+ * the minigame is started if grandma is awake
+ * otherwise a dialog shows up
+ * 
+ */
+
 public class Game extends Request {
 
 	public Game(){
-		//timeMS = HOUR_IN_MS;
 		name = "Spielen";
 	}
 	
 	public boolean handleRequest(Requests r) {
 		if (r == Requests.GAME) {
-			/* 
-			 * wenn grandma wach ist kann sie spielen
-			 */
 			if(grandma.getState() != State.ASLEEP){
+				// starts the minigame
 				MiniGame.getInstance( ).show( );
 				return true;
 			}
