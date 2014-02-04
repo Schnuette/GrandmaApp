@@ -257,7 +257,19 @@ public class Grandma {
 		if (time > -1) {
 			createWashDishesRequest(time);
 		}
+		time = prefs.getInt(Requests.GAME.toString(), -1);
+		if (time > -1) {
+			createGameRequest(time);
+		}
 
+	}
+	
+	public Game createGameRequest(int time){
+		Game request = new Game();
+		request.setRuntime(calcRuntime(time));
+		this.addRequest(request);
+		
+		return request;
 	}
 
 	public WashDishes createWashDishesRequest(int time) {
