@@ -45,7 +45,7 @@ public class Drink extends Request {
 					builder.setMessage("Ein Wasser wurde aus der Vorratskammer entfernt. Noch " + numBottles + " Flaschen übrig.");
 				}
 				else{
-					builder.setMessage("Brunhilde möchte jetzt nichts trinken!");
+					builder.setMessage("Brunhilde möchte jetzt nichts trinken! Noch " + numBottles + " Flaschen übrig.");
 				}
 				alert = builder.create();
 				alert.show();
