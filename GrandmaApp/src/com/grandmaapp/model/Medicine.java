@@ -60,6 +60,15 @@ public class Medicine extends Request {
 	}
 
 	public Requests kind() {
+		if(daytime == Daytime.MORNING){
+			return Requests.MEDICINE_MORNING;
+		}
+		if(daytime == Daytime.EVENING){
+			return Requests.MEDICINE_EVENING;
+		}
+		if(daytime == Daytime.NOON){
+			return Requests.MEDICINE_NOON;
+		}
 		return Requests.MEDICINE;
 	}
 

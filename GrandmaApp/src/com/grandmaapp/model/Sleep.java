@@ -2,7 +2,9 @@ package com.grandmaapp.model;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.widget.ImageView;
 
+import com.example.grandmaapp.R;
 import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Grandma.State;
 import com.grandmaapp.sensors.SleepDetector;
@@ -31,6 +33,9 @@ public class Sleep extends Request {
 				if (grandma.getState() != State.ASLEEP) {
 					SleepDetector.getInstance().show();
 					grandma.setState(State.ASLEEP);
+					
+					ImageView grandmaImgV = (ImageView) grandma.getMainActivity().findViewById(R.id.grandmaImgView);
+					grandmaImgV.setImageResource(R.drawable.grandma_asleep);
 				} 
 				else {
 					builder.setMessage("Brunhilde schläft bereits.");

@@ -82,7 +82,7 @@ public class Shopping extends Request {
 							alert.dismiss();
 						}
 			});
-			builder.setMessage("Du warst einkaufen.");
+			builder.setMessage("Du warst einkaufen. \n" + grandma.getMainActivity().getStoreroomStock());
 			alert = builder.create();
 			alert.show();
 			return true;

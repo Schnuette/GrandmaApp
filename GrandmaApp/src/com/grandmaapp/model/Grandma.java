@@ -63,8 +63,14 @@ public class Grandma {
 	
 	public void addRequest(Request r){
 		r.setGrandma(this);
-		requestsToHandle.add(r);
-		//TODO nur einmal einkaufen
+		// wenn es einen request schon gibt, wird kein neuer erzeugt
+		for(Request request: requestsToHandle){
+			if(request.getClass().toString().equals(r.getClass().toString())){
+				Log.d("test", request.getClass().toString() + " " + r.getClass().toString());
+				return;
+			}
+		}
+		requestsToHandle.add(r);		
 		
 		state = State.MAD;
 		ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
@@ -84,13 +90,18 @@ public class Grandma {
 				// aus den Prefs loeschen
 				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
 				Editor editor = preferences.edit();
-				editor.remove(request.kind().toString());
+				if(request.kind() == Requests.MEDICINE_MORNING || request.kind() == Requests.MEDICINE_EVENING || request.kind() == Requests.MEDICINE_NOON){
+					editor.remove(Requests.MEDICINE.toString());
+				}
+				else{
+					editor.remove(request.kind().toString());
+				}
 				editor.commit();
 				
 				// aus Datenmodell loeschen
 				requestsToHandle.remove(request);
 				
-				if(requestsToHandle.isEmpty()){
+				if(requestsToHandle.isEmpty() && state != State.ASLEEP){
 					state = State.HAPPY;
 					ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
 					grandmaImgV.setImageResource(R.drawable.grandma_happy);
@@ -257,7 +268,19 @@ public class Grandma {
 		if (time > -1) {
 			createWashDishesRequest(time);
 		}
+		time = prefs.getInt(Requests.GAME.toString(), -1);
+		if (time > -1) {
+			createGameRequest(time);
+		}
 
+	}
+	
+	public Game createGameRequest(int time){
+		Game request = new Game();
+		request.setRuntime(calcRuntime(time));
+		this.addRequest(request);
+		
+		return request;
 	}
 
 	public WashDishes createWashDishesRequest(int time) {
