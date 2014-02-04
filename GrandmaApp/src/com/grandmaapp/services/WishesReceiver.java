@@ -21,7 +21,7 @@ public class WishesReceiver extends BroadcastReceiver
         if(intent.getAction().equals( WishesService.BROADCAST_ID) )
         {
             String extra = intent.getStringExtra(WishesService.NEW_REQUEST);
-            int time = intent.getIntExtra( WishesService.NEW_REQUEST, -1 );
+            int time = intent.getIntExtra( WishesService.NEW_REQUEST_TIME, -1 );
             
             if( extra != null )
             {

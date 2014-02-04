@@ -21,6 +21,7 @@ public class WishesService extends Service {
 	
 	public static final String BROADCAST_ID = "GRANDMA_APP";
 	public static final String NEW_REQUEST = "NewRequest";
+	public static final String NEW_REQUEST_TIME = "NewRequest";
 	
 	private static WishesService instance;
 	
@@ -40,7 +41,7 @@ public class WishesService extends Service {
 		int time = Integer.parseInt(now.format2445().substring(9, 13));
 		Log.d("test", String.valueOf(time));
 		
-		sendMessageToActivity( NEW_REQUEST, "TEEEEST", time );
+		sendMessageToActivity( "TEEEEST", time );
 		
 		Editor editor = preferences.edit();
 //		editor.putInt(r.kind().toString(), calcExpireTime(r.getTimeMS()));	
@@ -81,7 +82,7 @@ public class WishesService extends Service {
 		{
 			createWashDishesRequest( time, editor );
 		}
-		else if( time == 1650 )
+		else if( time == 1630 )
 		{
 			createEveningMedicineRequest( time, editor );
 		}
@@ -137,10 +138,11 @@ public class WishesService extends Service {
 		return false;
     }
 
-	public void sendMessageToActivity( String type, String message, int time )
+	public void sendMessageToActivity( String message, int time )
     {
 		Intent intent = new Intent( BROADCAST_ID );
-		intent.putExtra( type, message );
+		intent.putExtra( NEW_REQUEST, message );
+		intent.putExtra( NEW_REQUEST_TIME, time );
 		sendBroadcast( intent );
     }
 
@@ -149,7 +151,7 @@ public class WishesService extends Service {
 	    editor.putInt( "GAME", time + 100 );
 		editor.commit( );
 		
-	    sendMessageToActivity( NEW_REQUEST, "GAME", time + 100 );	
+	    sendMessageToActivity( "GAME", time + 100 );	
 	}
 	
 	public void createCleanFlatRequest( int time, Editor editor )
@@ -157,7 +159,7 @@ public class WishesService extends Service {
 	    editor.putInt( "CLEANFLAT", time + 1000 );
 		editor.commit( );
 	    
-	    sendMessageToActivity( NEW_REQUEST, "CLEANFLAT", time + 1000 );		
+	    sendMessageToActivity( "CLEANFLAT", time + 1000 );		
 	}
 	
 	public void createShoppingRequest( int time, Editor editor )
@@ -165,7 +167,7 @@ public class WishesService extends Service {
 	    editor.putInt( "SHOPPING", time + 100 );
 		editor.commit( );
 		
-	    sendMessageToActivity( NEW_REQUEST, "SHOPPING", time + 100 );
+	    sendMessageToActivity( "SHOPPING", time + 100 );
     }
 
 	public void createWashClothesRequest( int time, Editor editor )
@@ -173,7 +175,7 @@ public class WishesService extends Service {
 	    editor.putInt( "WASHCLOTHES", time + 1200 );
 		editor.commit( );
 		
-	    sendMessageToActivity( NEW_REQUEST, "WASHCLOTHES", time + 1200 );
+	    sendMessageToActivity( "WASHCLOTHES", time + 1200 );
     }
 
 	public void createSleepRequest( int time, Editor editor )
@@ -183,7 +185,7 @@ public class WishesService extends Service {
 		
 	    notifyUser( "Brunhilde möchte schlafen!" );
 	    
-	    sendMessageToActivity( NEW_REQUEST, "SLEEP", time + 100 );
+	    sendMessageToActivity( "SLEEP", time + 100 );
     }
 
 	public void createSupperRequest( int time, Editor editor )
@@ -194,7 +196,7 @@ public class WishesService extends Service {
 		
 	    notifyUser( "Brunhilde möchte zu Abend essen!" );
 	    
-	    sendMessageToActivity( NEW_REQUEST, "EAT", time + 100 );
+	    sendMessageToActivity( "EAT", time + 100 );
     }
 
 	public void createEveningMedicineRequest( int time, Editor editor )
@@ -204,7 +206,7 @@ public class WishesService extends Service {
 		
 	    editor.putString( "MedWish", "EVENING" );
 	    
-	    sendMessageToActivity( NEW_REQUEST, "MEDICINE", time + 100 );
+	    sendMessageToActivity( "MEDICINE", time + 100 );
     }
 
 	public void createWashDishesRequest( int time, Editor editor )
@@ -214,7 +216,7 @@ public class WishesService extends Service {
 		
 	    notifyUser( "Brunhilde hat schmutziges Geschirr!" );
 	    
-	    sendMessageToActivity( NEW_REQUEST, "WASHDISHES", time + 100 );
+	    sendMessageToActivity( "WASHDISHES", time + 100 );
     }
 
 	public boolean createLunchRequest( SharedPreferences preferences, int time, Editor editor )
@@ -258,7 +260,7 @@ public class WishesService extends Service {
 	    		
 	    		notifyUser( "Brunhilde braucht ihre Medizin!" );
 	    		
-	    	    sendMessageToActivity( NEW_REQUEST, "MEDICINE", time + 100 );
+	    	    sendMessageToActivity( "MEDICINE", time + 100 );
 	    	}
 	    	
 	    	editor.putInt( "EAT", time + 100 );
@@ -267,7 +269,7 @@ public class WishesService extends Service {
     		
 	    	notifyUser( "Brunhilde möchte essen!" );
 	    	
-		    sendMessageToActivity( NEW_REQUEST, "EAT", time + 100 );
+		    sendMessageToActivity( "EAT", time + 100 );
 	    }
 	    else
 	    {
@@ -286,7 +288,7 @@ public class WishesService extends Service {
     		
 	    	notifyUser( "Brunhilde möchte trinken!" );
 	    	
-		    sendMessageToActivity( NEW_REQUEST, "DRINK", time + 30 );
+		    sendMessageToActivity( "DRINK", time + 30 );
 	    }
 	    else
 	    {
@@ -303,7 +305,7 @@ public class WishesService extends Service {
 		
 	    notifyUser( "Brunhilde möchte Frühstück essen!" );
 	    
-	    sendMessageToActivity( NEW_REQUEST, "EAT", time + 100 );
+	    sendMessageToActivity( "EAT", time + 100 );
     }
 
 	public void createMorningMedicineRequest( int time, Editor editor )
@@ -314,7 +316,7 @@ public class WishesService extends Service {
 		
 	    notifyUser( "Brunhilde muss ihre Morgen-Medizin nehmen!" );
 	    
-	    sendMessageToActivity( NEW_REQUEST, "MEDICINE", time + 100 );
+	    sendMessageToActivity( "MEDICINE", time + 100 );
     }
 
 	public void createSuitUpRequest( int time, Editor editor )
@@ -324,7 +326,7 @@ public class WishesService extends Service {
 		
 	    notifyUser( "Brunhilde möchte angezogen werden!" );
 	    
-	    sendMessageToActivity( NEW_REQUEST, "SUITUP", time + 30 );
+	    sendMessageToActivity( "SUITUP", time + 30 );
     }
 
 	public void notifyUser( String message )
