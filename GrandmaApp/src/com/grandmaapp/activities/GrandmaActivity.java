@@ -19,10 +19,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
@@ -66,6 +68,7 @@ public class GrandmaActivity extends Activity {
 	SharedPreferences preferences;
 	Editor editor;
 	View testDialogView;
+	MediaPlayer mediaPlayer;
 
 	// called when application is started initializes the global variables,
 	// adjusts and inits the GUI, starts the service and calls all init-methods
@@ -96,7 +99,6 @@ public class GrandmaActivity extends Activity {
 		adjustGUI();
 		initWorkDialog();
 		initTestDialog();
-
 	}
 
 	@Override
@@ -104,6 +106,21 @@ public class GrandmaActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.grandma, menu);
 		return true;
+	}
+
+	@Override
+	protected void onPause() {
+		if (mediaPlayer != null) {
+			try {
+				mediaPlayer.stop();
+				mediaPlayer.reset();
+				mediaPlayer.release();
+			} catch (Exception e) {
+				Log.d("Nitif Activity", e.toString());
+			}
+		}
+		mediaPlayer = null;
+		super.onPause();
 	}
 
 	// method notifying the user
@@ -125,6 +142,7 @@ public class GrandmaActivity extends Activity {
 		super.onResume();
 		// Resets the message counter on app resume
 		Notifications.getInstance().resetMessageCounter();
+		startMusic();
 	}
 
 	// method adjusting the GUI changing height and width of background image
@@ -160,7 +178,7 @@ public class GrandmaActivity extends Activity {
 		Button requestButton = new Button(this);
 		requestButton.setTag(request.kind());
 		long runtimeInMS = grandma.HHMMtoMS(request.getRuntime());
-		//countdown showing name of request and time to fullfil request
+		// countdown showing name of request and time to fullfil request
 		CountDown countdown = new CountDown(runtimeInMS, 1000, requestButton,
 				request.getName());
 		countdown.start();
@@ -205,7 +223,16 @@ public class GrandmaActivity extends Activity {
 				DateFormat.getDateTimeInstance().format(new Date()));
 
 		editor.commit();
-
+		if (mediaPlayer != null) {
+			try {
+				mediaPlayer.stop();
+				mediaPlayer.reset();
+				mediaPlayer.release();
+			} catch (Exception e) {
+				Log.d("Nitif Activity", e.toString());
+			}
+		}
+		mediaPlayer = null;
 		super.onDestroy();
 	}
 
@@ -895,6 +922,34 @@ public class GrandmaActivity extends Activity {
 	// returns the list of request buttons
 	public HashMap<String, Button> getRequestList() {
 		return requestList;
+	}
+
+	public void startMusic() {
+		if (mediaPlayer != null) {
+			mediaPlayer.stop();
+			mediaPlayer.reset();
+			mediaPlayer.release();
+		}
+		switch (grandma.getState()) {
+		case HAPPY:
+			mediaPlayer = MediaPlayer.create(this, R.raw.song_of_storms);
+			mediaPlayer.setLooping(true);
+			mediaPlayer.start();
+			break;
+		case MAD:
+			mediaPlayer = MediaPlayer.create(this, R.raw.imperial_march);
+			mediaPlayer.setLooping(true);
+			mediaPlayer.start();
+			break;
+		case DEAD:
+			mediaPlayer = MediaPlayer.create(this, R.raw.shadow_temple);
+			mediaPlayer.setLooping(true);
+			mediaPlayer.start();
+			break;
+		case ASLEEP:
+			mediaPlayer = null;
+			break;
+		}
 	}
 
 }

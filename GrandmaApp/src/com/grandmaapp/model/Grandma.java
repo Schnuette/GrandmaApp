@@ -82,6 +82,7 @@ public class Grandma {
 		state = State.MAD;
 		ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
 		grandmaImgV.setImageResource(R.drawable.grandma_mad);
+		mainActivity.startMusic();
 	}
 	
 	// handle the request if it exists and deletes it
@@ -115,6 +116,7 @@ public class Grandma {
 					state = State.HAPPY;
 					ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
 					grandmaImgV.setImageResource(R.drawable.grandma_happy);
+					mainActivity.startMusic();
 				}
 				return true;
 			}
