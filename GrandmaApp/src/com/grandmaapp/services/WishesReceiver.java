@@ -60,10 +60,10 @@ public class WishesReceiver extends BroadcastReceiver
             	{
             		activity.addRequestButton( grandma.createSuitUpRequest( time ) );
             	}
+            	
+                //Do something with the string
+                Log.i( "Grandma", extra );
             }
-            
-            //Do something with the string
-            Log.i( "Grandma", extra );
         }
 	}
 	
