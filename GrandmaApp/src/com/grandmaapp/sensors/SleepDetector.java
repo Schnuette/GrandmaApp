@@ -1,11 +1,16 @@
 package com.grandmaapp.sensors;
 
 import com.example.grandmaapp.R;
-import com.example.grandmaapp.R.id;
+import com.grandmaapp.sensors.MiniGame.Type;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnShowListener;
+import android.graphics.drawable.Drawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -32,6 +37,10 @@ public class SleepDetector implements SensorEventListener
 	
 	private long currentTime;
 	private long oldTime;
+
+	private TextView text;
+
+	private AlertDialog dialog;
 	
 	public static SleepDetector getInstance( )
 	{
@@ -75,6 +84,40 @@ public class SleepDetector implements SensorEventListener
 		sensorManager.unregisterListener( this, proximity );
 	}	
 	
+	/**
+	 * Show the dialog that informs the user about what he needs to do
+	 */
+	public void show( )
+	{
+		AlertDialog.Builder builder = new AlertDialog.Builder( activity );
+		builder.setTitle( "Brunhilde will schlafen!" );
+		builder.setCancelable( false );
+		builder.setPositiveButton( "OK", new OnClickListener( )
+		{
+			@Override
+            public void onClick( DialogInterface dialog, int which )
+            {
+            }
+		} );
+		
+		text = new TextView( builder.getContext( ) );
+		text.setText( "Lege deine Hand über das Display bis Brunhilde schläft!\n Brunhilde ist wach!" );
+		builder.setView( text );
+		
+		dialog = builder.create( );
+		
+		dialog.setOnShowListener( new OnShowListener( )
+		{
+			@Override
+			public void onShow( DialogInterface dialogInterface )
+			{
+				dialog.getButton( Dialog.BUTTON_POSITIVE ).setEnabled( false );
+			}
+		} );
+		
+		dialog.show( );
+	}
+	
 	@Override
     public void onAccuracyChanged( Sensor sensor, int accuracy )
     {
@@ -115,13 +158,18 @@ public class SleepDetector implements SensorEventListener
 	 */
 	public void onSleep( )
 	{
+		text.setText( text.getText( ).toString( ).split( "\n" )[0] );
+		dialog.getButton( AlertDialog.BUTTON_POSITIVE ).setEnabled( true );
 		sleeping = true;
+		
+		disable( );
+		reset( );
 	}
 	
 	/**
 	 * Resets sleep state and distance to a non-covered value
 	 */
-	public void reset( )
+	private void reset( )
 	{
 		sleeping = false;
 		distance = proximity.getMaximumRange( );

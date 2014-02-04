@@ -14,6 +14,7 @@ import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,16 +68,17 @@ public class Grandma {
 		
 		state = State.MAD;
 		ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
-		grandmaImgV.setBackgroundResource(R.drawable.grandma_unzufrieden);
+		grandmaImgV.setImageResource(R.drawable.grandma_mad);
 	}
 	
 	public boolean handleRequest(Requests r){
 		for(Request request: requestsToHandle){
 			if(request.handleRequest(r)){
 				// button entfernen aus requestList loeschen
-				LinearLayout linLay = (LinearLayout) mainActivity.findViewById(R.id.tasksLinLay);
 				Button button = mainActivity.getRequestList().get(request.kind().toString());
-				linLay.removeView(button);
+				ViewGroup layout = (ViewGroup) button.getParent();
+				if(null!=layout) //for safety only  as you are doing onClick
+				layout.removeView(button);
 				mainActivity.getRequestList().remove(request.kind().toString());
 				
 				// aus den Prefs loeschen
@@ -91,7 +93,7 @@ public class Grandma {
 				if(requestsToHandle.isEmpty()){
 					state = State.HAPPY;
 					ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
-					grandmaImgV.setBackgroundResource(R.drawable.grandma_zufrieden);
+					grandmaImgV.setImageResource(R.drawable.grandma_happy);
 				}
 				return true;
 			}
@@ -258,37 +260,47 @@ public class Grandma {
 
 	}
 
-	public void createWashDishesRequest(int time) {
+	public WashDishes createWashDishesRequest(int time) {
 		WashDishes request = new WashDishes();
 		request.setRuntime(calcRuntime(time));
 		this.addRequest(request);
+		
+		return request;
 	}
 
-	public void createWashClothesRequest(int time) {
+	public WashClothes createWashClothesRequest(int time) {
 		WashClothes request = new WashClothes();
 		request.setRuntime(calcRuntime(time));
 		this.addRequest(request);
+		
+		return request;
 	}
 
-	public void createSuitUpRequest(int time) {
+	public SuitUp createSuitUpRequest(int time) {
 		SuitUp request = new SuitUp();
 		request.setRuntime(calcRuntime(time));
 		this.addRequest(request);
+		
+		return request;
 	}
 
-	public void createSleepRequest(int time) {
+	public Sleep createSleepRequest(int time) {
 		Sleep request = new Sleep();
 		request.setRuntime(calcRuntime(time));
 		this.addRequest(request);
+		
+		return request;
 	}
 
-	public void createShoppingRequest(int time) {
+	public Shopping createShoppingRequest(int time) {
 		Shopping request = new Shopping();
 		request.setRuntime(calcRuntime(time));
 		this.addRequest(request);
+		
+		return request;
 	}
 
-	public void createMedicineRequest(SharedPreferences prefs, int time) {
+	public Medicine createMedicineRequest(SharedPreferences prefs, int time) {
 		Medicine request = new Medicine();
 		String medWish = prefs.getString("MedWish", null);
 		if (medWish.equals(Daytime.MORNING.toString())) {
@@ -302,23 +314,29 @@ public class Grandma {
 		}
 		request.setRuntime(calcRuntime(time));
 		this.addRequest(request);
+		
+		return request;
 	}
 
-	public void createDrinkRequest(int time) {
+	public Drink createDrinkRequest(int time) {
 		Drink request = new Drink();
 		request.setRuntime(calcRuntime(time));
 		this.addRequest(request);
+		
+		return request;
 	}
 
-	public void createCleanFlatRequest(int time) {
+	public CleanFlat createCleanFlatRequest(int time) {
 		CleanFlat request = new CleanFlat();
 		request.setRuntime(calcRuntime(time));
 		Log.d("test", "cleanflat runtime " + time);
 		Log.d("test", "cleanflat runtime " + request.getRuntime());
 		this.addRequest(request);
+		
+		return request;
 	}
 
-	public void createEatRequest(SharedPreferences prefs, int time) {
+	public Eat createEatRequest(SharedPreferences prefs, int time) {
 		Eat request = new Eat();
 		String foodWish = prefs.getString("FoodWish", null);
 		if (foodWish.equals(Dish.BREAKFAST.toString())) {
@@ -336,6 +354,8 @@ public class Grandma {
 		}
 		request.setRuntime(calcRuntime(time));
 		this.addRequest(request);
+		
+		return request;
 	}
 	
 	public Storeroom getStoreroom() {

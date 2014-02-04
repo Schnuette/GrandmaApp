@@ -4,7 +4,12 @@ import com.example.grandmaapp.R;
 import com.example.grandmaapp.R.id;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnShowListener;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -23,6 +28,8 @@ public class WashingShaker implements SensorEventListener
 {
 	private static WashingShaker instance;
 	
+	private static final long TIME_UNTIL_WASHED = 3000000000L;
+	
 	private static final double SHAKE_START = 2.5;
 	private static final double SHAKE_STOP = 1.0;
 	
@@ -39,8 +46,15 @@ public class WashingShaker implements SensorEventListener
 	private float gZ;
 	private double s;
 	
+	private long time;
+	private long currentTime;
+	private long oldTime;
 	private boolean shaking;
 
+	private TextView text;
+
+	private AlertDialog dialog;
+	
 	public static WashingShaker getInstance( )
 	{
 		if( instance == null )
@@ -66,6 +80,10 @@ public class WashingShaker implements SensorEventListener
 		
 		sensorManager = (SensorManager) activity.getSystemService( Context.SENSOR_SERVICE );
 		accelerometer = sensorManager.getDefaultSensor( Sensor.TYPE_ACCELEROMETER );
+		
+		time = TIME_UNTIL_WASHED;
+		currentTime = System.nanoTime( );
+		oldTime = System.nanoTime( );
 	}
 	
 	/**
@@ -84,6 +102,41 @@ public class WashingShaker implements SensorEventListener
 		sensorManager.unregisterListener( this, accelerometer );
 	}
 
+	/**
+	 * Show the dialog that informs the user about what he needs to do
+	 */
+	public void show( )
+	{
+		AlertDialog.Builder builder = new AlertDialog.Builder( activity );
+		builder.setTitle( "Brunhilde will die Wäsche gewaschen haben!" );
+		builder.setCancelable( false );
+		builder.setPositiveButton( "OK", new OnClickListener( )
+		{
+			@Override
+            public void onClick( DialogInterface dialog, int which )
+            {
+				disable( );
+            }
+		} );
+		
+		text = new TextView( builder.getContext( ) );
+		text.setText( "Schüttle dein Smartphone um die Wäsche zu waschen!" );
+		builder.setView( text );
+		
+		dialog = builder.create( );
+		
+		dialog.setOnShowListener( new OnShowListener( )
+		{
+			@Override
+			public void onShow( DialogInterface dialogInterface )
+			{
+				dialog.getButton( Dialog.BUTTON_POSITIVE ).setEnabled( false );
+			}
+		} );
+		
+		dialog.show( );
+	}
+	
 	@Override
     public void onAccuracyChanged( Sensor sensor, int accuracy )
     {
@@ -106,6 +159,9 @@ public class WashingShaker implements SensorEventListener
 		// Standard derivation of handled values
 		s = Math.sqrt( gX * gX + gY * gY + gZ * gZ );
 		
+		oldTime = currentTime;
+		currentTime = System.nanoTime( );
+		
 		// If the device is currently being shaked...
 		if( shaking )
 		{
@@ -114,7 +170,16 @@ public class WashingShaker implements SensorEventListener
 			{
 				// ...do something appropriate
 				onShakingStopped( );
-			}			
+			}
+			else
+			{
+				time -= currentTime - oldTime;
+				
+				if( time < 0 )
+				{
+					time = 0;
+				}
+			}
 		}
 		// ...or if it is not...
 		else
@@ -134,8 +199,22 @@ public class WashingShaker implements SensorEventListener
 	public void onShaking( )
 	{
 		shaking = true;
-
-	
+		
+		text.setText( "" + time );
+		
+		if( time == 0 )
+		{
+			dialog.getButton( AlertDialog.BUTTON_POSITIVE ).setEnabled( true );
+			text.setTextColor( Color.GREEN );
+		}
+		else if ( time <= TIME_UNTIL_WASHED / 3.f * 2.f )
+		{
+			text.setTextColor( Color.rgb( 255, 127, 0 ) );
+		}
+		else if( time > TIME_UNTIL_WASHED / 3.f * 2.f )
+		{
+			text.setTextColor( Color.RED );
+		}
 	}
 	
 	/**

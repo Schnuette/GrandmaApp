@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -51,6 +52,7 @@ import com.grandmaapp.model.Storeroom.Dish;
 import com.grandmaapp.model.WashClothes;
 import com.grandmaapp.model.WashDishes;
 import com.grandmaapp.notification.Notifications;
+import com.grandmaapp.services.WishesReceiver;
 import com.grandmaapp.services.WishesService;
 
 public class GrandmaActivity extends Activity {
@@ -64,7 +66,7 @@ public class GrandmaActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_grandma);
 		
-
+		test();
 		
 		grandma = new Grandma(this);
 		requestList = new HashMap<String, Button>();
@@ -76,6 +78,9 @@ public class GrandmaActivity extends Activity {
 		if(grandma.getRequestsToHandle().isEmpty()){
 			test();
 		}
+		
+		WishesReceiver.setActivity( this );
+		WishesReceiver.setGrandma( grandma );
 		
 		// TODO read from sharedpreferences
 
@@ -122,25 +127,26 @@ public class GrandmaActivity extends Activity {
 		ImageView grandmaImgV = (ImageView) findViewById(R.id.grandmaImgView);
 		grandmaImgV.getLayoutParams().height = height;
 
-		grandmaImgV.setImageResource(R.drawable.grandma_zufrieden);
+		grandmaImgV.setImageResource(R.drawable.grandma_happy);
 
-		Button settingsBtn = (Button) findViewById(R.id.einstellungenBtn);
-		Button supplyBtn = (Button) findViewById(R.id.vorraeteBtn);
+		Button workBtn = (Button) findViewById(R.id.workBtn);
+		Button supplyBtn = (Button) findViewById(R.id.storeroomBtn);
 		Button testBtn = (Button) findViewById(R.id.testBtn);
 
-		settingsBtn.setBackgroundResource(R.drawable.settings_selector);
+		workBtn.setBackgroundResource(R.drawable.work_selector);
 		supplyBtn.setBackgroundResource(R.drawable.supply_selector);
 		testBtn.setBackgroundResource(R.drawable.test_selector);
 		
-		settingsBtn.getLayoutParams().width = (width - (width / 10));
+		workBtn.getLayoutParams().width = (width - (width / 10));
 		supplyBtn.getLayoutParams().width = (width - (width / 10));
 		testBtn.getLayoutParams().width = (width - (width / 10));
 
 	}
 
-	void addRequestButton(Request request) {
+	public void addRequestButton(Request request) {
 		LinearLayout linLay = (LinearLayout) findViewById(R.id.tasksLinLay);
 		Button requestButton = new Button(this);
+		requestButton.setTag(request.kind());
 		long runtimeInMS = grandma.HHMMtoMS(request.getRuntime());
 		CountDown countdown = new CountDown(runtimeInMS, 1000, requestButton, request.getName());
 		countdown.start();
@@ -151,8 +157,14 @@ public class GrandmaActivity extends Activity {
 				"fonts/Blippo.ttf");
 		requestButton.setTypeface(font);
 		requestButton.setTextSize(30);
+		requestButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				grandma.handleRequest((Requests) v.getTag());
+			}
+		});
 		linLay.addView(requestButton);
-		requestList.put(request.getName(), requestButton);
+		requestList.put(request.kind().toString(), requestButton);
 	}
 
 	private void startWishesService() {
@@ -179,12 +191,6 @@ public class GrandmaActivity extends Activity {
 		// add time, format DD.MM.YYYY HH:MM:SS
 		editor.putString("time",
 				DateFormat.getDateTimeInstance().format(new Date()));
-
-		// TODO
-		// add storage
-
-		// TODO
-		// add wishes
 
 		editor.commit();
 
@@ -476,6 +482,7 @@ public class GrandmaActivity extends Activity {
 			public void onClick(View v) {
 				//do nothing (?)
 				alert.dismiss();
+				grandma.handleRequest(Requests.SLEEP);
 			}
 		});
 		requestsList.addView(sleep);

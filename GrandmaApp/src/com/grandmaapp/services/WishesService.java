@@ -20,6 +20,9 @@ import android.util.Log;
 
 public class WishesService extends Service {
 	
+	public static final String BROADCAST_ID = "GRANDMA_APP";
+	public static final String NEW_REQUEST = "NewRequest";
+	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Wuensche generieren, Benutzer informieren usw
@@ -34,6 +37,7 @@ public class WishesService extends Service {
 		int time = Integer.parseInt(now.format2445().substring(9, 13));
 		Log.d("test", String.valueOf(time));
 		
+		sendMessageToActivity( NEW_REQUEST, "TEEEEST" );
 		
 		Editor editor = preferences.edit();
 //		editor.putInt(r.kind().toString(), calcExpireTime(r.getTimeMS()));	
@@ -66,7 +70,7 @@ public class WishesService extends Service {
 		{
 			createDrinkRequest( preferences, time, editor );
 		}
-		else if( time == 1200 )
+		else if( time == 1600 )
 		{
 			noFood = createLunchRequest( preferences, time, editor );
 		}
@@ -82,7 +86,7 @@ public class WishesService extends Service {
 		{
 			createSupperRequest( time, editor );
 		}
-		else if( time == 2000 )
+		else if( time == 1729 )
 		{
 			createSleepRequest( time, editor );
 		}
@@ -103,20 +107,31 @@ public class WishesService extends Service {
 		return Service.START_NOT_STICKY;
 	}
 
+	public void sendMessageToActivity( String type, String message )
+    {
+		Intent intent = new Intent( BROADCAST_ID );
+		intent.putExtra( type, message );
+		sendBroadcast( intent );
+    }
+
 	public void createShoppingRequest( int time, Editor editor )
     {
 	    editor.putInt( "SHOPPING", time + 100 );
+	    sendMessageToActivity( NEW_REQUEST, "SHOPPING" );
     }
 
 	public void createWashClothesRequest( int time, Editor editor )
     {
 	    editor.putInt( "WASHCLOTHES", time + 1200 );
+	    sendMessageToActivity( NEW_REQUEST, "WASHCLOTHES" );
     }
 
 	public void createSleepRequest( int time, Editor editor )
     {
 	    editor.putInt(  "SLEEP", time + 100 );
 	    notifyUser( "Brunhilde möchte schlafen!" );
+	    
+	    sendMessageToActivity( NEW_REQUEST, "SLEEP" );
     }
 
 	public void createSupperRequest( int time, Editor editor )
@@ -124,18 +139,24 @@ public class WishesService extends Service {
 	    editor.putInt( "EAT", time + 100 );
 	    editor.putString( "FoodWish", "SUPPER" );
 	    notifyUser( "Brunhilde möchte zu Abend essen!" );
+	    
+	    sendMessageToActivity( NEW_REQUEST, "EAT" );
     }
 
 	public void createEveningMedicineRequest( int time, Editor editor )
     {
 	    editor.putInt( "MEDICINE", time + 100 );
 	    editor.putString( "MedWish", "EVENING" );
+	    
+	    sendMessageToActivity( NEW_REQUEST, "MEDICINE" );
     }
 
 	public void createWashDishesRequest( int time, Editor editor )
     {
 	    editor.putInt( "WASHDISHES", time + 100 );
 	    notifyUser( "Brunhilde hat schmutziges Geschirr!" );
+	    
+	    sendMessageToActivity( NEW_REQUEST, "WASHDISHES" );
     }
 
 	public boolean createLunchRequest( SharedPreferences preferences, int time, Editor editor )
@@ -177,11 +198,15 @@ public class WishesService extends Service {
 	    		editor.putString( "MedWish", "NOON" );
 	    		
 	    		notifyUser( "Brunhilde braucht ihre Medizin!" );
+	    		
+	    	    sendMessageToActivity( NEW_REQUEST, "MEDICINE" );
 	    	}
 	    	
 	    	editor.putInt( "EAT", time + 100 );
 	    	editor.putString( "FoodWish", foodwish );
 	    	notifyUser( "Brunhilde möchte essen!" );
+	    	
+		    sendMessageToActivity( NEW_REQUEST, "EAT" );
 	    }
 	    else
 	    {
@@ -197,6 +222,8 @@ public class WishesService extends Service {
 	    {
 	    	editor.putInt( "DRINK", time + 30 );
 	    	notifyUser( "Brunhilde möchte trinken!" );
+	    	
+		    sendMessageToActivity( NEW_REQUEST, "DRINK" );
 	    }
 	    else
 	    {
@@ -210,6 +237,8 @@ public class WishesService extends Service {
 	    
 	    editor.putString( "FoodWish", "BREAKFAST" );
 	    notifyUser( "Brunhilde möchte Frühstück essen!" );
+	    
+	    sendMessageToActivity( NEW_REQUEST, "EAT" );
     }
 
 	public void createMorningMedicineRequest( int time, Editor editor )
@@ -218,12 +247,16 @@ public class WishesService extends Service {
 	    editor.putString( "MedWish", "MORNING" );
 	    
 	    notifyUser( "Brunhilde muss ihre Morgen-Medizin nehmen!" );
+	    
+	    sendMessageToActivity( NEW_REQUEST, "MEDICINE" );
     }
 
 	public void createSuitUpRequest( int time, Editor editor )
     {
 	    editor.putInt( "SUITUP", time + 30 );
 	    notifyUser( "Brunhilde möchte angezogen werden!" );
+	    
+	    sendMessageToActivity( NEW_REQUEST, "SUITUP" );
     }
 
 	public void notifyUser( String message )

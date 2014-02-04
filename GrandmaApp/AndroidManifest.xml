@@ -25,7 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+		<receiver android:name="com.grandmaapp.services.WishesReceiver" >
+		    <intent-filter >
+		        <action android:name="GRANDMA_APP" />
+		    </intent-filter>
+		</receiver>
         <service
             android:name="com.grandmaapp.services.WishesService">
         </service>
