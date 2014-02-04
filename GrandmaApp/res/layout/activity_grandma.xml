@@ -20,14 +20,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="10dp" />
+        android:layout_marginRight="10dp"
+        android:onClick="testButtonClicked" />
 
     <Button
         android:id="@+id/storeroomBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:onClick="storeroomButtonClicked" />
 
     <ImageView
         android:id="@+id/grandmaImgView"
