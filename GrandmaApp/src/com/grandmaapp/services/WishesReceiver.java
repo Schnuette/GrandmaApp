@@ -60,6 +60,14 @@ public class WishesReceiver extends BroadcastReceiver
             	{
             		activity.addRequestButton( grandma.createSuitUpRequest( time ) );
             	}
+            	else if( extra.equals( "GAME" ) )
+            	{
+            		activity.addRequestButton( grandma.createGameRequest( time ) );
+            	}
+            	else if( extra.equals( "CLEANFLAT" ) )
+            	{
+            		activity.addRequestButton( grandma.createCleanFlatRequest( time ) );
+            	}
             	
                 //Do something with the string
                 Log.i( "Grandma", extra );

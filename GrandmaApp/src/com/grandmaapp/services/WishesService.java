@@ -151,7 +151,7 @@ public class WishesService extends Service {
 	    editor.putInt( "GAME", time + 100 );
 		editor.commit( );
 		
-	    sendMessageToActivity( "GAME", time + 100 );	
+	    sendMessageToActivity( "GAME", time + 100 );
 	}
 	
 	public void createCleanFlatRequest( int time, Editor editor )
