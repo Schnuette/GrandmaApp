@@ -34,7 +34,7 @@ public class SuitUp extends Request {
 							alert.dismiss();
 						}
 			});
-			if(grandma.getState() != State.ASLEEP){
+			if(realRequest || ( (grandma.getState() != State.ASLEEP) && !realRequest) ){
 				if (cleanClothes > 0) {
 					// update clothes in the storeroom
 					cleanClothes -= 1;
@@ -60,7 +60,7 @@ public class SuitUp extends Request {
 			else{
 				builder.setMessage("Brunhilde schläft und braucht keine neue Kleidung.");
 				alert = builder.create();
-				alert.show();
+				alert.show();	
 			}
 		}
 		return false;
