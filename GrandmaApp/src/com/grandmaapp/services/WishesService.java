@@ -340,7 +340,7 @@ public class WishesService extends Service {
 
 	public void notifyUser( String message )
 	{
-		if( GrandmaActivity.isAppRunning( ) )
+		if( !GrandmaActivity.isAppRunning( ) )
 		{
 				Notifications.getInstance( ).newNotification( message, this );
 		}

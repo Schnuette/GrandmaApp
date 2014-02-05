@@ -123,6 +123,8 @@ public class GrandmaActivity extends Activity {
 		}
 		mediaPlayer = null;
 		Log.d("test", "app pausiert");
+		
+		appRunning = false;
 	}
 
 	// method notifying the user
@@ -147,6 +149,8 @@ public class GrandmaActivity extends Activity {
 		}
 		// Resets the message counter on app resume
 		Notifications.getInstance().resetMessageCounter();
+		
+		appRunning = true;
 	}
 
 	// method adjusting the GUI changing height and width of background image
