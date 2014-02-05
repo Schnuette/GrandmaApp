@@ -961,4 +961,9 @@ public class GrandmaActivity extends Activity {
 		}
 	}
 
+	public static boolean isAppRunning( )
+	{
+		return appRunning;
+	}
+
 }

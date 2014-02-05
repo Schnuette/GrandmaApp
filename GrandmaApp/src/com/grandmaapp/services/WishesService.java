@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
+import com.grandmaapp.activities.GrandmaActivity;
 import com.grandmaapp.notification.Notifications;
 
 import android.app.Service;
@@ -24,6 +25,7 @@ public class WishesService extends Service {
 	public static final String NEW_REQUEST_TIME = "NewRequestTime";
 	
 	private static WishesService instance;
+	private boolean noFood;
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
@@ -55,7 +57,7 @@ public class WishesService extends Service {
 //			editor.putString("MedWish", meds.getDaytime().toString());
 //		}
 		
-		boolean noFood = false;
+		noFood = false;
 		
 		// Time based requests
 		if( time == 800 )
@@ -76,7 +78,7 @@ public class WishesService extends Service {
 		}
 		else if( time == 1200 )
 		{
-			noFood = createLunchRequest( preferences, time, editor );
+			createLunchRequest( preferences, time, editor );
 		}
 		else if( time == 1100 || time == 1400 || time == 1900 )
 		{
@@ -110,7 +112,8 @@ public class WishesService extends Service {
 		{
 			createWashClothesRequest( time, editor );
 		}
-		else if( noFood || preferences.getInt( "StoreWater", -1 ) <= 0 )
+		
+		if( noFood || preferences.getInt( "StoreWater", -1 ) <= 0 )
 		{
 			createShoppingRequest( time, editor );
 		}
@@ -149,6 +152,8 @@ public class WishesService extends Service {
 	    editor.putInt( "GAME", time + 200 );
 		editor.commit( );
 		
+		notifyUser( "Brunhilde möchte spielen!" );
+		
 	    sendMessageToActivity( "GAME", time + 200 );
 	}
 	
@@ -157,6 +162,8 @@ public class WishesService extends Service {
 	    editor.putInt( "CLEANFLAT", time + 1000 );
 		editor.commit( );
 	    
+		notifyUser( "Brunhilde möchte, dass du die Wohnung säuberst!" );
+		
 	    sendMessageToActivity( "CLEANFLAT", time + 1000 );		
 	}
 	
@@ -165,6 +172,8 @@ public class WishesService extends Service {
 	    editor.putInt( "SHOPPING", time + 100 );
 		editor.commit( );
 		
+		notifyUser( "Brunhilde möchte, dass du einkaufst!" );
+		
 	    sendMessageToActivity( "SHOPPING", time + 100 );
     }
 
@@ -172,6 +181,8 @@ public class WishesService extends Service {
     {
 	    editor.putInt( "WASHCLOTHES", time + 1200 );
 		editor.commit( );
+		
+		notifyUser( "Brunhilde braucht saubere Kleidung!" );
 		
 	    sendMessageToActivity( "WASHCLOTHES", time + 1200 );
     }
@@ -204,6 +215,8 @@ public class WishesService extends Service {
 		
 	    editor.putString( "MedWish", "EVENING" );
 	    
+	    notifyUser( "Brunhilde braucht ihre Abendmedizin!" );
+	    
 	    sendMessageToActivity( "MEDICINE", time + 100 );
     }
 
@@ -217,7 +230,7 @@ public class WishesService extends Service {
 	    sendMessageToActivity( "WASHDISHES", time + 100 );
     }
 
-	public boolean createLunchRequest( SharedPreferences preferences, int time, Editor editor )
+	public void createLunchRequest( SharedPreferences preferences, int time, Editor editor )
     {
 	    String foodwish = "";
 	    
@@ -246,7 +259,7 @@ public class WishesService extends Service {
 	    // If nothing is available a wish for shopping food is generated
 	    if( availableFood.size( ) != 0 )
 	    {
-	    	int choice = (int) Math.random( ) * availableFood.size( );
+	    	int choice = (int) (Math.random( ) * availableFood.size( ));
 	    
 	    	foodwish = availableFood.get( choice );
 	    	
@@ -271,10 +284,8 @@ public class WishesService extends Service {
 	    }
 	    else
 	    {
-	    	return true;
+	    	noFood = true;
 	    }
-	    
-	    return false;
     }
 
 	public void createDrinkRequest( SharedPreferences preferences, int time, Editor editor )
@@ -329,7 +340,10 @@ public class WishesService extends Service {
 
 	public void notifyUser( String message )
 	{
-		Notifications.getInstance( ).newNotification( message, this );
+		if( GrandmaActivity.isAppRunning( ) )
+		{
+				Notifications.getInstance( ).newNotification( message, this );
+		}
 	}
 
 	@Override
