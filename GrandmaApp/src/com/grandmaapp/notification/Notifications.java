@@ -79,4 +79,9 @@ public class Notifications
 		numMessages = 0;
 		inBoxStyle = new Notification.InboxStyle( );
 	}
+
+	public int getNumMessages( )
+	{
+		return numMessages;
+	}
 }
