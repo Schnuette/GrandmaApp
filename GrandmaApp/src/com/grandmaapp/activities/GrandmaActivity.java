@@ -68,7 +68,8 @@ public class GrandmaActivity extends Activity {
 	SharedPreferences preferences;
 	Editor editor;
 	View testDialogView;
-	MediaPlayer mediaPlayer;
+	static MediaPlayer mediaPlayer;
+	static boolean appRunning;
 
 	// called when application is started initializes the global variables,
 	// adjusts and inits the GUI, starts the service and calls all init-methods
@@ -110,6 +111,7 @@ public class GrandmaActivity extends Activity {
 
 	@Override
 	protected void onPause() {
+		super.onPause();
 		if (mediaPlayer != null) {
 			try {
 				mediaPlayer.stop();
@@ -120,7 +122,7 @@ public class GrandmaActivity extends Activity {
 			}
 		}
 		mediaPlayer = null;
-		super.onPause();
+		Log.d("test", "app pausiert");
 	}
 
 	// method notifying the user
@@ -140,9 +142,11 @@ public class GrandmaActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		if(Notifications.getInstance().getNumMessages() == 0){
+			startMusic();
+		}
 		// Resets the message counter on app resume
 		Notifications.getInstance().resetMessageCounter();
-		startMusic();
 	}
 
 	// method adjusting the GUI changing height and width of background image
@@ -157,6 +161,11 @@ public class GrandmaActivity extends Activity {
 		int width = displaymetrics.widthPixels / 3;
 		ImageView grandmaImgV = (ImageView) findViewById(R.id.grandmaImgView);
 		grandmaImgV.getLayoutParams().height = height;
+		if(preferences.getString("State", "HAPPY").equals("ASLEEP")){
+			grandmaImgV.setImageResource(R.drawable.grandma_asleep);
+		}else if(preferences.getString("State", "HAPPY").equals("DEAD")){
+			grandmaImgV.setImageResource(R.drawable.grandma_dead);
+		}
 
 		Button workBtn = (Button) findViewById(R.id.workBtn);
 		Button supplyBtn = (Button) findViewById(R.id.storeroomBtn);
@@ -218,6 +227,7 @@ public class GrandmaActivity extends Activity {
 	// if the application terminates this method is called
 	@Override
 	protected void onDestroy() {
+		super.onDestroy();
 		// add time, format DD.MM.YYYY HH:MM:SS
 		editor.putString("time",
 				DateFormat.getDateTimeInstance().format(new Date()));
@@ -233,7 +243,6 @@ public class GrandmaActivity extends Activity {
 			}
 		}
 		mediaPlayer = null;
-		super.onDestroy();
 	}
 
 	// initilise the work dialog, creating a linear layout and adding all

@@ -58,12 +58,16 @@ public class Grandma {
 	Storeroom storeroom;
 	GrandmaActivity mainActivity;
 	State state;
+	SharedPreferences preferences;
+	Editor editor;
 
 	// constructor
 	public Grandma(GrandmaActivity activity){
 		storeroom = new Storeroom();
 		mainActivity = activity;
 		state = State.HAPPY;
+		preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+		editor = preferences.edit();
 	}
 	
 	// add a new Request to the Requestlist
@@ -79,9 +83,11 @@ public class Grandma {
 		requestsToHandle.add(r);		
 		
 		// grandma is mad and image is changed
-		state = State.MAD;
-		ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
-		grandmaImgV.setImageResource(R.drawable.grandma_mad);
+		if(r.kind() == Requests.SUITUP || state != State.ASLEEP){
+			state = State.MAD;
+			ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
+			grandmaImgV.setImageResource(R.drawable.grandma_mad);
+		}
 		mainActivity.startMusic();
 	}
 	
@@ -97,8 +103,6 @@ public class Grandma {
 				mainActivity.getRequestList().remove(request.kind().toString());
 				
 				// remove Request from preferences
-				SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-				Editor editor = preferences.edit();
 				if(request.kind() == Requests.MEDICINE_MORNING || request.kind() == Requests.MEDICINE_EVENING || request.kind() == Requests.MEDICINE_NOON){
 					// request is saved with key MEDICINE in the preferences and with daytime in the request
 					editor.remove(Requests.MEDICINE.toString());
@@ -418,6 +422,8 @@ public class Grandma {
 
 	public void setState(State state) {
 		this.state = state;
+		editor.putString("State", state.toString());
+		editor.commit();
 	}
 	
 }
