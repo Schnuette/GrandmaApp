@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class WishesReceiver extends BroadcastReceiver
 {
@@ -18,61 +17,61 @@ public class WishesReceiver extends BroadcastReceiver
 	@Override
 	public void onReceive( Context context, Intent intent )
 	{
+		// Check if the incoming message is from our broadcaster
         if(intent.getAction().equals( WishesService.BROADCAST_ID) )
         {
-            String extra = intent.getStringExtra(WishesService.NEW_REQUEST);
+        	// Get name and time of the message
+            String name = intent.getStringExtra(WishesService.NEW_REQUEST);
             int time = intent.getIntExtra( WishesService.NEW_REQUEST_TIME, -1 );
             
-            if( extra != null && activity != null )
+            // if name is given and activity is present then handle message
+            if( name != null && activity != null )
             {
         		SharedPreferences prefs = PreferenceManager
         				.getDefaultSharedPreferences(activity);
         		
-            	if( extra.equals( "EAT" ) )
+            	if( name.equals( "EAT" ) )
             	{
             		activity.addRequestButton( grandma.createEatRequest( prefs, time ) );
             	}
-            	else if( extra.equals( "DRINK" ) )
+            	else if( name.equals( "DRINK" ) )
             	{
             		activity.addRequestButton( grandma.createDrinkRequest( time ) );
             	}
-            	else if( extra.equals( "WASHCLOTHES" ) )
+            	else if( name.equals( "WASHCLOTHES" ) )
             	{
             		activity.addRequestButton( grandma.createWashClothesRequest( time ) );
             	}
-            	else if( extra.equals( "SHOPPING" ) )
+            	else if( name.equals( "SHOPPING" ) )
             	{
             		activity.addRequestButton( grandma.createShoppingRequest( time ) );
             	}
-            	else if( extra.equals( "MEDICINE" ) )
+            	else if( name.equals( "MEDICINE" ) )
             	{
             		activity.addRequestButton( grandma.createMedicineRequest( prefs, time ) );
             	}
-            	else if( extra.equals( "SLEEP" ) )
+            	else if( name.equals( "SLEEP" ) )
             	{
             		activity.addRequestButton( grandma.createSleepRequest( time ) );
             	}
-            	else if( extra.equals( "WASHDISHES" ) )
+            	else if( name.equals( "WASHDISHES" ) )
             	{
             		activity.addRequestButton( grandma.createWashDishesRequest( time ) );
             	}
-            	else if( extra.equals( "SUITUP" ) )
+            	else if( name.equals( "SUITUP" ) )
             	{
             		activity.addRequestButton( grandma.createSuitUpRequest( time ) );
             	}
-            	else if( extra.equals( "GAME" ) )
+            	else if( name.equals( "GAME" ) )
             	{
             		activity.addRequestButton( grandma.createGameRequest( time ) );
             	}
-            	else if( extra.equals( "CLEANFLAT" ) )
+            	else if( name.equals( "CLEANFLAT" ) )
             	{
             		activity.addRequestButton( grandma.createCleanFlatRequest( time ) );
-            	}else if(extra.equals("BrunhildeDied")){
+            	}else if(name.equals("BrunhildeDied")){
             		activity.brunhildeDied();
             	}
-            	
-                //Do something with the string
-                Log.i( "Grandma", extra );
             }
         }
 	}
