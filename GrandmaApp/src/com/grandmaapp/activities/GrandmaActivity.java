@@ -27,6 +27,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -68,8 +69,10 @@ public class GrandmaActivity extends Activity {
 	SharedPreferences preferences;
 	Editor editor;
 	View testDialogView;
-	static MediaPlayer mediaPlayer;
+	// static MediaPlayer mediaPlayer;
 	static boolean appRunning;
+	Button restartButton;
+	GrandmaActivity context;
 
 	// called when application is started initializes the global variables,
 	// adjusts and inits the GUI, starts the service and calls all init-methods
@@ -78,28 +81,42 @@ public class GrandmaActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_grandma);
 
+		context = this;
 		preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		editor = preferences.edit();
 		now = new Time();
 
-		grandma = new Grandma(this);
-		requestList = new HashMap<String, Button>();
-		grandma.init();
-		for (Request request : grandma.getRequestsToHandle()) {
-			addRequestButton(request);
+		if (!preferences.getString("State", "HAPPY").equals("DEAD")) {
+			grandma = new Grandma(this);
+			requestList = new HashMap<String, Button>();
+			grandma.init();
+			for (Request request : grandma.getRequestsToHandle()) {
+				addRequestButton(request);
+			}
+			WishesReceiver.setGrandma(grandma);
 		}
 
 		MiniGame.getInstance().setActivity(this);
 		WashingShaker.getInstance().init(this);
 		SleepDetector.getInstance().init(this);
-
 		WishesReceiver.setActivity(this);
-		WishesReceiver.setGrandma(grandma);
 
-		startWishesService();
+		if (!preferences.getBoolean("ServiceRunning", false)) {
+			startWishesService();
+			editor.putBoolean("ServiceRunning", true);
+			editor.commit();
+		}
+
 		adjustGUI();
 		initWorkDialog();
 		initTestDialog();
+
+		if (preferences.getString("State", "HAPPY").equals("DEAD")) {
+			LinearLayout linLay = (LinearLayout) findViewById(R.id.tasksLinLay);
+			linLay.addView(restartButton);
+			//ImageView grandmaImgV = (ImageView) findViewById(R.id.grandmaImgView);
+			//grandmaImgV.setImageResource(R.drawable.grandma_dead);
+		}
 	}
 
 	@Override
@@ -112,18 +129,11 @@ public class GrandmaActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (mediaPlayer != null) {
-			try {
-				mediaPlayer.stop();
-				mediaPlayer.reset();
-				mediaPlayer.release();
-			} catch (Exception e) {
-				Log.d("Nitif Activity", e.toString());
-			}
-		}
-		mediaPlayer = null;
-		Log.d("test", "app pausiert");
-		
+		/*
+		 * if (mediaPlayer != null) { try { mediaPlayer.stop();
+		 * mediaPlayer.reset(); mediaPlayer.release(); } catch (Exception e) {
+		 * Log.d("Nitif Activity", e.toString()); } } mediaPlayer = null;
+		 */
 		appRunning = false;
 	}
 
@@ -144,12 +154,13 @@ public class GrandmaActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(Notifications.getInstance().getNumMessages() == 0){
-			startMusic();
-		}
+		/*
+		 * if (Notifications.getInstance().getNumMessages() == 0) {
+		 * startMusic(); }
+		 */
 		// Resets the message counter on app resume
 		Notifications.getInstance().resetMessageCounter();
-		
+
 		appRunning = true;
 	}
 
@@ -165,9 +176,9 @@ public class GrandmaActivity extends Activity {
 		int width = displaymetrics.widthPixels / 3;
 		ImageView grandmaImgV = (ImageView) findViewById(R.id.grandmaImgView);
 		grandmaImgV.getLayoutParams().height = height;
-		if(preferences.getString("State", "HAPPY").equals("ASLEEP")){
+		if (preferences.getString("State", "HAPPY").equals("ASLEEP")) {
 			grandmaImgV.setImageResource(R.drawable.grandma_asleep);
-		}else if(preferences.getString("State", "HAPPY").equals("DEAD")){
+		} else if (preferences.getString("State", "HAPPY").equals("DEAD")) {
 			grandmaImgV.setImageResource(R.drawable.grandma_dead);
 		}
 
@@ -182,6 +193,47 @@ public class GrandmaActivity extends Activity {
 		workBtn.getLayoutParams().width = (width - (width / 10));
 		supplyBtn.getLayoutParams().width = (width - (width / 10));
 		testBtn.getLayoutParams().width = (width - (width / 10));
+		
+		if (preferences.getString("State", "HAPPY").equals("DEAD")) {
+			workBtn.setEnabled(false);
+			supplyBtn.setEnabled(false);
+			testBtn.setEnabled(false);
+		}
+
+		Typeface font = Typeface.createFromAsset(getAssets(),
+				"fonts/Blippo.ttf");
+		restartButton = new Button(this);
+		restartButton.setBackgroundResource(R.drawable.button_selector);
+		restartButton.setLayoutParams((new LayoutParams(
+				LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)));
+		restartButton.setTypeface(font);
+		restartButton.setTextSize(30);
+		restartButton.setText("Neues Spiel starten");
+		restartButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				editor.clear();
+				editor.commit();
+				editor.putBoolean("ServiceRunning", true);
+				editor.commit();
+				grandma = new Grandma(context);
+				requestList = new HashMap<String, Button>();
+				grandma.init();
+				WishesReceiver.setGrandma(grandma);
+				Button workBtn = (Button) context.findViewById(R.id.workBtn);
+				workBtn.setEnabled(true);
+				Button supplyBtn = (Button) context
+						.findViewById(R.id.storeroomBtn);
+				supplyBtn.setEnabled(true);
+				Button testBtn = (Button) context.findViewById(R.id.testBtn);
+				testBtn.setEnabled(true);
+				ViewGroup lay = (ViewGroup) v.getParent();
+				lay.removeView(v);
+				ImageView grandmaImgV = (ImageView) context
+						.findViewById(R.id.grandmaImgView);
+				grandmaImgV.setImageResource(R.drawable.grandma_happy);
+			}
+		});
 
 	}
 
@@ -237,16 +289,11 @@ public class GrandmaActivity extends Activity {
 				DateFormat.getDateTimeInstance().format(new Date()));
 
 		editor.commit();
-		if (mediaPlayer != null) {
-			try {
-				mediaPlayer.stop();
-				mediaPlayer.reset();
-				mediaPlayer.release();
-			} catch (Exception e) {
-				Log.d("Nitif Activity", e.toString());
-			}
-		}
-		mediaPlayer = null;
+		/*
+		 * if (mediaPlayer != null) { try { mediaPlayer.stop();
+		 * mediaPlayer.reset(); mediaPlayer.release(); } catch (Exception e) {
+		 * Log.d("Nitif Activity", e.toString()); } } mediaPlayer = null;
+		 */
 	}
 
 	// initilise the work dialog, creating a linear layout and adding all
@@ -567,6 +614,7 @@ public class GrandmaActivity extends Activity {
 				if (grandma.handleRequest(Requests.SUITUP) == false) {
 					SuitUp suitUp = new SuitUp();
 					suitUp.setGrandma(grandma);
+					suitUp.setRealRequest(false);
 					suitUp.handleRequest(Requests.SUITUP);
 				}
 			}
@@ -911,6 +959,29 @@ public class GrandmaActivity extends Activity {
 		storeroomDialog.show();
 	}
 
+	// removes all wishes and data from model and shared preferences, disable
+	// buttons, change image of brunhilde and add the restart button
+	public void brunhildeDied() {
+		editor.clear();
+		editor.commit();
+		editor.putString("State", "DEAD");
+		editor.putBoolean("ServiceRunning", true);
+		editor.commit();
+		LinearLayout linLay = (LinearLayout) findViewById(R.id.tasksLinLay);
+		linLay.removeAllViews();
+		requestList.clear();
+		grandma.getRequestsToHandle().clear();
+		Button workBtn = (Button) findViewById(R.id.workBtn);
+		workBtn.setEnabled(false);
+		Button supplyBtn = (Button) findViewById(R.id.storeroomBtn);
+		supplyBtn.setEnabled(false);
+		Button testBtn = (Button) findViewById(R.id.testBtn);
+		testBtn.setEnabled(false);
+		linLay.addView(restartButton);
+		ImageView grandmaImgV = (ImageView) findViewById(R.id.grandmaImgView);
+		grandmaImgV.setImageResource(R.drawable.grandma_dead);
+	}
+
 	// returns a string with the actual storeroom stock
 	public String getStoreroomStock() {
 		String stock = "Lagerraum\n\nMahlzeiten\nSchnitzel: "
@@ -937,36 +1008,19 @@ public class GrandmaActivity extends Activity {
 		return requestList;
 	}
 
-	public void startMusic() {
-		if (mediaPlayer != null) {
-			mediaPlayer.stop();
-			mediaPlayer.reset();
-			mediaPlayer.release();
-		}
-		switch (grandma.getState()) {
-		case HAPPY:
-			mediaPlayer = MediaPlayer.create(this, R.raw.song_of_storms);
-			mediaPlayer.setLooping(true);
-			mediaPlayer.start();
-			break;
-		case MAD:
-			mediaPlayer = MediaPlayer.create(this, R.raw.imperial_march);
-			mediaPlayer.setLooping(true);
-			mediaPlayer.start();
-			break;
-		case DEAD:
-			mediaPlayer = MediaPlayer.create(this, R.raw.shadow_temple);
-			mediaPlayer.setLooping(true);
-			mediaPlayer.start();
-			break;
-		case ASLEEP:
-			mediaPlayer = null;
-			break;
-		}
-	}
+	/*
+	 * public void startMusic() { if (mediaPlayer != null) { mediaPlayer.stop();
+	 * mediaPlayer.reset(); mediaPlayer.release(); } switch (grandma.getState())
+	 * { case HAPPY: mediaPlayer = MediaPlayer.create(this,
+	 * R.raw.song_of_storms); mediaPlayer.setLooping(true); mediaPlayer.start();
+	 * break; case MAD: mediaPlayer = MediaPlayer.create(this,
+	 * R.raw.imperial_march); mediaPlayer.setLooping(true); mediaPlayer.start();
+	 * break; case DEAD: mediaPlayer = MediaPlayer.create(this,
+	 * R.raw.shadow_temple); mediaPlayer.setLooping(true); mediaPlayer.start();
+	 * break; case ASLEEP: mediaPlayer = null; break; } }
+	 */
 
-	public static boolean isAppRunning( )
-	{
+	public static boolean isAppRunning() {
 		return appRunning;
 	}
 

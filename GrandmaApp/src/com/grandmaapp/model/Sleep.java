@@ -41,7 +41,7 @@ public class Sleep extends Request {
 				// TODO auslagern in SleepDetector.onSleep()
 				ImageView grandmaImgV = (ImageView) grandma.getMainActivity().findViewById(R.id.grandmaImgView);
 				grandmaImgV.setImageResource(R.drawable.grandma_asleep);
-				grandma.getMainActivity().startMusic();
+				//grandma.getMainActivity().startMusic();
 				return true;
 			}
 			else{

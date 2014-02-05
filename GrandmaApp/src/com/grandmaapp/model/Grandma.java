@@ -65,9 +65,17 @@ public class Grandma {
 	public Grandma(GrandmaActivity activity){
 		storeroom = new Storeroom();
 		mainActivity = activity;
-		state = State.HAPPY;
 		preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
 		editor = preferences.edit();
+		if(preferences.getString("State", "HAPPY").equals("HAPPY")){
+			setState(State.HAPPY);
+		}else if(preferences.getString("State", "HAPPY").equals("MAD")){
+			setState(State.MAD);
+		}else if(preferences.getString("State", "HAPPY").equals("ASLEEP")){
+			setState(State.ASLEEP);
+		}else if(preferences.getString("State", "HAPPY").equals("DEAD")){
+			setState(State.DEAD);
+		}
 	}
 	
 	// add a new Request to the Requestlist
@@ -84,11 +92,11 @@ public class Grandma {
 		
 		// grandma is mad and image is changed
 		if(r.kind() == Requests.SUITUP || state != State.ASLEEP){
-			state = State.MAD;
+			setState(State.MAD);
 			ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
 			grandmaImgV.setImageResource(R.drawable.grandma_mad);
 		}
-		mainActivity.startMusic();
+		//mainActivity.startMusic();
 	}
 	
 	// handle the request if it exists and deletes it
@@ -117,10 +125,10 @@ public class Grandma {
 				
 				// sets the grandma to Happy if no requests left to handle
 				if(requestsToHandle.isEmpty() && state != State.ASLEEP){
-					state = State.HAPPY;
+					setState(State.HAPPY);
 					ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
 					grandmaImgV.setImageResource(R.drawable.grandma_happy);
-					mainActivity.startMusic();
+					//mainActivity.startMusic();
 				}
 				return true;
 			}

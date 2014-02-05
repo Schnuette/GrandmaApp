@@ -67,6 +67,8 @@ public class WishesReceiver extends BroadcastReceiver
             	else if( extra.equals( "CLEANFLAT" ) )
             	{
             		activity.addRequestButton( grandma.createCleanFlatRequest( time ) );
+            	}else if(extra.equals("BrunhildeDied")){
+            		activity.brunhildeDied();
             	}
             	
                 //Do something with the string

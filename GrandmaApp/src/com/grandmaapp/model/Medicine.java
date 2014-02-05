@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 
 import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Grandma.State;
+import com.grandmaapp.services.WishesService;
 
 /*
  * handles the Request to take medicine
@@ -53,7 +54,7 @@ public class Medicine extends Request {
 			return true;
 		} else {
 			grandma.setState(State.DEAD);
-			
+			grandma.getMainActivity().brunhildeDied();			
 			builder.setMessage("Brunhilde hat die falschen Medikamente bekommen und stirbt!");
 			alert = builder.create();
 			alert.show();
