@@ -123,6 +123,19 @@ public class Grandma {
 				// remove from data model
 				requestsToHandle.remove(request);
 				
+				// wake grandma up if she is suited up
+				if(request.kind() == Requests.SUITUP){
+					ImageView grandmaImgV = (ImageView) mainActivity.findViewById(R.id.grandmaImgView);
+					if(requestsToHandle.isEmpty()){
+						setState(State.HAPPY);	
+						grandmaImgV.setImageResource(R.drawable.grandma_happy);
+					}
+					else{
+						setState(State.MAD);
+						grandmaImgV.setImageResource(R.drawable.grandma_mad);
+					}
+				}
+				
 				// sets the grandma to Happy if no requests left to handle
 				if(requestsToHandle.isEmpty() && state != State.ASLEEP){
 					setState(State.HAPPY);

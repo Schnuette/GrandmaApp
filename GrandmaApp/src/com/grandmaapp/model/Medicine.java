@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 
 import com.grandmaapp.model.Grandma.Requests;
 import com.grandmaapp.model.Grandma.State;
-import com.grandmaapp.services.WishesService;
 
 /*
  * handles the Request to take medicine
