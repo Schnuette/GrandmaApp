@@ -1,6 +1,7 @@
 /*
  * Main-Activity
  * contains all GUI elements
+ * (tried to implement background music, didn't work properly, commented it out)
  */
 package com.grandmaapp.activities;
 
@@ -19,12 +20,10 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.format.Time;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -114,8 +113,6 @@ public class GrandmaActivity extends Activity {
 		if (preferences.getString("State", "HAPPY").equals("DEAD")) {
 			LinearLayout linLay = (LinearLayout) findViewById(R.id.tasksLinLay);
 			linLay.addView(restartButton);
-			//ImageView grandmaImgV = (ImageView) findViewById(R.id.grandmaImgView);
-			//grandmaImgV.setImageResource(R.drawable.grandma_dead);
 		}
 	}
 
@@ -193,11 +190,11 @@ public class GrandmaActivity extends Activity {
 		workBtn.getLayoutParams().width = (width - (width / 10));
 		supplyBtn.getLayoutParams().width = (width - (width / 10));
 		testBtn.getLayoutParams().width = (width - (width / 10));
-		
+
 		if (preferences.getString("State", "HAPPY").equals("DEAD")) {
-			workBtn.setEnabled(false);
-			supplyBtn.setEnabled(false);
-			testBtn.setEnabled(false);
+			workBtn.setClickable(false);
+			supplyBtn.setClickable(false);
+			testBtn.setClickable(false);
 		}
 
 		Typeface font = Typeface.createFromAsset(getAssets(),
@@ -221,12 +218,12 @@ public class GrandmaActivity extends Activity {
 				grandma.init();
 				WishesReceiver.setGrandma(grandma);
 				Button workBtn = (Button) context.findViewById(R.id.workBtn);
-				workBtn.setEnabled(true);
+				workBtn.setClickable(true);
 				Button supplyBtn = (Button) context
 						.findViewById(R.id.storeroomBtn);
-				supplyBtn.setEnabled(true);
+				supplyBtn.setClickable(true);
 				Button testBtn = (Button) context.findViewById(R.id.testBtn);
-				testBtn.setEnabled(true);
+				testBtn.setClickable(true);
 				ViewGroup lay = (ViewGroup) v.getParent();
 				lay.removeView(v);
 				ImageView grandmaImgV = (ImageView) context
@@ -972,11 +969,11 @@ public class GrandmaActivity extends Activity {
 		requestList.clear();
 		grandma.getRequestsToHandle().clear();
 		Button workBtn = (Button) findViewById(R.id.workBtn);
-		workBtn.setEnabled(false);
+		workBtn.setClickable(false);
 		Button supplyBtn = (Button) findViewById(R.id.storeroomBtn);
-		supplyBtn.setEnabled(false);
+		supplyBtn.setClickable(false);
 		Button testBtn = (Button) findViewById(R.id.testBtn);
-		testBtn.setEnabled(false);
+		testBtn.setClickable(false);
 		linLay.addView(restartButton);
 		ImageView grandmaImgV = (ImageView) findViewById(R.id.grandmaImgView);
 		grandmaImgV.setImageResource(R.drawable.grandma_dead);
