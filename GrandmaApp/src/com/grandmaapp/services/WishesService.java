@@ -284,7 +284,8 @@ public class WishesService extends Service {
 	    }
 	    else
 	    {
-	    	noFood = true;
+	    	notifyUser( "Kein Mittagessen mehr vorrätig!" );
+	    	createShoppingRequest( time, editor );
 	    }
     }
 
@@ -302,6 +303,7 @@ public class WishesService extends Service {
 	    else
 	    {
 	    	notifyUser( "Kein Wasser mehr vorrätig!" );
+	    	createShoppingRequest( time, editor );
 	    }
     }
 
