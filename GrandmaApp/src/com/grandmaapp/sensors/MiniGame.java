@@ -131,7 +131,7 @@ public class MiniGame
 	
 	public void showResult( )
 	{
-		String text = "Oma waehlte " + grandmaChoice + "!";
+		String text = "Brunhilde wählte " + grandmaChoice + "!";
 		
 		if( result == Result.LOST )
 		{

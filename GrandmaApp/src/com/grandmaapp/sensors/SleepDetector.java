@@ -105,7 +105,7 @@ public class SleepDetector implements SensorEventListener
 		} );
 		
 		text = new TextView( builder.getContext( ) );
-		text.setText( "Lege deine Hand über das Display bis Brunhilde schläft!\nBrunhilde ist wach!" );
+		text.setText( "Decke dein Smartphone für 5 Sekunden zu bis Brunhilde schläft!\nBrunhilde ist wach!" );
 		builder.setView( text );
 		
 		dialog = builder.create( );
@@ -148,6 +148,10 @@ public class SleepDetector implements SensorEventListener
 	    			// ...do something appropriate
 	    			onSleep( );
 	    		}
+	    		else if( oldTime != 0 && ( currentTime - oldTime ) < TIME_UNTIL_SLEEP )
+	    		{
+	    			onSleepFailed( );
+	    		}
 	    	}
 	    	// ...otherwise the proximity sensor is covered and we need the start time of the coverage
 	    	else
@@ -166,6 +170,14 @@ public class SleepDetector implements SensorEventListener
 		dialog.getButton( AlertDialog.BUTTON_POSITIVE ).setEnabled( true );
 		sleeping = true;
 	}
+	
+	/**
+	 * Called when sleep time has been reached
+	 */
+	public void onSleepFailed( )
+	{
+		text.setText( text.getText( ).toString( ).split( "\n" )[0] + "\nDu musst Brunhilde länger zudecken!" );
+	}	
 	
 	/**
 	 * Resets sleep state and distance to a non-covered value

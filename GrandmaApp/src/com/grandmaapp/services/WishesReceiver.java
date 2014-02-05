@@ -23,7 +23,7 @@ public class WishesReceiver extends BroadcastReceiver
             String extra = intent.getStringExtra(WishesService.NEW_REQUEST);
             int time = intent.getIntExtra( WishesService.NEW_REQUEST_TIME, -1 );
             
-            if( extra != null )
+            if( extra != null && activity != null )
             {
         		SharedPreferences prefs = PreferenceManager
         				.getDefaultSharedPreferences(activity);
